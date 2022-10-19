@@ -42,74 +42,74 @@ comment "(*".*"*)"
 {comment}
 
 program { symbol  = symb_program;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT("program ");
           return PROGRAM;
  }
 
 var      { symbol = symb_var;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT("var  ");
           return VAR;
  }
 
 begin { symbol = symb_begin;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT("begin ");
           return T_BEGIN;
  }
 
 end { symbol = symb_end;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT("end  ");
           return T_END;
  }
 
 := { symbol = symb_assignment;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" assignment  ");
           return ASSIGNMENT;
  }
 
 \; { symbol = symb_semicolon;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" semicolon  ");
           return SEMICOLON;
  }
 
 \: { symbol = symb_colon;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" colon ");
           return COLON;
  }
 
 \, { symbol = symb_comma;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" comma  ");
           return COMMA;
  }
 
 
 \. { symbol = symb_dot;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" dot  ");
           return DOT;
     }
 
 \(  { symbol = symb_open_parenthesis;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" open_parenthesis  ");
           return OPEN_PARENTHESIS;
     }
 
 \)  { symbol = symb_close_parenthesis;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" close_parenthesis ");
           return CLOSE_PARENTHESIS;
  }
 
 {ident} { symbol = symb_identifier;
-          strncpy (token, yytext, TAM_TOKEN);
+          strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" ident  ");
           return IDENT;
         }
