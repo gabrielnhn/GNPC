@@ -1,16 +1,11 @@
 
-/* -------------------------------------------------------------------
- *            Arquivo: compilador.l
- * -------------------------------------------------------------------
- *              Autor: Bruno Muller Junior
- *               Data: 08/2007
- *      Atualizado em: [09/08/2020, 19h:01m]
- *
- * -------------------------------------------------------------------
- *
- * Tipos, protótipos e variáveis globais do compilador (via extern)
- *
- * ------------------------------------------------------------------- */
+/*
+Autor: Bruno Müller Junior
+Data: 08/2007
+Editado por Gabriel Nascarella Hishida do Nascimento
+
+* Tipos, protótipos e variáveis globais do compiler (via extern)
+*/
 
 %{
 
@@ -18,104 +13,104 @@
 #include<stdio.h>
 #include<string.h>
 
-#include "compilador.h"
-#include "compilador.tab.h"
+#include "compiler.h"
+#include "compiler.tab.h"
 
-//#define IMPRIME(STR) {};
-#define IMPRIME(STR) printf("%s    # %s \n", STR, token);
+//#define PRINT(STR) {};
+#define PRINT(STR) printf("%s    # %s \n", STR, token);
 
 int nl = 1;
 
 %}
 
-pulo_linha [\n]
+newline [\n]
 
-descarte [\t ]+
+discard [\t ]+
 
 ident [a-zA-Z][a-zA-Z0-9]*
 
-numero [0-9]+
+number [0-9]+
 
-comentario "(*".*"*)"
+comment "(*".*"*)"
 
 %%
 
-{pulo_linha} {nl++;}
+{newline} {nl++;}
 
-{descarte}
+{discard}
 
-{comentario}
+{comment}
 
-program { simbolo  = simb_program;
+program { symbol  = symb_program;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("program ");
+          PRINT("program ");
           return PROGRAM;
  }
 
-var      { simbolo = simb_var;
+var      { symbol = symb_var;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("var  ");
+          PRINT("var  ");
           return VAR;
  }
 
-begin { simbolo = simb_begin;
+begin { symbol = symb_begin;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("begin ");
+          PRINT("begin ");
           return T_BEGIN;
  }
 
-end { simbolo = simb_end;
+end { symbol = symb_end;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("end  ");
+          PRINT("end  ");
           return T_END;
  }
 
-:= { simbolo = simb_atribuicao;
+:= { symbol = symb_assignment;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" atribuicao  ");
-          return ATRIBUICAO;
+          PRINT(" assignment  ");
+          return ASSIGNMENT;
  }
 
-\; { simbolo = simb_ponto_e_virgula;
+\; { symbol = symb_semicolon;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" pt_virgula  ");
-          return PONTO_E_VIRGULA;
+          PRINT(" semicolon  ");
+          return SEMICOLON;
  }
 
-\: { simbolo = simb_dois_pontos;
+\: { symbol = symb_colon;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" dois pontos ");
-          return DOIS_PONTOS;
+          PRINT(" colon ");
+          return COLON;
  }
 
-\, { simbolo = simb_virgula;
+\, { symbol = symb_comma;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" virgula  ");
-          return VIRGULA;
+          PRINT(" comma  ");
+          return COMMA;
  }
 
 
-\. { simbolo = simb_ponto;
+\. { symbol = symb_dot;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ponto  ");
-          return PONTO;
+          PRINT(" dot  ");
+          return DOT;
     }
 
-\(  { simbolo = simb_abre_parenteses;
+\(  { symbol = symb_open_parenthesis;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" abre_parenteses  ");
-          return ABRE_PARENTESES;
+          PRINT(" open_parenthesis  ");
+          return OPEN_PARENTHESIS;
     }
 
-\)  { simbolo = simb_fecha_parenteses;
+\)  { symbol = symb_close_parenthesis;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" fecha_parenteses ");
-          return FECHA_PARENTESES;
+          PRINT(" close_parenthesis ");
+          return CLOSE_PARENTHESIS;
  }
 
-{ident} { simbolo = simb_identificador;
+{ident} { symbol = symb_identifier;
           strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ident  ");
+          PRINT(" ident  ");
           return IDENT;
         }
 

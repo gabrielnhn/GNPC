@@ -1,6 +1,6 @@
 Terminals unused in grammar
 
-    ATRIBUICAO
+    ASSIGNMENT
 
 
 Grammar
@@ -9,7 +9,7 @@ Grammar
 
     1 $@1: %empty
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT
 
     3 $@2: %empty
 
@@ -29,14 +29,14 @@ Grammar
 
    12 $@5: %empty
 
-   13 declara_var: $@4 lista_id_var DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA
+   13 declara_var: $@4 lista_id_var COLON tipo $@5 SEMICOLON
 
    14 tipo: IDENT
 
-   15 lista_id_var: lista_id_var VIRGULA IDENT
+   15 lista_id_var: lista_id_var COMMA IDENT
    16             | IDENT
 
-   17 lista_idents: lista_idents VIRGULA IDENT
+   17 lista_idents: lista_idents COMMA IDENT
    18             | IDENT
 
    19 comando_composto: T_BEGIN comandos T_END
@@ -49,17 +49,17 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     PROGRAM (258) 2
-    ABRE_PARENTESES (259) 2
-    FECHA_PARENTESES (260) 2
-    VIRGULA (261) 15 17
-    PONTO_E_VIRGULA (262) 2 13
-    DOIS_PONTOS (263) 13
-    PONTO (264) 2
+    OPEN_PARENTHESIS (259) 2
+    CLOSE_PARENTHESIS (260) 2
+    COMMA (261) 15 17
+    SEMICOLON (262) 2 13
+    COLON (263) 13
+    DOT (264) 2
     T_BEGIN (265) 19
     T_END (266) 19
     VAR (267) 7
     IDENT (268) 2 14 15 16 17 18
-    ATRIBUICAO (269)
+    ASSIGNMENT (269)
 
 
 Nonterminals, with rules where they appear
@@ -135,7 +135,7 @@ State 1
 
 State 2
 
-    2 programa: $@1 . PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 . PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT
 
     PROGRAM  shift, and go to state 4
 
@@ -149,21 +149,21 @@ State 3
 
 State 4
 
-    2 programa: $@1 PROGRAM . IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 PROGRAM . IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT
 
     IDENT  shift, and go to state 5
 
 
 State 5
 
-    2 programa: $@1 PROGRAM IDENT . ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 PROGRAM IDENT . OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT
 
-    ABRE_PARENTESES  shift, and go to state 6
+    OPEN_PARENTHESIS  shift, and go to state 6
 
 
 State 6
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES . lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS . lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT
 
     IDENT  shift, and go to state 7
 
@@ -179,30 +179,30 @@ State 7
 
 State 8
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents . FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO
-   17 lista_idents: lista_idents . VIRGULA IDENT
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents . CLOSE_PARENTHESIS SEMICOLON bloco DOT
+   17 lista_idents: lista_idents . COMMA IDENT
 
-    FECHA_PARENTESES  shift, and go to state 9
-    VIRGULA           shift, and go to state 10
+    CLOSE_PARENTHESIS  shift, and go to state 9
+    COMMA           shift, and go to state 10
 
 
 State 9
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES . PONTO_E_VIRGULA bloco PONTO
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS . SEMICOLON bloco DOT
 
-    PONTO_E_VIRGULA  shift, and go to state 11
+    SEMICOLON  shift, and go to state 11
 
 
 State 10
 
-   17 lista_idents: lista_idents VIRGULA . IDENT
+   17 lista_idents: lista_idents COMMA . IDENT
 
     IDENT  shift, and go to state 12
 
 
 State 11
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA . bloco PONTO
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON . bloco DOT
 
     T_BEGIN   reduce using rule 8 (var)
     $default  reduce using rule 6 ($@3)
@@ -215,16 +215,16 @@ State 11
 
 State 12
 
-   17 lista_idents: lista_idents VIRGULA IDENT .
+   17 lista_idents: lista_idents COMMA IDENT .
 
     $default  reduce using rule 17 (lista_idents)
 
 
 State 13
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco . PONTO
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco . DOT
 
-    PONTO  shift, and go to state 17
+    DOT  shift, and go to state 17
 
 
 State 14
@@ -252,7 +252,7 @@ State 16
 
 State 17
 
-    2 programa: $@1 PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO .
+    2 programa: $@1 PROGRAM IDENT OPEN_PARENTHESIS lista_idents CLOSE_PARENTHESIS SEMICOLON bloco DOT .
 
     $default  reduce using rule 2 (programa)
 
@@ -314,7 +314,7 @@ State 23
 
 State 24
 
-   13 declara_var: $@4 . lista_id_var DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA
+   13 declara_var: $@4 . lista_id_var COLON tipo $@5 SEMICOLON
 
     IDENT  shift, and go to state 27
 
@@ -344,11 +344,11 @@ State 27
 
 State 28
 
-   13 declara_var: $@4 lista_id_var . DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA
-   15 lista_id_var: lista_id_var . VIRGULA IDENT
+   13 declara_var: $@4 lista_id_var . COLON tipo $@5 SEMICOLON
+   15 lista_id_var: lista_id_var . COMMA IDENT
 
-    VIRGULA      shift, and go to state 30
-    DOIS_PONTOS  shift, and go to state 31
+    COMMA      shift, and go to state 30
+    COLON  shift, and go to state 31
 
 
 State 29
@@ -360,14 +360,14 @@ State 29
 
 State 30
 
-   15 lista_id_var: lista_id_var VIRGULA . IDENT
+   15 lista_id_var: lista_id_var COMMA . IDENT
 
     IDENT  shift, and go to state 32
 
 
 State 31
 
-   13 declara_var: $@4 lista_id_var DOIS_PONTOS . tipo $@5 PONTO_E_VIRGULA
+   13 declara_var: $@4 lista_id_var COLON . tipo $@5 SEMICOLON
 
     IDENT  shift, and go to state 33
 
@@ -376,7 +376,7 @@ State 31
 
 State 32
 
-   15 lista_id_var: lista_id_var VIRGULA IDENT .
+   15 lista_id_var: lista_id_var COMMA IDENT .
 
     $default  reduce using rule 15 (lista_id_var)
 
@@ -390,7 +390,7 @@ State 33
 
 State 34
 
-   13 declara_var: $@4 lista_id_var DOIS_PONTOS tipo . $@5 PONTO_E_VIRGULA
+   13 declara_var: $@4 lista_id_var COLON tipo . $@5 SEMICOLON
 
     $default  reduce using rule 12 ($@5)
 
@@ -399,13 +399,13 @@ State 34
 
 State 35
 
-   13 declara_var: $@4 lista_id_var DOIS_PONTOS tipo $@5 . PONTO_E_VIRGULA
+   13 declara_var: $@4 lista_id_var COLON tipo $@5 . SEMICOLON
 
-    PONTO_E_VIRGULA  shift, and go to state 36
+    SEMICOLON  shift, and go to state 36
 
 
 State 36
 
-   13 declara_var: $@4 lista_id_var DOIS_PONTOS tipo $@5 PONTO_E_VIRGULA .
+   13 declara_var: $@4 lista_id_var COLON tipo $@5 SEMICOLON .
 
     $default  reduce using rule 13 (declara_var)

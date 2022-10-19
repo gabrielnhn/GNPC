@@ -2,7 +2,7 @@
 > make
 
 2. Executar o programa
-> ./compilador teste1.pas
+> ./compiler teste1.pas
 
 3. Ver código MEPA
 > cat MEPA
@@ -10,9 +10,9 @@
 
 Para aqueles mais curiosos, verifiquem o arquivo lex.yy.c . Este
 arquivo é a implementação em "C" da autômato gerado pelo analisador
-léxico ao ler o arquivo "compilador.l". De forma análoga,
-"compilador.tab.c" é o autômato a pilha gerado pelo bison ao ler o
-arquivo "compilador.y".
+léxico ao ler o arquivo "compiler.l". De forma análoga,
+"compiler.tab.c" é o autômato a pilha gerado pelo bison ao ler o
+arquivo "compiler.y".
 
 Na segunda parte da disciplina, será mostrado como gerar um autômato a
 pilha (tabela de ações e de desvios) para uma classe de gramáticas

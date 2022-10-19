@@ -1,32 +1,23 @@
-
-/* -------------------------------------------------------------------
- *            Aquivo: compilador.c
- * -------------------------------------------------------------------
- *              Autor: Bruno Muller Junior
- *               Data: 08/2007
- *      Atualizado em: [09/08/2020, 19h:01m]
- *
- * -------------------------------------------------------------------
- *
- * Funções auxiliares ao compilador
- *
- * ------------------------------------------------------------------- */
+// Autor: Bruno Müller Junior
+// Data: 08/2007
+// Editado por Gabriel Nascarella Hishida do Nascimento
+// Funções auxiliares ao compiler
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "compilador.h"
+#include "compiler.h"
 
 
 /* -------------------------------------------------------------------
  *  variáveis globais
  * ------------------------------------------------------------------- */
 
-simbolos simbolo, relacao;
-char token[TAM_TOKEN];
+symbols symbol, relation;
+char token[TOKEN_SIZE];
 
 FILE* fp=NULL;
-void geraCodigo (char* rot, char* comando) {
+void generate_code (char* rot, char* comando) {
 
   if (fp == NULL) {
     fp = fopen ("MEPA", "w");
@@ -39,7 +30,7 @@ void geraCodigo (char* rot, char* comando) {
   }
 }
 
-int imprimeErro ( char* erro ) {
+int print_error ( char* erro ) {
   fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);
   exit(-1);
 }

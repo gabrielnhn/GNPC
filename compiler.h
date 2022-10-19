@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------
- *            Arquivo: compilador.h
+ *            Arquivo: compiler.h
  * -------------------------------------------------------------------
  *              Autor: Bruno Muller Junior
  *               Data: 08/2007
@@ -7,18 +7,18 @@
  *
  * -------------------------------------------------------------------
  *
- * Tipos, protótipos e variáveis globais do compilador (via extern)
+ * Tipos, protótipos e variáveis globais do compiler (via extern)
  *
  * ------------------------------------------------------------------- */
 
-#define TAM_TOKEN 16
+#define TOKEN_SIZE 16
 
-typedef enum simbolos {
-  simb_program, simb_var, simb_begin, simb_end,
-  simb_identificador, simb_numero,
-  simb_ponto, simb_virgula, simb_ponto_e_virgula, simb_dois_pontos,
-  simb_atribuicao, simb_abre_parenteses, simb_fecha_parenteses,
-} simbolos;
+typedef enum symbols {
+  symb_program, symb_var, symb_begin, symb_end,
+  symb_identifier, symb_number,
+  symb_dot, symb_comma, symb_semicolon, symb_colon,
+  symb_assignment, symb_open_parenthesis, symb_close_parenthesis,
+} symbols;
 
 
 
@@ -26,9 +26,9 @@ typedef enum simbolos {
  * variáveis globais
  * ------------------------------------------------------------------- */
 
-extern simbolos simbolo, relacao;
-extern char token[TAM_TOKEN];
-extern int nivel_lexico;
+extern symbols symbol, relation;
+extern char token[TOKEN_SIZE];
+extern int lexical_level;
 extern int desloc;
 extern int nl;
 
@@ -37,6 +37,6 @@ extern int nl;
  * prototipos globais
  * ------------------------------------------------------------------- */
 
-void geraCodigo (char*, char*);
+void generate_code (char*, char*);
 int yylex();
 void yyerror(const char *s);

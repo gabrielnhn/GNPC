@@ -1,7 +1,7 @@
 # Autor: Bruno Müller Junior
 # Data: 08/2007
 # Editado por Gabriel Nascarella Hishida do Nascimento
-$DEPURA=1
+$DEBUG=1
 
 compiler: lex.yy.c compiler.tab.c compiler.o compiler.h
 	gcc lex.yy.c compiler.tab.c compiler.o -o compiler -ll -ly -lc
