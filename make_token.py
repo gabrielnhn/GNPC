@@ -10,3 +10,8 @@ f"""{low}      {{ symbol = symb_{low};
           PRINT(\"{low}  \");
           return {upp};
  }}""")
+
+
+
+with open("remaining", "a") as file:
+    file.write(new_token)

@@ -47,10 +47,40 @@ program { symbol  = symb_program;
           return PROGRAM;
  }
 
+label      { symbol = symb_label;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("label  ");
+          return LABEL;
+ }
+
+type      { symbol = symb_type;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("type  ");
+          return TYPE;
+ }
+
+array      { symbol = symb_array;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("array  ");
+          return ARRAY;
+ }
+
+of      { symbol = symb_of;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("of  ");
+          return OF;
+ }
+
 var      { symbol = symb_var;
           strncpy (token, yytext, TOKEN_SIZE);
           PRINT("var  ");
           return VAR;
+ }
+
+procedure      { symbol = symb_procedure;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("procedure  ");
+          return PROCEDURE;
  }
 
 begin { symbol = symb_begin;
@@ -63,6 +93,84 @@ end { symbol = symb_end;
           strncpy (token, yytext, TOKEN_SIZE);
           PRINT("end  ");
           return T_END;
+ }
+
+goto      { symbol = symb_goto;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("goto  ");
+          return GOTO;
+ }
+
+if      { symbol = symb_if;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("if  ");
+          return IF;
+ }
+
+then      { symbol = symb_then;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("then  ");
+          return THEN;
+ }
+
+else      { symbol = symb_else;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("else  ");
+          return ELSE;
+ }
+
+while      { symbol = symb_while;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("while  ");
+          return WHILE;
+ }
+
+do      { symbol = symb_do;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("do  ");
+          return DO;
+ }
+
+or      { symbol = symb_or;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("or  ");
+          return OR;
+ }
+
+and      { symbol = symb_and;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("and  ");
+          return AND;
+ }
+
+not      { symbol = symb_not;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("not  ");
+          return NOT;
+ }
+
+div      { symbol = symb_div;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("div  ");
+          return DIV;
+ }
+
+\*     { symbol = symb_asterisk;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("asterisk  ");
+          return ASTERISK;
+ }
+
+\+      { symbol = symb_plus;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("plus  ");
+          return PLUS;
+ }
+
+\-      { symbol = symb_minus;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("minus  ");
+          return MINUS;
  }
 
 := { symbol = symb_assignment;
