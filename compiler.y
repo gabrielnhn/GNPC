@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compiler.h"
-#include "symbol_table.h"
 
 
 int num_vars;

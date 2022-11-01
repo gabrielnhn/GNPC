@@ -42,3 +42,33 @@ extern int nl;
 void generate_code(char *, char *);
 int yylex();
 void yyerror(const char *s);
+
+
+
+
+///// symbol table
+#define MAX_SYMBOLS 69420
+#define MAX_SYMBOL_NAME 100
+#include <string.h>
+#include <stdio.h>
+
+
+typedef struct
+{
+    int type;
+    int level, offset;
+    char* name;
+    void* content;
+} symbol_t;
+
+typedef struct
+{
+    symbol_t stack[MAX_SYMBOLS];
+    int size;
+} symbol_table;
+
+void init_symbol_table(symbol_table* table);
+void insert_symbol_table(symbol_table* table, int level, int offset, char* name);
+void update_symbol_table_type(symbol_table* table, int symbols_to_update, int type);
+void remove_symbols_from_table(symbol_table* table, int symbols_to_remove);
+void print_symbol_table(symbol_table* table);
