@@ -47,9 +47,9 @@ Gramática
 
    12 $@5: %empty
 
-   13 declare_var: $@4 id_var_list COLON tipo $@5 SEMICOLON
+   13 declare_var: $@4 id_var_list COLON type $@5 SEMICOLON
 
-   14 tipo: IDENT
+   14 type: IDENT
 
    15 id_var_list: id_var_list COMMA IDENT
    16            | IDENT
@@ -135,7 +135,7 @@ Não terminais com as regras onde eles aparecem
     $@5 (44)
         à esquerda: 12
         à direita: 13
-    tipo (45)
+    type (45)
         à esquerda: 14
         à direita: 13
     id_var_list (46)
@@ -350,7 +350,7 @@ Estado 23
 
 Estado 24
 
-   13 declare_var: $@4 • id_var_list COLON tipo $@5 SEMICOLON
+   13 declare_var: $@4 • id_var_list COLON type $@5 SEMICOLON
 
     IDENT  deslocar, e ir ao estado 27
 
@@ -380,7 +380,7 @@ Estado 27
 
 Estado 28
 
-   13 declare_var: $@4 id_var_list • COLON tipo $@5 SEMICOLON
+   13 declare_var: $@4 id_var_list • COLON type $@5 SEMICOLON
    15 id_var_list: id_var_list • COMMA IDENT
 
     COMMA  deslocar, e ir ao estado 30
@@ -403,11 +403,11 @@ Estado 30
 
 Estado 31
 
-   13 declare_var: $@4 id_var_list COLON • tipo $@5 SEMICOLON
+   13 declare_var: $@4 id_var_list COLON • type $@5 SEMICOLON
 
     IDENT  deslocar, e ir ao estado 33
 
-    tipo  ir ao estado 34
+    type  ir ao estado 34
 
 
 Estado 32
@@ -419,14 +419,14 @@ Estado 32
 
 Estado 33
 
-   14 tipo: IDENT •
+   14 type: IDENT •
 
-    $padrão  reduzir usando a regra 14 (tipo)
+    $padrão  reduzir usando a regra 14 (type)
 
 
 Estado 34
 
-   13 declare_var: $@4 id_var_list COLON tipo • $@5 SEMICOLON
+   13 declare_var: $@4 id_var_list COLON type • $@5 SEMICOLON
 
     $padrão  reduzir usando a regra 12 ($@5)
 
@@ -435,13 +435,13 @@ Estado 34
 
 Estado 35
 
-   13 declare_var: $@4 id_var_list COLON tipo $@5 • SEMICOLON
+   13 declare_var: $@4 id_var_list COLON type $@5 • SEMICOLON
 
     SEMICOLON  deslocar, e ir ao estado 36
 
 
 Estado 36
 
-   13 declare_var: $@4 id_var_list COLON tipo $@5 SEMICOLON •
+   13 declare_var: $@4 id_var_list COLON type $@5 SEMICOLON •
 
     $padrão  reduzir usando a regra 13 (declare_var)

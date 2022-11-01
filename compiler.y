@@ -63,7 +63,7 @@ declare_vars: declare_vars declare_var
 
 declare_var : { }
               id_var_list COLON
-              tipo
+              type
               { /* AMEM */
                 /* SET VARIABLE TYPES */  
                 print_symbol_table(&table);
@@ -71,7 +71,7 @@ declare_var : { }
               SEMICOLON
 ;
 
-tipo        : IDENT
+type        : IDENT
 ;
 
 id_var_list: id_var_list COMMA IDENT
