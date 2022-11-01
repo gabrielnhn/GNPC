@@ -14,6 +14,7 @@ char generate_code_buffer[69];
 
 int num_vars;
 symbol_table table;
+int list_size = 0;
 int level = 0;
 int offset = 0;
 
@@ -66,16 +67,17 @@ declare_vars: declare_vars declare_var
             | declare_var
 ;
 
-declare_var : { }
-              id_var_list COLON
+declare_var : { list_size = 0; }
+              id_var_list
+              COLON
               type
               { 
                   /* AMEM */
-                  sprintf(generate_code_buffer, "AMEM %d", offset);
+                  sprintf(generate_code_buffer, "AMEM %d", list_size);
 
                   generate_code(NULL, generate_code_buffer);
 
-                  /* SET VARIABLE TYPES */  
+                  /* SET VARIABLE TYPES */
                   print_symbol_table(&table);
               }
               SEMICOLON
@@ -89,6 +91,7 @@ id_var_list: id_var_list COMMA IDENT
                
                 insert_symbol_table(&table, level, offset, token);
                 offset++;
+                list_size++;
                 
             }
             | IDENT
@@ -96,6 +99,8 @@ id_var_list: id_var_list COMMA IDENT
               
                 insert_symbol_table(&table, level, offset, token);
                 offset++;
+                list_size++;
+
             }
 ;
 
