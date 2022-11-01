@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compiler.h"
+#include "symbol_table.h"
+
 
 int num_vars;
 
@@ -104,6 +106,8 @@ int main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de Simbolos
  * ------------------------------------------------------------------- */
+   symbol_table table;
+   init_symbol_table(&table);
 
    yyin=fp;
    yyparse();
