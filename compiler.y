@@ -10,6 +10,7 @@
 #include <string.h>
 #include "compiler.h"
 
+char generate_code_buffer[69];
 
 int num_vars;
 symbol_table table;
@@ -33,8 +34,12 @@ program    :{
              PROGRAM IDENT
              OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
              block DOT {
-             generate_code (NULL, "PARA");
              remove_symbols_from_table(&table, table.size);
+             sprintf(generate_code_buffer, "DMEM %d", offset);
+             generate_code(NULL, generate_code_buffer);
+
+
+             generate_code (NULL, "PARA");
              }
 ;
 
@@ -64,9 +69,14 @@ declare_vars: declare_vars declare_var
 declare_var : { }
               id_var_list COLON
               type
-              { /* AMEM */
-                /* SET VARIABLE TYPES */  
-                print_symbol_table(&table);
+              { 
+                  /* AMEM */
+                  sprintf(generate_code_buffer, "AMEM %d", offset);
+
+                  generate_code(NULL, generate_code_buffer);
+
+                  /* SET VARIABLE TYPES */  
+                  print_symbol_table(&table);
               }
               SEMICOLON
 ;
@@ -76,7 +86,6 @@ type        : IDENT
 
 id_var_list: id_var_list COMMA IDENT
             { /* insere ultima vars na tabela de simbolos */
-               //  printf("TEXT %s has len %d", token, strnlen(token, 100));
                
                 insert_symbol_table(&table, level, offset, token);
                 offset++;
@@ -84,9 +93,6 @@ id_var_list: id_var_list COMMA IDENT
             }
             | IDENT
             { /* insere vars na tabela de simbolos */
-
-               //  printf("TEXT %s has len %d", token, strnlen(token, 100));
-
               
                 insert_symbol_table(&table, level, offset, token);
                 offset++;
