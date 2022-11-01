@@ -54,9 +54,20 @@ void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
     table->stack[table->size].offset = offset;
     table->stack[table->size].type = -1;
     
-    
-    table->stack[table->size].name = malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
-    strncpy(table->stack[table->size].name, name, MAX_SYMBOL_NAME);
+    table->stack[table->size].name = (char*) malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
+
+
+    if (table->stack[table->size].name == NULL)
+    {
+      perror("BRUH MALLOC FAILED\n");
+      exit(0);
+    }
+
+    // printf("\nPOINTER EXISTS IN %p\n", table->stack[table->size].name);
+
+
+    strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+
 
 }
 
@@ -73,6 +84,7 @@ void update_symbol_table_type(symbol_table* table, int symbols_to_update, int ty
         }
         
         table->stack[i].type = type;
+      i++;
     }
 }
 
@@ -89,7 +101,8 @@ void remove_symbols_from_table(symbol_table* table, int symbols_to_remove)
         }
         
         // REMOVE OPTIONAL CONTENT?
-        // free(table.stack[i].........
+        free(table->stack[i].name);
+      i--;
     }
 
     table->size -= symbols_to_remove;

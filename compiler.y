@@ -12,6 +12,9 @@
 
 
 int num_vars;
+symbol_table table;
+int level = 0;
+int offset = 0;
 
 %}
 
@@ -31,6 +34,7 @@ program    :{
              OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
              block DOT {
              generate_code (NULL, "PARA");
+             remove_symbols_from_table(&table, table.size);
              }
 ;
 
@@ -61,6 +65,8 @@ declare_var : { }
               id_var_list COLON
               tipo
               { /* AMEM */
+                /* SET VARIABLE TYPES */  
+                print_symbol_table(&table);
               }
               SEMICOLON
 ;
@@ -69,8 +75,22 @@ tipo        : IDENT
 ;
 
 id_var_list: id_var_list COMMA IDENT
-              { /* insere ultima vars na tabela de simbolos */ }
-            | IDENT { /* insere vars na tabela de simbolos */}
+            { /* insere ultima vars na tabela de simbolos */
+               //  printf("TEXT %s has len %d", token, strnlen(token, 100));
+               
+                insert_symbol_table(&table, level, offset, token);
+                offset++;
+                
+            }
+            | IDENT
+            { /* insere vars na tabela de simbolos */
+
+               //  printf("TEXT %s has len %d", token, strnlen(token, 100));
+
+              
+                insert_symbol_table(&table, level, offset, token);
+                offset++;
+            }
 ;
 
 idents_list: idents_list COMMA IDENT
@@ -105,7 +125,7 @@ int main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de Simbolos
  * ------------------------------------------------------------------- */
-   symbol_table table;
+   
    init_symbol_table(&table);
 
    yyin=fp;

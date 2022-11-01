@@ -4,7 +4,7 @@
 $DEBUG=1
 
 compiler: lex.yy.c compiler.tab.c compiler.o compiler.h
-	gcc lex.yy.c compiler.tab.c compiler.o -o compiler -ll -ly -lc
+	gcc -g lex.yy.c compiler.tab.c compiler.o -o compiler -ll -ly -lc
 
 lex.yy.c: compiler.l compiler.h
 	flex compiler.l
