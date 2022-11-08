@@ -53,7 +53,7 @@ void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
 	{
 		if (possible_level == level)
 		{
-			print_error("SAME VARIABLE NAME ON SAME LEXICAL LEVEL\n");
+			print_error("Same variable name on same lexical level\n");
 		}
 	}
 
@@ -70,7 +70,7 @@ void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
 
     if (table->stack[table->size].name == NULL)
     {
-      print_error("BRUH MALLOC FAILED\n");
+      print_error("malloc() FAILED\n");
     }
 
     // printf("\nPOINTER EXISTS IN %p\n", table->stack[table->size].name);
