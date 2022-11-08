@@ -10,7 +10,7 @@
 #include <string.h>
 #include "compiler.h"
 
-char generate_code_buffer[69];
+char string_buffer[69];
 
 int num_vars;
 symbol_table table;
@@ -39,8 +39,8 @@ program    :{
              OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
              block DOT {
              remove_symbols_from_table(&table, table.size);
-             sprintf(generate_code_buffer, "DMEM %d", offset);
-             generate_code(NULL, generate_code_buffer);
+             sprintf(string_buffer, "DMEM %d", offset);
+             generate_code(NULL, string_buffer);
 
 
              generate_code (NULL, "PARA");
@@ -76,14 +76,17 @@ declare_var : { list_size = 0; }
               type
               { 
                   /* AMEM */
-                  sprintf(generate_code_buffer, "AMEM %d", list_size);
+                  sprintf(string_buffer, "AMEM %d", list_size);
 
-                  generate_code(NULL, generate_code_buffer);
+                  generate_code(NULL, string_buffer);
 
                   /* SET VARIABLE TYPES */
                   list_type = get_type(token);
                   if (not list_type)
-                     print_error("Unsupported type");
+                  {
+                     sprintf(string_buffer, "Unsupported type '%s'", token);
+                     print_error(string_buffer);
+                  }
 
                   update_symbol_table_type(&table, list_size, list_type);
                   print_symbol_table(&table);
