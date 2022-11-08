@@ -27,6 +27,7 @@ int offset = 0;
 %token GOTO IF THEN ELSE WHILE DO
 %token OR AND NOT DIV ASTERISK PLUS MINUS
 %token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
+%token NUMBER
 
 %%
 
@@ -124,9 +125,11 @@ boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | M
 
 arithmetic_expr: {} E;
 
-E: E PLUS T | E MINUS T | E ASTERISK T | E DIV T;
+E: E PLUS T | E MINUS T | T;
 
+T: T ASTERISK F | T DIV F | F;
 
+F: NUMBER | IDENT;
 
 %%
 
