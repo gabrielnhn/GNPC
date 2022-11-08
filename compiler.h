@@ -51,6 +51,9 @@ void yyerror(const char *s);
 #define MAX_SYMBOL_NAME 100
 #include <string.h>
 #include <stdio.h>
+#include <iso646.h>
+#include <stdbool.h>
+
 
 
 typedef struct
@@ -72,3 +75,6 @@ void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
 void update_symbol_table_type(symbol_table* table, int symbols_to_update, int type);
 void remove_symbols_from_table(symbol_table* table, int symbols_to_remove);
 void print_symbol_table(symbol_table* table);
+
+
+bool search_symbol_table(symbol_table* table, char* name, int* level, int* offset);

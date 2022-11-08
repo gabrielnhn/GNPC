@@ -31,7 +31,7 @@ void generate_code (char* rot, char* comando) {
 }
 
 int print_error ( char* erro ) {
-  fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);
+  fprintf (stderr, "Error on line %d - %s\n", nl, erro);
   exit(-1);
 }
 
@@ -48,6 +48,17 @@ void init_symbol_table(symbol_table* table)
 
 void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
 {
+	int possible_level, possible_offset;
+	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
+	{
+		if (possible_level == level)
+		{
+			print_error("SAME VARIABLE NAME ON SAME LEXICAL LEVEL\n");
+		}
+	}
+
+
+
     table->size += 1;
 
     table->stack[table->size].level = level;
@@ -59,8 +70,7 @@ void insert_symbol_table(symbol_table* table, int level, int offset, char* name)
 
     if (table->stack[table->size].name == NULL)
     {
-      perror("BRUH MALLOC FAILED\n");
-      exit(0);
+      print_error("BRUH MALLOC FAILED\n");
     }
 
     // printf("\nPOINTER EXISTS IN %p\n", table->stack[table->size].name);
@@ -78,9 +88,7 @@ void update_symbol_table_type(symbol_table* table, int symbols_to_update, int ty
     {
         if (i < 0)
         {
-            perror("SOMETHING REALLY WRONG HAPPENED MATE\n");
-            perror("Trying to set type of non-existing symbol\n");
-            exit(0);
+            print_error("Trying to set type of non-existing symbol\n");
         }
         
         table->stack[i].type = type;
@@ -96,11 +104,9 @@ void remove_symbols_from_table(symbol_table* table, int symbols_to_remove)
     {
         if (i < 0)
         {
-            perror("SOMETHING REALLY WRONG HAPPENED MATE\n");
-            perror("Trying to remove non-existing symbol\n");
+            print_error("Trying to remove non-existing symbol\n");
         }
         
-        // REMOVE OPTIONAL CONTENT?
         free(table->stack[i].name);
       i--;
     }
@@ -117,3 +123,32 @@ void print_symbol_table(symbol_table* table)
     }
 }
 
+
+// true if found, false otherwise. Return level and offset by reference.
+bool search_symbol_table(symbol_table* table, char* name, int* level, int* offset)
+{
+	for(int i = table->size; i >= 0; i--)
+	{
+		bool comparison = strncmp(table->stack[i].name, name, MAX_SYMBOL_NAME);
+
+		if (comparison == 0)
+		{
+			// printf("\n%s is %s, search is true\n", table->stack[i].name, name);
+
+			// found
+			*level = table->stack[i].level;
+			*offset = table->stack[i].offset;
+			
+			return true;
+		}  
+		else
+		{
+			// printf("\n%s is not %s, search is ongoing\n", table->stack[i].name, name);
+
+		}
+	}
+
+	// not found
+	return false;
+
+}
