@@ -56,6 +56,8 @@ void yyerror(const char *s);
 #include <stdbool.h>
 
 
+#define INTEGER_TYPE 1
+
 
 typedef struct
 {
@@ -71,6 +73,9 @@ typedef struct
     int size;
 } symbol_table;
 
+
+int print_error ( char* erro );
+
 void init_symbol_table(symbol_table* table);
 void insert_symbol_table(symbol_table* table, int level, int offset, char* name);
 void update_symbol_table_type(symbol_table* table, int symbols_to_update, int type);
@@ -79,3 +84,4 @@ void print_symbol_table(symbol_table* table);
 
 
 bool search_symbol_table(symbol_table* table, char* name, int* level, int* offset);
+int get_type(char* type);

@@ -92,7 +92,7 @@ void update_symbol_table_type(symbol_table* table, int symbols_to_update, int ty
         }
         
         table->stack[i].type = type;
-      i++;
+        i--;
     }
 }
 
@@ -151,4 +151,14 @@ bool search_symbol_table(symbol_table* table, char* name, int* level, int* offse
 	// not found
 	return false;
 
+}
+
+
+int get_type(char* type)
+{
+	if (strncmp(type, "integer", MAX_SYMBOL_NAME) == 0)
+		return INTEGER_TYPE;
+
+	else
+		return 0;
 }

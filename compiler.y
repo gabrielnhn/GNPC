@@ -17,6 +17,7 @@ symbol_table table;
 int list_size = 0;
 int level = 0;
 int offset = 0;
+int list_type = -1;
 
 %}
 
@@ -80,6 +81,11 @@ declare_var : { list_size = 0; }
                   generate_code(NULL, generate_code_buffer);
 
                   /* SET VARIABLE TYPES */
+                  list_type = get_type(token);
+                  if (not list_type)
+                     print_error("Unsupported type");
+
+                  update_symbol_table_type(&table, list_size, list_type);
                   print_symbol_table(&table);
               }
               SEMICOLON
