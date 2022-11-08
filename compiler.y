@@ -26,6 +26,7 @@ int offset = 0;
 %token LABEL TYPE ARRAY OF PROCEDURE
 %token GOTO IF THEN ELSE WHILE DO
 %token OR AND NOT DIV ASTERISK PLUS MINUS
+%token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
 
 %%
 
@@ -111,8 +112,20 @@ idents_list: idents_list COMMA IDENT
 
 compound_command: T_BEGIN commands T_END
 
-commands:
+commands: assignment
 ;
+
+assignment: IDENT ASSIGNMENT boolean_expr SEMICOLON
+;
+
+boolean_expr: arithmetic_expr | boolean_comparison boolean_expr;
+
+boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE;
+
+arithmetic_expr: {} E;
+
+E: E PLUS T | E MINUS T | E ASTERISK T | E DIV T;
+
 
 
 %%

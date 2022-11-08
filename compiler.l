@@ -216,11 +216,53 @@ div      { symbol = symb_div;
           return CLOSE_PARENTHESIS;
  }
 
+\=  { symbol = symb_equal;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("EQUAL  ");
+          return EQUAL;
+ }
+
+\<>  { symbol = symb_different;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("DIFFERENT  ");
+          return DIFFERENT;
+ }
+
+\<=  { symbol = symb_less_or_equal;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("LESS_OR_EQUAL  ");
+          return LESS_OR_EQUAL;
+ }
+
+\<  { symbol = symb_less;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("LESS  ");
+          return LESS;
+ }
+
+\>=  { symbol = symb_more_or_equal;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("MORE_OR_EQUAL  ");
+          return MORE_OR_EQUAL;
+ }
+
+\>  { symbol = symb_more;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("MORE  ");
+          return MORE;
+ }
+
 {ident} { symbol = symb_identifier;
           strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" ident  ");
           return IDENT;
         }
+
+{number}      { symbol = symb_number;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("number  ");
+          return NUMBER;
+ }
 
 
 %%
