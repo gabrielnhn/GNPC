@@ -14,10 +14,13 @@ char string_buffer[69];
 
 int num_vars;
 symbol_table table;
+stack_t e_stack, f_stack, t_stack;
 int list_size = 0;
 int level = 0;
 int offset = 0;
 int list_type = -1;
+
+int symbol_index;
 
 %}
 
@@ -77,8 +80,8 @@ declare_var : { list_size = 0; }
               { 
                   /* AMEM */
                   sprintf(string_buffer, "AMEM %d", list_size);
-
                   generate_code(NULL, string_buffer);
+
 
                   /* SET VARIABLE TYPES */
                   list_type = get_type(token);
@@ -125,20 +128,42 @@ compound_command: T_BEGIN commands T_END
 commands: assignment
 ;
 
-assignment: IDENT ASSIGNMENT boolean_expr SEMICOLON
+assignment: IDENT
+{
+   assert_symbol_exists(&table, token);
+}
+ASSIGNMENT boolean_expr SEMICOLON
 ;
 
 boolean_expr: arithmetic_expr | boolean_comparison boolean_expr;
 
 boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE;
 
-arithmetic_expr: {} E;
+arithmetic_expr:
+{
+
+   init_stack(&e_stack);
+   init_stack(&t_stack);
+   init_stack(&f_stack);
+} E;
 
 E: E PLUS T | E MINUS T | T;
 
 T: T ASTERISK F | T DIV F | F;
 
-F: NUMBER | IDENT;
+F: NUMBER
+   {
+      stack_push(&f_stack, INTEGER_TYPE);
+   } 
+   |IDENT
+   {
+      assert_symbol_exists(&table, token);
+
+      search_symbol_table_index(&table, token, &symbol_index);
+      int type = table.stack[symbol_index].type;
+      stack_push(&f_stack, type);
+   }
+;
 
 %%
 

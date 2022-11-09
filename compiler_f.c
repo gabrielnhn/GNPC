@@ -15,6 +15,9 @@
 symbols symbol, relation;
 char token[TOKEN_SIZE];
 
+char a_string_buffer[MAX_SYMBOL_NAME];
+
+
 FILE *fp = NULL;
 void generate_code(char *rot, char *comando)
 {
@@ -154,6 +157,44 @@ int get_type(char *type)
 	else
 		return 0;
 }
+
+bool search_symbol_table_index(symbol_table *table, char *name, int *index)
+{
+	for (int i = table->size; i >= 0; i--)
+	{
+		bool comparison = strncmp(table->stack[i].name, name, MAX_SYMBOL_NAME);
+
+		if (comparison == 0)
+		{
+			// printf("\n%s is %s, search is true\n", table->stack[i].name, name);
+
+			// found
+			*index = i;
+
+			return true;
+		}
+		else
+		{
+			// printf("\n%s is not %s, search is ongoing\n", table->stack[i].name, name);
+		}
+	}
+
+	// not found
+	return false;
+}
+
+
+void assert_symbol_exists(symbol_table *table, char *name)
+{
+	int symbol_index;
+	if (search_symbol_table_index(table, token, &symbol_index) == false)
+	{
+		sprintf(a_string_buffer, "Variable %s does not exist", token);
+		print_error(a_string_buffer);
+	}
+}
+
+
 
 void init_stack(stack_t *stack)
 {

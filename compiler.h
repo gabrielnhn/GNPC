@@ -57,6 +57,8 @@ void yyerror(const char *s);
 
 
 #define INTEGER_TYPE 1
+#define BOOL_TYPE 2
+
 
 
 typedef struct
@@ -96,6 +98,9 @@ void print_symbol_table(symbol_table* table);
 
 
 bool search_symbol_table(symbol_table* table, char* name, int* level, int* offset);
+
+bool search_symbol_table_index(symbol_table* table, char* name, int* index);
+
 int get_type(char* type);
 
 
@@ -103,3 +108,4 @@ void init_stack(stack_t *stack);
 bool stack_push(stack_t *stack, int x);
 bool stack_pop(stack_t *stack, int* x);
 
+void assert_symbol_exists(symbol_table *table, char *name);
