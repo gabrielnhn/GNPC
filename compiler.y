@@ -140,13 +140,13 @@ command: assignment | compound_command | loop;
 loop: WHILE
 {
    label_count += 1;
-   sprintf(string_buffer, "R%d.02 NADA", label_count);
+   sprintf(string_buffer, "R%.2d", label_count);
+   generate_code(string_buffer, "NADA");
    
    
    label_count += 1;
    stack_push(&label_stack, label_count);
    
-   // generate_code()
 }
 boolean_expr DO command;
 
