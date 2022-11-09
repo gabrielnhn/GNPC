@@ -19,6 +19,10 @@ int list_size = 0;
 int level = 0;
 int offset = 0;
 int list_type = -1;
+int left_side_index = -1;
+int left_side_level = -1;
+int left_side_offset = -1;
+
 
 int symbol_index;
 
@@ -125,14 +129,21 @@ idents_list: idents_list COMMA IDENT
 
 compound_command: T_BEGIN commands T_END
 
-commands: assignment
+commands: commands command | command
 ;
+
+command: assignment;
 
 assignment: IDENT
 {
    assert_symbol_exists(&table, token);
+   search_symbol_table(&table, token, &left_side_level, &left_side_offset);
 }
 ASSIGNMENT boolean_expr SEMICOLON
+{
+   sprintf(string_buffer, "ARMZ %d %d", left_side_level, left_side_offset);
+   generate_code(NULL, string_buffer);
+}
 ;
 
 
@@ -145,33 +156,57 @@ boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | M
 
 arithmetic_expr:
 {
-
    init_stack(&e_stack);
    init_stack(&t_stack);
    init_stack(&f_stack);
 } E;
 
-E: E PLUS T | E MINUS T | T;
+E: E PLUS T 
+{
+    generate_code(NULL, "SOMA"); 
+}  
+| E MINUS T 
+{
+    generate_code(NULL, "SUBT");
+}
+| T;
 
-T: T ASTERISK F | T DIV F | F;
+T: T ASTERISK F 
+{
+   generate_code(NULL, "MULT");
+}
+| T DIV F 
+{
+   generate_code(NULL, "DIVI");
+}
+| F;
 
 F: NUMBER
    {
+      printf("\nLOAD NUMBER %s\n", token);
       // stack type
       stack_push(&f_stack, INTEGER_TYPE);
 
+      // load constant
       sprintf(string_buffer, "CRCT %s", token);
-
       generate_code(NULL, string_buffer);
    } 
    |IDENT
    {
       assert_symbol_exists(&table, token);
 
+      printf("\nLOAD VARIABLE %s\n", token);
+
       // stack type
       search_symbol_table_index(&table, token, &symbol_index);
       int type = table.stack[symbol_index].type;
       stack_push(&f_stack, type);
+
+      // load value
+      int level, offset;
+      search_symbol_table(&table, token, &level, &offset);
+      sprintf(string_buffer, "CRVL %d %d", level, offset);
+      generate_code(NULL, string_buffer);
    }
 ;
 
