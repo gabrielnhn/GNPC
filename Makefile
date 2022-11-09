@@ -12,7 +12,7 @@ lex.yy.c: compiler.l compiler.h
 compiler.tab.c: compiler.y compiler.h
 	bison compiler.y -d -v
 
-compiler.o : compiler.h compiler_f.c symbol_table.h
+compiler.o : compiler.h compiler_f.c
 	gcc -c compiler_f.c  -o compiler.o 
 
 clean :
