@@ -159,51 +159,49 @@ ASSIGNMENT boolean_expr SEMICOLON
 }
 ;
 
-
-/* EXPRESSIONS */
-
+/* BOOLEAN EXPRESSIONS */
 
 boolean_expr: arithmetic_expr 
 
-| EQUAL boolean_expr
+|boolean_expr EQUAL arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMIG"); 
    stack_push(&e_stack, BOOL_TYPE);
 }
-| DIFFERENT boolean_expr
+|boolean_expr DIFFERENT arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMDG"); 
    stack_push(&e_stack, BOOL_TYPE);
 }
-| LESS_OR_EQUAL boolean_expr
+|boolean_expr LESS_OR_EQUAL arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMEG"); 
    stack_push(&e_stack, BOOL_TYPE);
 }
-| LESS boolean_expr
+|boolean_expr LESS arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMME"); 
    stack_push(&e_stack, BOOL_TYPE);
 }
-| MORE_OR_EQUAL boolean_expr
+|boolean_expr MORE_OR_EQUAL arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMAG"); 
    stack_push(&e_stack, BOOL_TYPE);
 }
-| MORE boolean_expr
+|boolean_expr MORE arithmetic_expr
 {
    int type = assert_equal_types(&e_stack, &e_stack);
    generate_code(NULL, "CMMA"); 
    stack_push(&e_stack, BOOL_TYPE);
 };
 
+/* ARITHMETIC EXPRESSIONS */
 
-/* boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE; */
 
 arithmetic_expr: E;
 

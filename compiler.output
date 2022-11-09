@@ -64,12 +64,12 @@ Gramática
    24 assignment: IDENT $@6 ASSIGNMENT boolean_expr SEMICOLON
 
    25 boolean_expr: arithmetic_expr
-   26             | EQUAL boolean_expr
-   27             | DIFFERENT boolean_expr
-   28             | LESS_OR_EQUAL boolean_expr
-   29             | LESS boolean_expr
-   30             | MORE_OR_EQUAL boolean_expr
-   31             | MORE boolean_expr
+   26             | boolean_expr EQUAL arithmetic_expr
+   27             | boolean_expr DIFFERENT arithmetic_expr
+   28             | boolean_expr LESS_OR_EQUAL arithmetic_expr
+   29             | boolean_expr LESS arithmetic_expr
+   30             | boolean_expr MORE_OR_EQUAL arithmetic_expr
+   31             | boolean_expr MORE arithmetic_expr
 
    32 arithmetic_expr: E
 
@@ -194,7 +194,7 @@ Não terminais com as regras onde eles aparecem
         à direita: 24 26 27 28 29 30 31
     arithmetic_expr (61)
         à esquerda: 32
-        à direita: 25
+        à direita: 25 26 27 28 29 30 31
     E (62)
         à esquerda: 33 34 35
         à direita: 32 33 34
@@ -512,20 +512,14 @@ Estado 37
 
    24 assignment: IDENT $@6 ASSIGNMENT • boolean_expr SEMICOLON
 
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
 
-    boolean_expr     ir ao estado 49
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
+    boolean_expr     ir ao estado 43
+    arithmetic_expr  ir ao estado 44
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
 
 
 Estado 38
@@ -548,7 +542,7 @@ Estado 40
 
     $padrão  reduzir usando a regra 12 ($@5)
 
-    $@5  ir ao estado 54
+    $@5  ir ao estado 48
 
 
 Estado 41
@@ -560,279 +554,249 @@ Estado 41
 
 Estado 42
 
-   26 boolean_expr: EQUAL • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 55
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 43
-
-   27 boolean_expr: DIFFERENT • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 56
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 44
-
-   28 boolean_expr: LESS_OR_EQUAL • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 57
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 45
-
-   29 boolean_expr: LESS • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 58
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 46
-
-   30 boolean_expr: MORE_OR_EQUAL • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 59
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 47
-
-   31 boolean_expr: MORE • boolean_expr
-
-    IDENT          deslocar, e ir ao estado 41
-    EQUAL          deslocar, e ir ao estado 42
-    DIFFERENT      deslocar, e ir ao estado 43
-    LESS_OR_EQUAL  deslocar, e ir ao estado 44
-    LESS           deslocar, e ir ao estado 45
-    MORE_OR_EQUAL  deslocar, e ir ao estado 46
-    MORE           deslocar, e ir ao estado 47
-    NUMBER         deslocar, e ir ao estado 48
-
-    boolean_expr     ir ao estado 60
-    arithmetic_expr  ir ao estado 50
-    E                ir ao estado 51
-    T                ir ao estado 52
-    F                ir ao estado 53
-
-
-Estado 48
-
    39 F: NUMBER •
 
     $padrão  reduzir usando a regra 39 (F)
 
 
-Estado 49
+Estado 43
 
    24 assignment: IDENT $@6 ASSIGNMENT boolean_expr • SEMICOLON
+   26 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   27             | boolean_expr • DIFFERENT arithmetic_expr
+   28             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   29             | boolean_expr • LESS arithmetic_expr
+   30             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   31             | boolean_expr • MORE arithmetic_expr
 
-    SEMICOLON  deslocar, e ir ao estado 61
+    SEMICOLON      deslocar, e ir ao estado 49
+    EQUAL          deslocar, e ir ao estado 50
+    DIFFERENT      deslocar, e ir ao estado 51
+    LESS_OR_EQUAL  deslocar, e ir ao estado 52
+    LESS           deslocar, e ir ao estado 53
+    MORE_OR_EQUAL  deslocar, e ir ao estado 54
+    MORE           deslocar, e ir ao estado 55
 
 
-Estado 50
+Estado 44
 
    25 boolean_expr: arithmetic_expr •
 
     $padrão  reduzir usando a regra 25 (boolean_expr)
 
 
-Estado 51
+Estado 45
 
    32 arithmetic_expr: E •
    33 E: E • PLUS T
    34  | E • MINUS T
 
-    PLUS   deslocar, e ir ao estado 62
-    MINUS  deslocar, e ir ao estado 63
+    PLUS   deslocar, e ir ao estado 56
+    MINUS  deslocar, e ir ao estado 57
 
     $padrão  reduzir usando a regra 32 (arithmetic_expr)
 
 
-Estado 52
+Estado 46
 
    35 E: T •
    36 T: T • ASTERISK F
    37  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 64
-    ASTERISK  deslocar, e ir ao estado 65
+    DIV       deslocar, e ir ao estado 58
+    ASTERISK  deslocar, e ir ao estado 59
 
     $padrão  reduzir usando a regra 35 (E)
 
 
-Estado 53
+Estado 47
 
    38 T: F •
 
     $padrão  reduzir usando a regra 38 (T)
 
 
-Estado 54
+Estado 48
 
    13 declare_var: $@4 id_var_list COLON type $@5 • SEMICOLON
 
-    SEMICOLON  deslocar, e ir ao estado 66
+    SEMICOLON  deslocar, e ir ao estado 60
 
 
-Estado 55
-
-   26 boolean_expr: EQUAL boolean_expr •
-
-    $padrão  reduzir usando a regra 26 (boolean_expr)
-
-
-Estado 56
-
-   27 boolean_expr: DIFFERENT boolean_expr •
-
-    $padrão  reduzir usando a regra 27 (boolean_expr)
-
-
-Estado 57
-
-   28 boolean_expr: LESS_OR_EQUAL boolean_expr •
-
-    $padrão  reduzir usando a regra 28 (boolean_expr)
-
-
-Estado 58
-
-   29 boolean_expr: LESS boolean_expr •
-
-    $padrão  reduzir usando a regra 29 (boolean_expr)
-
-
-Estado 59
-
-   30 boolean_expr: MORE_OR_EQUAL boolean_expr •
-
-    $padrão  reduzir usando a regra 30 (boolean_expr)
-
-
-Estado 60
-
-   31 boolean_expr: MORE boolean_expr •
-
-    $padrão  reduzir usando a regra 31 (boolean_expr)
-
-
-Estado 61
+Estado 49
 
    24 assignment: IDENT $@6 ASSIGNMENT boolean_expr SEMICOLON •
 
     $padrão  reduzir usando a regra 24 (assignment)
 
 
-Estado 62
+Estado 50
+
+   26 boolean_expr: boolean_expr EQUAL • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 61
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 51
+
+   27 boolean_expr: boolean_expr DIFFERENT • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 62
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 52
+
+   28 boolean_expr: boolean_expr LESS_OR_EQUAL • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 63
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 53
+
+   29 boolean_expr: boolean_expr LESS • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 64
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 54
+
+   30 boolean_expr: boolean_expr MORE_OR_EQUAL • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 65
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 55
+
+   31 boolean_expr: boolean_expr MORE • arithmetic_expr
+
+    IDENT   deslocar, e ir ao estado 41
+    NUMBER  deslocar, e ir ao estado 42
+
+    arithmetic_expr  ir ao estado 66
+    E                ir ao estado 45
+    T                ir ao estado 46
+    F                ir ao estado 47
+
+
+Estado 56
 
    33 E: E PLUS • T
 
     IDENT   deslocar, e ir ao estado 41
-    NUMBER  deslocar, e ir ao estado 48
+    NUMBER  deslocar, e ir ao estado 42
 
     T  ir ao estado 67
-    F  ir ao estado 53
+    F  ir ao estado 47
 
 
-Estado 63
+Estado 57
 
    34 E: E MINUS • T
 
     IDENT   deslocar, e ir ao estado 41
-    NUMBER  deslocar, e ir ao estado 48
+    NUMBER  deslocar, e ir ao estado 42
 
     T  ir ao estado 68
-    F  ir ao estado 53
+    F  ir ao estado 47
 
 
-Estado 64
+Estado 58
 
    37 T: T DIV • F
 
     IDENT   deslocar, e ir ao estado 41
-    NUMBER  deslocar, e ir ao estado 48
+    NUMBER  deslocar, e ir ao estado 42
 
     F  ir ao estado 69
 
 
-Estado 65
+Estado 59
 
    36 T: T ASTERISK • F
 
     IDENT   deslocar, e ir ao estado 41
-    NUMBER  deslocar, e ir ao estado 48
+    NUMBER  deslocar, e ir ao estado 42
 
     F  ir ao estado 70
 
 
-Estado 66
+Estado 60
 
    13 declare_var: $@4 id_var_list COLON type $@5 SEMICOLON •
 
     $padrão  reduzir usando a regra 13 (declare_var)
+
+
+Estado 61
+
+   26 boolean_expr: boolean_expr EQUAL arithmetic_expr •
+
+    $padrão  reduzir usando a regra 26 (boolean_expr)
+
+
+Estado 62
+
+   27 boolean_expr: boolean_expr DIFFERENT arithmetic_expr •
+
+    $padrão  reduzir usando a regra 27 (boolean_expr)
+
+
+Estado 63
+
+   28 boolean_expr: boolean_expr LESS_OR_EQUAL arithmetic_expr •
+
+    $padrão  reduzir usando a regra 28 (boolean_expr)
+
+
+Estado 64
+
+   29 boolean_expr: boolean_expr LESS arithmetic_expr •
+
+    $padrão  reduzir usando a regra 29 (boolean_expr)
+
+
+Estado 65
+
+   30 boolean_expr: boolean_expr MORE_OR_EQUAL arithmetic_expr •
+
+    $padrão  reduzir usando a regra 30 (boolean_expr)
+
+
+Estado 66
+
+   31 boolean_expr: boolean_expr MORE arithmetic_expr •
+
+    $padrão  reduzir usando a regra 31 (boolean_expr)
 
 
 Estado 67
@@ -841,8 +805,8 @@ Estado 67
    36 T: T • ASTERISK F
    37  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 64
-    ASTERISK  deslocar, e ir ao estado 65
+    DIV       deslocar, e ir ao estado 58
+    ASTERISK  deslocar, e ir ao estado 59
 
     $padrão  reduzir usando a regra 33 (E)
 
@@ -853,8 +817,8 @@ Estado 68
    36 T: T • ASTERISK F
    37  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 64
-    ASTERISK  deslocar, e ir ao estado 65
+    DIV       deslocar, e ir ao estado 58
+    ASTERISK  deslocar, e ir ao estado 59
 
     $padrão  reduzir usando a regra 34 (E)
 
