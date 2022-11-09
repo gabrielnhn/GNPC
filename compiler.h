@@ -109,3 +109,6 @@ bool stack_push(stack_t *stack, int x);
 bool stack_pop(stack_t *stack, int* x);
 
 void assert_symbol_exists(symbol_table *table, char *name);
+// void assert_equals(int a, int b);
+int assert_equal_types(stack_t* a, stack_t* b);
+

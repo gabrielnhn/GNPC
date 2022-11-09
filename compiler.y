@@ -163,23 +163,42 @@ arithmetic_expr:
 
 E: E PLUS T 
 {
-    generate_code(NULL, "SOMA"); 
+   int type = assert_equal_types(&e_stack, &t_stack);
+   generate_code(NULL, "SOMA"); 
+   stack_push(&e_stack, type);
 }  
 | E MINUS T 
 {
-    generate_code(NULL, "SUBT");
+   int type = assert_equal_types(&e_stack, &t_stack);
+   generate_code(NULL, "SUBT");
+   stack_push(&e_stack, type);
 }
-| T;
+| T
+{
+   int type;
+   stack_pop(&t_stack, &type);
+   stack_push(&e_stack, type);
+};
 
 T: T ASTERISK F 
 {
+   int type = assert_equal_types(&t_stack, &f_stack);
    generate_code(NULL, "MULT");
+   stack_push(&t_stack, type);
 }
 | T DIV F 
 {
+   int type =  assert_equal_types(&t_stack, &f_stack);
    generate_code(NULL, "DIVI");
+   stack_push(&t_stack, type);
 }
-| F;
+| F
+{
+   int type;
+   stack_pop(&f_stack, &type);
+   stack_push(&t_stack, type);
+
+};
 
 F: NUMBER
    {

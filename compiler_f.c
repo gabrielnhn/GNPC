@@ -203,14 +203,14 @@ void init_stack(stack_t *stack)
 
 bool stack_push(stack_t *stack, int x)
 {
-	if (stack->top + 1 > MAX_SYMBOLS)
+	if (stack->top + 1 < MAX_SYMBOLS)
 	{
 		stack->top++;
 		stack->array[stack->top] = x;
 		return true;
 	} 
 	else
-		return false;
+		print_error("Stack overflow");
 }
 
 
@@ -223,5 +223,22 @@ bool stack_pop(stack_t *stack, int* x)
 		return true;
 	} 
 	else
-		return false;
+		print_error("Stack is empty!");
+;
+}
+
+
+
+int assert_equal_types(stack_t* a, stack_t* b)
+{
+	int a_type, b_type;
+	stack_pop(a, &a_type);
+	stack_pop(b, &b_type);
+
+	if (a_type != b_type)
+	{
+		print_error("Type Error");
+	}
+
+	return a_type;
 }

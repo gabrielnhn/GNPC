@@ -6,5 +6,13 @@
      CRCT 1
      SOMA
      ARMZ 0 1
+     CRCT 1
+     CRCT 2
+     CRCT 3
+     MULT
+     SOMA
+     CRCT 4
+     SOMA
+     ARMZ 0 0
      DMEM 2
      PARA
