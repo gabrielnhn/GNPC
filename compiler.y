@@ -24,7 +24,7 @@ int left_side_level = -1;
 int left_side_offset = -1;
 int left_side_type = -1;
 int left_side_index = -1;
-
+int return_label = -1;
 
 int comparison;
 
@@ -142,13 +142,25 @@ loop: WHILE
    label_count += 1;
    sprintf(string_buffer, "R%.2d", label_count);
    generate_code(string_buffer, "NADA");
+   stack_push(&label_stack, label_count);
    
    
    label_count += 1;
-   stack_push(&label_stack, label_count);
-   
 }
-boolean_expr DO command;
+boolean_expr
+{
+   sprintf(string_buffer, "DSVF R%.2d", label_count);
+   generate_code(NULL, string_buffer);
+}
+DO command
+{
+	stack_pop(&label_stack, &return_label);
+   sprintf(string_buffer, "DSVS R%.2d", return_label);
+   generate_code(NULL, string_buffer);
+
+	sprintf(string_buffer, "R%.2d", return_label + 1);
+   generate_code(string_buffer, "NADA");
+};
 
 
 /* ASSIGNMENT */
