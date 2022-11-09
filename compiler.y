@@ -132,10 +132,14 @@ idents_list: idents_list COMMA IDENT
 
 compound_command: T_BEGIN commands T_END
 
-commands: commands command | command
-;
+commands: commands command | command;
 
-command: assignment;
+command: assignment | loop;
+
+loop: WHILE boolean_expr DO commands;
+
+
+/* ASSIGNMENT */
 
 assignment: IDENT
 {
@@ -151,7 +155,7 @@ ASSIGNMENT boolean_expr SEMICOLON
    left_side_type = table.stack[left_side_index].type;
 
    if (left_side_type != expr_type)
-      print_error("Type Error");
+      print_error("LS Type Error");
 
 
    sprintf(string_buffer, "ARMZ %d %d", left_side_level, left_side_offset);
