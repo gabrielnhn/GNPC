@@ -288,7 +288,7 @@ F: NUMBER
       generate_code(NULL, string_buffer);
    }
 
-   | OPEN_PARENTHESIS E CLOSE_PARENTHESIS
+   | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
    {
       int type;
       stack_pop(&e_stack, &type);

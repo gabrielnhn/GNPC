@@ -87,7 +87,7 @@ Gramática
 
    43 F: NUMBER
    44  | IDENT
-   45  | OPEN_PARENTHESIS E CLOSE_PARENTHESIS
+   45  | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
 
 
 Terminais, com as regras onde eles aparecem
@@ -202,13 +202,13 @@ Não terminais com as regras onde eles aparecem
         à direita: 28
     boolean_expr (62)
         à esquerda: 29 30 31 32 33 34 35
-        à direita: 26 28 30 31 32 33 34 35
+        à direita: 26 28 30 31 32 33 34 35 45
     arithmetic_expr (63)
         à esquerda: 36
         à direita: 29 30 31 32 33 34 35
     E (64)
         à esquerda: 37 38 39
-        à direita: 36 37 38 45
+        à direita: 36 37 38
     T (65)
         à esquerda: 40 41 42
         à direita: 37 38 39 40 41
@@ -582,15 +582,17 @@ Estado 41
 
 Estado 42
 
-   45 F: OPEN_PARENTHESIS • E CLOSE_PARENTHESIS
+   45 F: OPEN_PARENTHESIS • boolean_expr CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  deslocar, e ir ao estado 42
     IDENT             deslocar, e ir ao estado 43
     NUMBER            deslocar, e ir ao estado 44
 
-    E  ir ao estado 54
-    T  ir ao estado 48
-    F  ir ao estado 49
+    boolean_expr     ir ao estado 54
+    arithmetic_expr  ir ao estado 46
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 43
@@ -708,13 +710,21 @@ Estado 53
 
 Estado 54
 
-   37 E: E • PLUS T
-   38  | E • MINUS T
-   45 F: OPEN_PARENTHESIS E • CLOSE_PARENTHESIS
+   30 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   31             | boolean_expr • DIFFERENT arithmetic_expr
+   32             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   33             | boolean_expr • LESS arithmetic_expr
+   34             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   35             | boolean_expr • MORE arithmetic_expr
+   45 F: OPEN_PARENTHESIS boolean_expr • CLOSE_PARENTHESIS
 
     CLOSE_PARENTHESIS  deslocar, e ir ao estado 68
-    PLUS               deslocar, e ir ao estado 62
-    MINUS              deslocar, e ir ao estado 63
+    EQUAL              deslocar, e ir ao estado 56
+    DIFFERENT          deslocar, e ir ao estado 57
+    LESS_OR_EQUAL      deslocar, e ir ao estado 58
+    LESS               deslocar, e ir ao estado 59
+    MORE_OR_EQUAL      deslocar, e ir ao estado 60
+    MORE               deslocar, e ir ao estado 61
 
 
 Estado 55
@@ -877,7 +887,7 @@ Estado 67
 
 Estado 68
 
-   45 F: OPEN_PARENTHESIS E CLOSE_PARENTHESIS •
+   45 F: OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS •
 
     $padrão  reduzir usando a regra 45 (F)
 

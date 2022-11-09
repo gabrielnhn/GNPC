@@ -3,15 +3,10 @@
      CRCT 0
      ARMZ 0 0
      CRVL 0 0
+     CRCT 5
+     CMDG
+     CRVL 0 0
      CRCT 1
-     SOMA
-     ARMZ 0 1
-     CRCT 1
-     CRCT 2
-     CRCT 3
-     CRCT 4
-     SOMA
-     MULT
      SOMA
      ARMZ 0 0
      DMEM 2
