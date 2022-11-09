@@ -74,6 +74,18 @@ typedef struct
 } symbol_table;
 
 
+
+typedef struct 
+{
+    int top;
+    int array[MAX_SYMBOLS];
+} stack_t;
+
+
+
+
+
+
 int print_error ( char* erro );
 
 void init_symbol_table(symbol_table* table);
@@ -85,3 +97,9 @@ void print_symbol_table(symbol_table* table);
 
 bool search_symbol_table(symbol_table* table, char* name, int* level, int* offset);
 int get_type(char* type);
+
+
+void init_stack(stack_t *stack);
+bool stack_push(stack_t *stack, int x);
+bool stack_pop(stack_t *stack, int* x);
+
