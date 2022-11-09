@@ -14,7 +14,8 @@ char string_buffer[69];
 
 int num_vars;
 symbol_table table;
-stack_t e_stack, f_stack, t_stack;
+stack_t e_stack, f_stack, t_stack, label_stack;
+int label_count = -1;
 int list_size = 0;
 int level = 0;
 int offset = 0;
@@ -134,9 +135,20 @@ compound_command: T_BEGIN commands T_END
 
 commands: commands command | command;
 
-command: assignment | loop;
+command: assignment | compound_command | loop;
 
-loop: WHILE boolean_expr DO commands;
+loop: WHILE
+{
+   label_count += 1;
+   sprintf(string_buffer, "R%d.02 NADA", label_count);
+   
+   
+   label_count += 1;
+   stack_push(&label_stack, label_count);
+   
+   // generate_code()
+}
+boolean_expr DO command;
 
 
 /* ASSIGNMENT */
@@ -307,6 +319,8 @@ int main (int argc, char** argv) {
    init_stack(&e_stack);
    init_stack(&t_stack);
    init_stack(&f_stack);
+   init_stack(&label_stack);
+
 
    yyin=fp;
    yyparse();
