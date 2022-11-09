@@ -287,6 +287,13 @@ F: NUMBER
       sprintf(string_buffer, "CRVL %d %d", level, offset);
       generate_code(NULL, string_buffer);
    }
+
+   | OPEN_PARENTHESIS E CLOSE_PARENTHESIS
+   {
+      int type;
+      stack_pop(&e_stack, &type);
+      stack_push(&f_stack, type);
+   }
 ;
 
 %%

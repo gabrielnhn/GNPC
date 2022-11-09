@@ -87,6 +87,7 @@ Gramática
 
    43 F: NUMBER
    44  | IDENT
+   45  | OPEN_PARENTHESIS E CLOSE_PARENTHESIS
 
 
 Terminais, com as regras onde eles aparecem
@@ -94,8 +95,8 @@ Terminais, com as regras onde eles aparecem
     $end (0) 0
     error (256)
     PROGRAM (258) 2
-    OPEN_PARENTHESIS (259) 2
-    CLOSE_PARENTHESIS (260) 2
+    OPEN_PARENTHESIS (259) 2 45
+    CLOSE_PARENTHESIS (260) 2 45
     COMMA (261) 15 17
     SEMICOLON (262) 2 13 28
     COLON (263) 13
@@ -207,12 +208,12 @@ Não terminais com as regras onde eles aparecem
         à direita: 29 30 31 32 33 34 35
     E (64)
         à esquerda: 37 38 39
-        à direita: 36 37 38
+        à direita: 36 37 38 45
     T (65)
         à esquerda: 40 41 42
         à direita: 37 38 39 40 41
     F (66)
-        à esquerda: 43 44
+        à esquerda: 43 44 45
         à direita: 40 41 42
 
 
@@ -523,14 +524,15 @@ Estado 36
 
    26 loop: WHILE $@6 • boolean_expr DO command
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    boolean_expr     ir ao estado 44
-    arithmetic_expr  ir ao estado 45
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    boolean_expr     ir ao estado 45
+    arithmetic_expr  ir ao estado 46
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 37
@@ -551,47 +553,61 @@ Estado 39
 
    15 id_var_list: id_var_list COMMA • IDENT
 
-    IDENT  deslocar, e ir ao estado 49
+    IDENT  deslocar, e ir ao estado 50
 
 
 Estado 40
 
    13 declare_var: $@4 id_var_list COLON • type $@5 SEMICOLON
 
-    IDENT  deslocar, e ir ao estado 50
+    IDENT  deslocar, e ir ao estado 51
 
-    type  ir ao estado 51
+    type  ir ao estado 52
 
 
 Estado 41
 
    28 assignment: IDENT $@7 ASSIGNMENT • boolean_expr SEMICOLON
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    boolean_expr     ir ao estado 52
-    arithmetic_expr  ir ao estado 45
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    boolean_expr     ir ao estado 53
+    arithmetic_expr  ir ao estado 46
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 42
+
+   45 F: OPEN_PARENTHESIS • E CLOSE_PARENTHESIS
+
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
+
+    E  ir ao estado 54
+    T  ir ao estado 48
+    F  ir ao estado 49
+
+
+Estado 43
 
    44 F: IDENT •
 
     $padrão  reduzir usando a regra 44 (F)
 
 
-Estado 43
+Estado 44
 
    43 F: NUMBER •
 
     $padrão  reduzir usando a regra 43 (F)
 
 
-Estado 44
+Estado 45
 
    26 loop: WHILE $@6 boolean_expr • DO command
    30 boolean_expr: boolean_expr • EQUAL arithmetic_expr
@@ -601,77 +617,77 @@ Estado 44
    34             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
    35             | boolean_expr • MORE arithmetic_expr
 
-    DO             deslocar, e ir ao estado 53
-    EQUAL          deslocar, e ir ao estado 54
-    DIFFERENT      deslocar, e ir ao estado 55
-    LESS_OR_EQUAL  deslocar, e ir ao estado 56
-    LESS           deslocar, e ir ao estado 57
-    MORE_OR_EQUAL  deslocar, e ir ao estado 58
-    MORE           deslocar, e ir ao estado 59
+    DO             deslocar, e ir ao estado 55
+    EQUAL          deslocar, e ir ao estado 56
+    DIFFERENT      deslocar, e ir ao estado 57
+    LESS_OR_EQUAL  deslocar, e ir ao estado 58
+    LESS           deslocar, e ir ao estado 59
+    MORE_OR_EQUAL  deslocar, e ir ao estado 60
+    MORE           deslocar, e ir ao estado 61
 
 
-Estado 45
+Estado 46
 
    29 boolean_expr: arithmetic_expr •
 
     $padrão  reduzir usando a regra 29 (boolean_expr)
 
 
-Estado 46
+Estado 47
 
    36 arithmetic_expr: E •
    37 E: E • PLUS T
    38  | E • MINUS T
 
-    PLUS   deslocar, e ir ao estado 60
-    MINUS  deslocar, e ir ao estado 61
+    PLUS   deslocar, e ir ao estado 62
+    MINUS  deslocar, e ir ao estado 63
 
     $padrão  reduzir usando a regra 36 (arithmetic_expr)
 
 
-Estado 47
+Estado 48
 
    39 E: T •
    40 T: T • ASTERISK F
    41  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 62
-    ASTERISK  deslocar, e ir ao estado 63
+    DIV       deslocar, e ir ao estado 64
+    ASTERISK  deslocar, e ir ao estado 65
 
     $padrão  reduzir usando a regra 39 (E)
 
 
-Estado 48
+Estado 49
 
    42 T: F •
 
     $padrão  reduzir usando a regra 42 (T)
 
 
-Estado 49
+Estado 50
 
    15 id_var_list: id_var_list COMMA IDENT •
 
     $padrão  reduzir usando a regra 15 (id_var_list)
 
 
-Estado 50
+Estado 51
 
    14 type: IDENT •
 
     $padrão  reduzir usando a regra 14 (type)
 
 
-Estado 51
+Estado 52
 
    13 declare_var: $@4 id_var_list COLON type • $@5 SEMICOLON
 
     $padrão  reduzir usando a regra 12 ($@5)
 
-    $@5  ir ao estado 64
+    $@5  ir ao estado 66
 
 
-Estado 52
+Estado 53
 
    28 assignment: IDENT $@7 ASSIGNMENT boolean_expr • SEMICOLON
    30 boolean_expr: boolean_expr • EQUAL arithmetic_expr
@@ -681,16 +697,27 @@ Estado 52
    34             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
    35             | boolean_expr • MORE arithmetic_expr
 
-    SEMICOLON      deslocar, e ir ao estado 65
-    EQUAL          deslocar, e ir ao estado 54
-    DIFFERENT      deslocar, e ir ao estado 55
-    LESS_OR_EQUAL  deslocar, e ir ao estado 56
-    LESS           deslocar, e ir ao estado 57
-    MORE_OR_EQUAL  deslocar, e ir ao estado 58
-    MORE           deslocar, e ir ao estado 59
+    SEMICOLON      deslocar, e ir ao estado 67
+    EQUAL          deslocar, e ir ao estado 56
+    DIFFERENT      deslocar, e ir ao estado 57
+    LESS_OR_EQUAL  deslocar, e ir ao estado 58
+    LESS           deslocar, e ir ao estado 59
+    MORE_OR_EQUAL  deslocar, e ir ao estado 60
+    MORE           deslocar, e ir ao estado 61
 
 
-Estado 53
+Estado 54
+
+   37 E: E • PLUS T
+   38  | E • MINUS T
+   45 F: OPEN_PARENTHESIS E • CLOSE_PARENTHESIS
+
+    CLOSE_PARENTHESIS  deslocar, e ir ao estado 68
+    PLUS               deslocar, e ir ao estado 62
+    MINUS              deslocar, e ir ao estado 63
+
+
+Estado 55
 
    26 loop: WHILE $@6 boolean_expr DO • command
 
@@ -699,233 +726,250 @@ Estado 53
     WHILE    deslocar, e ir ao estado 26
 
     compound_command  ir ao estado 27
-    command           ir ao estado 66
+    command           ir ao estado 69
     loop              ir ao estado 30
     assignment        ir ao estado 31
 
 
-Estado 54
+Estado 56
 
    30 boolean_expr: boolean_expr EQUAL • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    arithmetic_expr  ir ao estado 67
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
-
-
-Estado 55
-
-   31 boolean_expr: boolean_expr DIFFERENT • arithmetic_expr
-
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
-
-    arithmetic_expr  ir ao estado 68
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
-
-
-Estado 56
-
-   32 boolean_expr: boolean_expr LESS_OR_EQUAL • arithmetic_expr
-
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
-
-    arithmetic_expr  ir ao estado 69
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    arithmetic_expr  ir ao estado 70
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 57
 
-   33 boolean_expr: boolean_expr LESS • arithmetic_expr
+   31 boolean_expr: boolean_expr DIFFERENT • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    arithmetic_expr  ir ao estado 70
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    arithmetic_expr  ir ao estado 71
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 58
 
-   34 boolean_expr: boolean_expr MORE_OR_EQUAL • arithmetic_expr
+   32 boolean_expr: boolean_expr LESS_OR_EQUAL • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    arithmetic_expr  ir ao estado 71
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    arithmetic_expr  ir ao estado 72
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 59
 
-   35 boolean_expr: boolean_expr MORE • arithmetic_expr
+   33 boolean_expr: boolean_expr LESS • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    arithmetic_expr  ir ao estado 72
-    E                ir ao estado 46
-    T                ir ao estado 47
-    F                ir ao estado 48
+    arithmetic_expr  ir ao estado 73
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 60
 
-   37 E: E PLUS • T
+   34 boolean_expr: boolean_expr MORE_OR_EQUAL • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    T  ir ao estado 73
-    F  ir ao estado 48
+    arithmetic_expr  ir ao estado 74
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 61
 
-   38 E: E MINUS • T
+   35 boolean_expr: boolean_expr MORE • arithmetic_expr
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    T  ir ao estado 74
-    F  ir ao estado 48
+    arithmetic_expr  ir ao estado 75
+    E                ir ao estado 47
+    T                ir ao estado 48
+    F                ir ao estado 49
 
 
 Estado 62
 
-   41 T: T DIV • F
+   37 E: E PLUS • T
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    F  ir ao estado 75
+    T  ir ao estado 76
+    F  ir ao estado 49
 
 
 Estado 63
 
-   40 T: T ASTERISK • F
+   38 E: E MINUS • T
 
-    IDENT   deslocar, e ir ao estado 42
-    NUMBER  deslocar, e ir ao estado 43
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
 
-    F  ir ao estado 76
+    T  ir ao estado 77
+    F  ir ao estado 49
 
 
 Estado 64
 
-   13 declare_var: $@4 id_var_list COLON type $@5 • SEMICOLON
+   41 T: T DIV • F
 
-    SEMICOLON  deslocar, e ir ao estado 77
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
+
+    F  ir ao estado 78
 
 
 Estado 65
+
+   40 T: T ASTERISK • F
+
+    OPEN_PARENTHESIS  deslocar, e ir ao estado 42
+    IDENT             deslocar, e ir ao estado 43
+    NUMBER            deslocar, e ir ao estado 44
+
+    F  ir ao estado 79
+
+
+Estado 66
+
+   13 declare_var: $@4 id_var_list COLON type $@5 • SEMICOLON
+
+    SEMICOLON  deslocar, e ir ao estado 80
+
+
+Estado 67
 
    28 assignment: IDENT $@7 ASSIGNMENT boolean_expr SEMICOLON •
 
     $padrão  reduzir usando a regra 28 (assignment)
 
 
-Estado 66
+Estado 68
+
+   45 F: OPEN_PARENTHESIS E CLOSE_PARENTHESIS •
+
+    $padrão  reduzir usando a regra 45 (F)
+
+
+Estado 69
 
    26 loop: WHILE $@6 boolean_expr DO command •
 
     $padrão  reduzir usando a regra 26 (loop)
 
 
-Estado 67
+Estado 70
 
    30 boolean_expr: boolean_expr EQUAL arithmetic_expr •
 
     $padrão  reduzir usando a regra 30 (boolean_expr)
 
 
-Estado 68
+Estado 71
 
    31 boolean_expr: boolean_expr DIFFERENT arithmetic_expr •
 
     $padrão  reduzir usando a regra 31 (boolean_expr)
 
 
-Estado 69
+Estado 72
 
    32 boolean_expr: boolean_expr LESS_OR_EQUAL arithmetic_expr •
 
     $padrão  reduzir usando a regra 32 (boolean_expr)
 
 
-Estado 70
+Estado 73
 
    33 boolean_expr: boolean_expr LESS arithmetic_expr •
 
     $padrão  reduzir usando a regra 33 (boolean_expr)
 
 
-Estado 71
+Estado 74
 
    34 boolean_expr: boolean_expr MORE_OR_EQUAL arithmetic_expr •
 
     $padrão  reduzir usando a regra 34 (boolean_expr)
 
 
-Estado 72
+Estado 75
 
    35 boolean_expr: boolean_expr MORE arithmetic_expr •
 
     $padrão  reduzir usando a regra 35 (boolean_expr)
 
 
-Estado 73
+Estado 76
 
    37 E: E PLUS T •
    40 T: T • ASTERISK F
    41  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 62
-    ASTERISK  deslocar, e ir ao estado 63
+    DIV       deslocar, e ir ao estado 64
+    ASTERISK  deslocar, e ir ao estado 65
 
     $padrão  reduzir usando a regra 37 (E)
 
 
-Estado 74
+Estado 77
 
    38 E: E MINUS T •
    40 T: T • ASTERISK F
    41  | T • DIV F
 
-    DIV       deslocar, e ir ao estado 62
-    ASTERISK  deslocar, e ir ao estado 63
+    DIV       deslocar, e ir ao estado 64
+    ASTERISK  deslocar, e ir ao estado 65
 
     $padrão  reduzir usando a regra 38 (E)
 
 
-Estado 75
+Estado 78
 
    41 T: T DIV F •
 
     $padrão  reduzir usando a regra 41 (T)
 
 
-Estado 76
+Estado 79
 
    40 T: T ASTERISK F •
 
     $padrão  reduzir usando a regra 40 (T)
 
 
-Estado 77
+Estado 80
 
    13 declare_var: $@4 id_var_list COLON type $@5 SEMICOLON •
 
