@@ -135,6 +135,10 @@ assignment: IDENT
 ASSIGNMENT boolean_expr SEMICOLON
 ;
 
+
+/* EXPRESSIONS */
+
+
 boolean_expr: arithmetic_expr | boolean_comparison boolean_expr;
 
 boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE;
@@ -153,12 +157,18 @@ T: T ASTERISK F | T DIV F | F;
 
 F: NUMBER
    {
+      // stack type
       stack_push(&f_stack, INTEGER_TYPE);
+
+      sprintf(string_buffer, "CRCT %s", token);
+
+      generate_code(NULL, string_buffer);
    } 
    |IDENT
    {
       assert_symbol_exists(&table, token);
 
+      // stack type
       search_symbol_table_index(&table, token, &symbol_index);
       int type = table.stack[symbol_index].type;
       stack_push(&f_stack, type);
@@ -166,6 +176,10 @@ F: NUMBER
 ;
 
 %%
+
+/* MAIN */
+
+
 
 int main (int argc, char** argv) {
    FILE* fp;
