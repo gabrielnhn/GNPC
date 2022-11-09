@@ -19,10 +19,13 @@ int list_size = 0;
 int level = 0;
 int offset = 0;
 int list_type = -1;
-int left_side_index = -1;
 int left_side_level = -1;
 int left_side_offset = -1;
+int left_side_type = -1;
+int left_side_index = -1;
 
+
+int comparison;
 
 int symbol_index;
 
@@ -138,9 +141,19 @@ assignment: IDENT
 {
    assert_symbol_exists(&table, token);
    search_symbol_table(&table, token, &left_side_level, &left_side_offset);
+   search_symbol_table_index(&table, token, &left_side_index);
+
 }
 ASSIGNMENT boolean_expr SEMICOLON
 {
+   int expr_type;
+   stack_pop(&e_stack, &expr_type);
+   left_side_type = table.stack[left_side_index].type;
+
+   if (left_side_type != expr_type)
+      print_error("Type Error");
+
+
    sprintf(string_buffer, "ARMZ %d %d", left_side_level, left_side_offset);
    generate_code(NULL, string_buffer);
 }
@@ -150,16 +163,49 @@ ASSIGNMENT boolean_expr SEMICOLON
 /* EXPRESSIONS */
 
 
-boolean_expr: arithmetic_expr | boolean_comparison boolean_expr;
+boolean_expr: arithmetic_expr 
 
-boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE;
-
-arithmetic_expr:
+| EQUAL boolean_expr
 {
-   init_stack(&e_stack);
-   init_stack(&t_stack);
-   init_stack(&f_stack);
-} E;
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMIG"); 
+   stack_push(&e_stack, BOOL_TYPE);
+}
+| DIFFERENT boolean_expr
+{
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMDG"); 
+   stack_push(&e_stack, BOOL_TYPE);
+}
+| LESS_OR_EQUAL boolean_expr
+{
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMEG"); 
+   stack_push(&e_stack, BOOL_TYPE);
+}
+| LESS boolean_expr
+{
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMME"); 
+   stack_push(&e_stack, BOOL_TYPE);
+}
+| MORE_OR_EQUAL boolean_expr
+{
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMAG"); 
+   stack_push(&e_stack, BOOL_TYPE);
+}
+| MORE boolean_expr
+{
+   int type = assert_equal_types(&e_stack, &e_stack);
+   generate_code(NULL, "CMMA"); 
+   stack_push(&e_stack, BOOL_TYPE);
+};
+
+
+/* boolean_comparison: EQUAL | DIFFERENT | LESS_OR_EQUAL | LESS | MORE_OR_EQUAL | MORE; */
+
+arithmetic_expr: E;
 
 E: E PLUS T 
 {
@@ -256,6 +302,9 @@ int main (int argc, char** argv) {
  * ------------------------------------------------------------------- */
    
    init_symbol_table(&table);
+   init_stack(&e_stack);
+   init_stack(&t_stack);
+   init_stack(&f_stack);
 
    yyin=fp;
    yyparse();
