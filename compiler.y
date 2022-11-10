@@ -41,6 +41,9 @@ int symbol_index;
 %token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
 %token NUMBER
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
 %%
 
 program    :{
@@ -137,6 +140,8 @@ commands: commands command | command;
 
 command: assignment | compound_command | loop;
 
+/* WHILE */
+
 loop: WHILE
 {
    label_count += 1;
@@ -161,6 +166,24 @@ DO command
 	sprintf(string_buffer, "R%.2d", return_label + 1);
    generate_code(string_buffer, "NADA");
 };
+
+/* IF CONDITIONAL */
+conditional: if_then cond_else 
+{ 
+	em_if_finaliza (); 
+};
+
+if_then: IF boolean_expr
+{
+	em_if_apos_expr ();
+}
+THEN command
+{
+	em_if_apos_then ();
+};
+
+cond_else   : ELSE command
+| %prec LOWER_THAN_ELSE
 
 
 /* ASSIGNMENT */
