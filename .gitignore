@@ -1,0 +1,6 @@
+MEPA
+compiler
+compiler.o
+compiler.tab.*
+lex.yy*
+remaining
