@@ -138,7 +138,7 @@ compound_command: T_BEGIN commands T_END
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop;
+command: assignment | compound_command | loop | conditional;
 
 /* WHILE */
 
@@ -170,19 +170,34 @@ DO command
 /* IF CONDITIONAL */
 conditional: if_then cond_else 
 { 
-	em_if_finaliza (); 
+   stack_pop(&label_stack, &return_label);
+	sprintf(string_buffer, "R%.2d", return_label + 1);
+   generate_code(string_buffer, "NADA");
 };
 
 if_then: IF boolean_expr
 {
-	em_if_apos_expr ();
+	label_count += 1;
+   stack_push(&label_stack, label_count);
+	sprintf(string_buffer, "DSVF R%.2d", label_count);
+   generate_code(NULL, string_buffer);
+	label_count += 1;
 }
 THEN command
 {
-	em_if_apos_then ();
+   stack_pop(&label_stack, &return_label);
+	sprintf(string_buffer, "DSVS R%.2d", return_label + 1);
+   generate_code(NULL, string_buffer);
+
+	sprintf(string_buffer, "R%.2d", return_label);
+   generate_code(string_buffer, "NADA");
+
+   stack_push(&label_stack, return_label);
 };
 
-cond_else   : ELSE command
+cond_else   : ELSE
+
+command
 | %prec LOWER_THAN_ELSE
 
 
