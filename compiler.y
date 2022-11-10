@@ -26,6 +26,10 @@ int left_side_type = -1;
 int left_side_index = -1;
 int return_label = -1;
 
+int read_level = -1;
+int read_offset = -1;
+
+
 int comparison;
 
 int symbol_index;
@@ -39,7 +43,7 @@ int symbol_index;
 %token GOTO IF THEN ELSE WHILE DO
 %token OR AND NOT DIV ASTERISK PLUS MINUS
 %token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
-%token NUMBER
+%token NUMBER READ WRITE
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -138,7 +142,26 @@ compound_command: T_BEGIN commands T_END
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop | conditional;
+command: assignment | compound_command | loop | conditional | read | write;
+
+/* READ and WRITE*/
+read: READ OPEN_PARENTHESIS IDENT
+{
+   assert_symbol_exists(&table, token);
+   search_symbol_table(&table, token, &read_level, &read_offset);
+   generate_code(NULL, "LEIT");
+	sprintf(string_buffer, "ARMZ %d, %d", read_level, read_offset);
+   generate_code(NULL, string_buffer);
+}
+CLOSE_PARENTHESIS SEMICOLON;
+
+write: WRITE OPEN_PARENTHESIS boolean_expr
+{
+   generate_code(NULL, "IMPR");
+}
+CLOSE_PARENTHESIS SEMICOLON;
+
+
 
 /* WHILE */
 

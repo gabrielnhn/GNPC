@@ -155,6 +155,18 @@ div      { symbol = symb_div;
           return DIV;
  }
 
+read      { symbol = symb_read;
+        strncpy (token, yytext, TOKEN_SIZE);
+        PRINT("read  ");
+        return READ;
+}
+
+write      { symbol = symb_write;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("write  ");
+          return WRITE;
+ }
+
 \*     { symbol = symb_asterisk;
           strncpy (token, yytext, TOKEN_SIZE);
           PRINT("asterisk  ");
