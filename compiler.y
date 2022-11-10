@@ -138,6 +138,8 @@ idents_list: idents_list COMMA IDENT
 ;
 
 
+
+
 compound_command: T_BEGIN commands T_END
 
 commands: commands command | command;
@@ -155,12 +157,16 @@ read: READ OPEN_PARENTHESIS IDENT
 }
 CLOSE_PARENTHESIS SEMICOLON;
 
-write: WRITE OPEN_PARENTHESIS boolean_expr
+write: WRITE OPEN_PARENTHESIS boolean_expr_list CLOSE_PARENTHESIS SEMICOLON;
+
+boolean_expr_list: boolean_expr_list COMMA boolean_expr
 {
    generate_code(NULL, "IMPR");
 }
-CLOSE_PARENTHESIS SEMICOLON;
-
+| boolean_expr
+{
+   generate_code(NULL, "IMPR");
+};
 
 
 /* WHILE */
