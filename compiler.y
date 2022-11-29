@@ -200,7 +200,7 @@ DO command
 conditional: if_then cond_else 
 { 
    stack_pop(&label_stack, &return_label);
-	sprintf(string_buffer, "R%.2d", return_label + 1);
+	sprintf(string_buffer, "R%.2d", return_label);
    generate_code(string_buffer, "NADA");
 };
 
@@ -210,10 +210,10 @@ if_then: IF boolean_expr
    stack_push(&label_stack, label_count);
 	sprintf(string_buffer, "DSVF R%.2d", label_count);
    generate_code(NULL, string_buffer);
-	label_count += 1;
 }
 THEN command
 {
+   /*
    stack_pop(&label_stack, &return_label);
 	sprintf(string_buffer, "DSVS R%.2d", return_label + 1);
    generate_code(NULL, string_buffer);
@@ -221,13 +221,24 @@ THEN command
 	sprintf(string_buffer, "R%.2d", return_label);
    generate_code(string_buffer, "NADA");
 
-   stack_push(&label_stack, return_label);
+   stack_push(&label_stack, return_label);*/
 };
 
-cond_else   : ELSE
+cond_else : ELSE {
 
-command
-| %prec LOWER_THAN_ELSE
+   stack_pop(&label_stack, &return_label);
+   label_count += 1;
+
+	sprintf(string_buffer, "DSVS R%.2d", label_count);
+   generate_code(NULL, string_buffer);
+
+	sprintf(string_buffer, "R%.2d", return_label);
+   generate_code(string_buffer, "NADA");
+
+   stack_push(&label_stack, label_count);
+
+	
+} command | %prec LOWER_THAN_ELSE;
 
 
 /* ASSIGNMENT */
