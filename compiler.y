@@ -67,9 +67,7 @@ block DOT
 
 block: declaring_vars_block compound_command;
 
-declaring_vars_block:  var;
-
-var:VAR declare_vars |;
+declaring_vars_block: VAR declare_vars |;
 
 declare_vars: declare_vars declare_var | declare_var;
 
@@ -111,8 +109,7 @@ id_var_list: id_var_list COMMA IDENT
     offset++;
     list_size++;
 
-}
-;
+};
 
 idents_list: idents_list COMMA IDENT | IDENT;
 
