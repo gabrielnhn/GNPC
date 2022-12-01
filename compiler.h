@@ -62,7 +62,9 @@ void yyerror(const char *s);
 
 #define SIMPLE_VAR_CATEGORY 1
 #define PROCEDURE_CATEGORY 2
-#define PARAM_CATEGORY 2
+#define PARAM_CATEGORY 3
+#define FUNCTION_CATEGORY 4
+
 
 
 
@@ -123,3 +125,4 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name, bool 
 void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int level);
 void insert_symbol_table_proc(symbol_table *table, int level, char *name, int label);
 
+void remove_symbols_from_table_until_proc(symbol_table *table);

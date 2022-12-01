@@ -144,11 +144,13 @@ procedure_def:
     }
     procedure_params SEMICOLON block
     {
-        // PROCEDURE END
-
+        // PROCEDURE RETURN
         sprintf(string_buffer, "RTPR %d,%d", level, param_count);
         generate_code(NULL, string_buffer);
 
+        // REMOVE SYMBOLS
+        remove_symbols_from_table_until_proc(&table);
+        print_symbol_table(&table);
 
 
         // OUT OF PROCEDURE
@@ -333,6 +335,14 @@ assignment:
 /* BOOLEAN EXPRESSIONS */
 
 boolean_expr:
+
+    // FUNCTION CALL
+    /* IDENT
+    {
+
+    } | */
+
+
     arithmetic_expr |
     boolean_expr EQUAL arithmetic_expr
     {
