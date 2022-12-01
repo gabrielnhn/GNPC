@@ -52,97 +52,71 @@ int var_category = SIMPLE_VAR_CATEGORY;
 
 %%
 
-program    :{
-             generate_code (NULL, "INPP");
-             }
-             PROGRAM IDENT
-             OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
-             block DOT {
-             remove_symbols_from_table(&table, table.size);
-             sprintf(string_buffer, "DMEM %d", offset);
-             generate_code(NULL, string_buffer);
+program:
+{
+    generate_code (NULL, "INPP");
+}
+PROGRAM IDENT OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
+block DOT
+{
+    remove_symbols_from_table(&table, table.size);
+    sprintf(string_buffer, "DMEM %d", offset);
+    generate_code(NULL, string_buffer);
+    generate_code (NULL, "PARA");
+};
 
+block: declaring_vars_block compound_command;
 
-             generate_code (NULL, "PARA");
-             }
-;
+declaring_vars_block:  var;
 
-block       :
-              declaring_vars_block
-              {
-              }
+var:VAR declare_vars |;
 
-              compound_command
-              ;
+declare_vars: declare_vars declare_var | declare_var;
 
+declare_var:
+{list_size = 0;}
+id_var_list COLON type
+{ 
+    /* AMEM */
+    sprintf(string_buffer, "AMEM %d", list_size);
+    generate_code(NULL, string_buffer);
 
+    /* SET VARIABLE TYPES */
+    list_type = get_type(token);
+    if (not list_type)
+    {
+        sprintf(string_buffer, "Unsupported type '%s'", token);
+        print_error(string_buffer);
+    }
 
+    update_symbol_table_type(&table, list_size, list_type);
+    print_symbol_table(&table);
+}
+SEMICOLON;
 
-declaring_vars_block:  var
-;
-
-
-var         : { } VAR declare_vars
-            |
-;
-
-declare_vars: declare_vars declare_var
-            | declare_var
-;
-
-declare_var : { list_size = 0; }
-              id_var_list
-              COLON
-              type
-              { 
-                  /* AMEM */
-                  sprintf(string_buffer, "AMEM %d", list_size);
-                  generate_code(NULL, string_buffer);
-
-
-                  /* SET VARIABLE TYPES */
-                  list_type = get_type(token);
-                  if (not list_type)
-                  {
-                     sprintf(string_buffer, "Unsupported type '%s'", token);
-                     print_error(string_buffer);
-                  }
-
-                  update_symbol_table_type(&table, list_size, list_type);
-                  print_symbol_table(&table);
-              }
-              SEMICOLON
-;
-
-type        : IDENT
-;
+type: IDENT;
 
 id_var_list: id_var_list COMMA IDENT
-            { /* insere ultima vars na tabela de simbolos */
-               
-                insert_symbol_table(&table, level, offset, token, var_category);
-                offset++;
-                list_size++;
-                
-            }
-            | IDENT
-            { /* insere vars na tabela de simbolos */
-              
-                insert_symbol_table(&table, level, offset, token, var_category);
-                offset++;
-                list_size++;
+{ /* insere ultima vars na tabela de simbolos */
+    
+    insert_symbol_table(&table, level, offset, token, var_category);
+    offset++;
+    list_size++;
+    
+}
+| IDENT
+{ /* insere vars na tabela de simbolos */
+    
+    insert_symbol_table(&table, level, offset, token, var_category);
+    offset++;
+    list_size++;
 
-            }
+}
 ;
 
-idents_list: idents_list COMMA IDENT
-            | IDENT
-;
+idents_list: idents_list COMMA IDENT | IDENT;
 
-
-
-
-compound_command: T_BEGIN commands T_END
+compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
@@ -213,18 +187,7 @@ if_then: IF boolean_expr
 	sprintf(string_buffer, "DSVF R%.2d", label_count);
    generate_code(NULL, string_buffer);
 }
-THEN command
-{
-   /*
-   stack_pop(&label_stack, &return_label);
-	sprintf(string_buffer, "DSVS R%.2d", return_label + 1);
-   generate_code(NULL, string_buffer);
-
-	sprintf(string_buffer, "R%.2d", return_label);
-   generate_code(string_buffer, "NADA");
-
-   stack_push(&label_stack, return_label);*/
-};
+THEN command;
 
 cond_else : ELSE {
 
@@ -239,7 +202,6 @@ cond_else : ELSE {
 
    stack_push(&label_stack, label_count);
 
-	
 } command | %prec LOWER_THAN_ELSE;
 
 
@@ -250,7 +212,6 @@ assignment: IDENT
    assert_symbol_exists(&table, token);
    search_symbol_table(&table, token, &left_side_level, &left_side_offset);
    search_symbol_table_index(&table, token, &left_side_index);
-
 }
 ASSIGNMENT boolean_expr SEMICOLON
 {
@@ -260,7 +221,6 @@ ASSIGNMENT boolean_expr SEMICOLON
 
    if (left_side_type != expr_type)
       print_error("LS Type Error");
-
 
    sprintf(string_buffer, "ARMZ %d %d", left_side_level, left_side_offset);
    generate_code(NULL, string_buffer);
@@ -309,7 +269,6 @@ boolean_expr: arithmetic_expr
 };
 
 /* ARITHMETIC EXPRESSIONS */
-
 
 arithmetic_expr: E;
 
@@ -393,36 +352,34 @@ F: NUMBER
 /* MAIN */
 
 
-
 int main (int argc, char** argv) {
-   FILE* fp;
-   extern FILE* yyin;
+    FILE* fp;
+    extern FILE* yyin;
 
-   if (argc<2 || argc>2) {
-         printf("usage compiler <arq>a %d\n", argc);
-         return(-1);
-      }
+    if (argc<2 || argc>2) {
+            printf("usage compiler <arq>a %d\n", argc);
+            return(-1);
+        }
 
-   fp=fopen (argv[1], "r");
-   if (fp == NULL) {
-      printf("usage compiler <arq>b\n");
-      return(-1);
-   }
+    fp=fopen (argv[1], "r");
+    if (fp == NULL) {
+        printf("usage compiler <arq>b\n");
+        return(-1);
+    }
 
 
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de Simbolos
  * ------------------------------------------------------------------- */
-   
-   init_symbol_table(&table);
-   init_stack(&e_stack);
-   init_stack(&t_stack);
-   init_stack(&f_stack);
-   init_stack(&label_stack);
 
+    init_symbol_table(&table);
+    init_stack(&e_stack);
+    init_stack(&t_stack);
+    init_stack(&f_stack);
+    init_stack(&label_stack);
 
-   yyin=fp;
-   yyparse();
+    yyin=fp;
+    yyparse();
 
-   return 0;
+    return 0;
 }
