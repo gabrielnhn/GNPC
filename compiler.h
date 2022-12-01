@@ -71,6 +71,7 @@ typedef struct
     int category;
     int type;
     int level, offset;
+    bool by_reference;
     char* name;
     void* content;
 } symbol_t;
@@ -118,6 +119,6 @@ void assert_symbol_exists(symbol_table *table, char *name);
 // void assert_equals(int a, int b);
 int assert_equal_types(stack_t* a, stack_t* b);
 
-void insert_symbol_table_param(symbol_table *table, int level, char *name);
+void insert_symbol_table_param(symbol_table *table, int level, char *name, bool byref);
 void update_symbol_table_offset(symbol_table *table, int symbols_to_update);
 

@@ -118,7 +118,11 @@ void print_symbol_table(symbol_table *table)
 	for (int i = 0; i <= table->size; i++)
 	{
 		symbol_t s = table->stack[i];
-		printf("Symbol %s - l%d off%d t%d\n", s.name, s.level, s.offset, s.type);
+		printf("Symbol %s - l%d off%d t%d ", s.name, s.level, s.offset, s.type);
+        if (s.category == PARAM_CATEGORY)
+            printf("Byref:%d", s.by_reference);
+
+        printf("\n"); 
 	}
 }
 
@@ -225,7 +229,7 @@ int assert_equal_types(stack_t* a, stack_t* b)
 	return a_type;
 }
 
-void insert_symbol_table_param(symbol_table *table, int level, char *name)
+void insert_symbol_table_param(symbol_table *table, int level, char *name, bool byref)
 {
 	int possible_level, possible_offset;
 	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
@@ -236,6 +240,7 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name)
 	table->stack[table->size].level = level;
 	table->stack[table->size].type = -1;
     table->stack[table->size].category = PARAM_CATEGORY;
+    table->stack[table->size].by_reference = byref;
 
 	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
 	if (table->stack[table->size].name == NULL)

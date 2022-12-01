@@ -27,6 +27,7 @@ int read_level = -1;
 int read_offset = -1;
 
 int var_category = SIMPLE_VAR_CATEGORY;
+bool by_reference;
 
 %}
 
@@ -126,7 +127,7 @@ CLOSE_PARENTHESIS | ;
 declare_params: declare_params declare_param | declare_param;
 
 
-declare_param:
+declare_param: by_reference_or_not
 {list_size = 0;}
 id_param_list COLON type
 { 
@@ -143,14 +144,16 @@ id_param_list COLON type
 }
 optional_semicolon;
 
+by_reference_or_not: VAR {by_reference = true;} | {by_reference = false;};
+
 id_param_list: id_param_list COMMA IDENT
 { /* last symbol insert */
-    insert_symbol_table_param(&table, level, token);
+    insert_symbol_table_param(&table, level, token, by_reference);
     list_size++;
 }
 | IDENT
 { /* first to penultimate symbol insert */
-    insert_symbol_table_param(&table, level, token);
+    insert_symbol_table_param(&table, level, token, by_reference);
     list_size++;
 };
 
