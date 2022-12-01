@@ -45,6 +45,7 @@ int proc_index;
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
+%define parse.error verbose
 
 %%
 
@@ -230,7 +231,7 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop | conditional | read | write | procedure_call;
+command: assignment | compound_command | loop | conditional | read | write | procedure_call | %empty;
 
 procedure_call:
     IDENT
