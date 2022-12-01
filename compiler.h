@@ -60,10 +60,13 @@ void yyerror(const char *s);
 #define INTEGER_TYPE 1
 #define BOOL_TYPE 2
 
+#define SIMPLE_VAR_CATEGORY 1
+#define PROCEDURE_CATEGORY 2
 
 
 typedef struct
 {
+    int category;
     int type;
     int level, offset;
     char* name;
@@ -92,7 +95,7 @@ typedef struct
 int print_error ( char* erro );
 
 void init_symbol_table(symbol_table* table);
-void insert_symbol_table(symbol_table* table, int level, int offset, char* name);
+void insert_symbol_table(symbol_table* table, int level, int offset, char* name, int category);
 void update_symbol_table_type(symbol_table* table, int symbols_to_update, int type);
 void remove_symbols_from_table(symbol_table* table, int symbols_to_remove);
 void print_symbol_table(symbol_table* table);

@@ -52,7 +52,7 @@ void init_symbol_table(symbol_table *table)
 	table->size = -1;
 }
 
-void insert_symbol_table(symbol_table *table, int level, int offset, char *name)
+void insert_symbol_table(symbol_table *table, int level, int offset, char *name, int category)
 {
 	int possible_level, possible_offset;
 	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
@@ -75,8 +75,6 @@ void insert_symbol_table(symbol_table *table, int level, int offset, char *name)
 	{
 		print_error("malloc() FAILED\n");
 	}
-
-	// printf("\nPOINTER EXISTS IN %p\n", table->stack[table->size].name);
 
 	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
 }
@@ -128,20 +126,12 @@ bool search_symbol_table(symbol_table *table, char *name, int *level, int *offse
 	for (int i = table->size; i >= 0; i--)
 	{
 		bool comparison = strncmp(table->stack[i].name, name, MAX_SYMBOL_NAME);
-
 		if (comparison == 0)
 		{
-			// printf("\n%s is %s, search is true\n", table->stack[i].name, name);
-
-			// found
 			*level = table->stack[i].level;
 			*offset = table->stack[i].offset;
 
 			return true;
-		}
-		else
-		{
-			// printf("\n%s is not %s, search is ongoing\n", table->stack[i].name, name);
 		}
 	}
 
@@ -166,19 +156,10 @@ bool search_symbol_table_index(symbol_table *table, char *name, int *index)
 
 		if (comparison == 0)
 		{
-			// printf("\n%s is %s, search is true\n", table->stack[i].name, name);
-
-			// found
 			*index = i;
-
 			return true;
 		}
-		else
-		{
-			// printf("\n%s is not %s, search is ongoing\n", table->stack[i].name, name);
-		}
 	}
-
 	// not found
 	return false;
 }
@@ -193,7 +174,6 @@ void assert_symbol_exists(symbol_table *table, char *name)
 		print_error(a_string_buffer);
 	}
 }
-
 
 
 void init_stack(stack_t *stack)

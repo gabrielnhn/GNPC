@@ -29,10 +29,12 @@ int return_label = -1;
 int read_level = -1;
 int read_offset = -1;
 
-
 int comparison;
-
 int symbol_index;
+
+
+int var_category = SIMPLE_VAR_CATEGORY;
+
 
 %}
 
@@ -118,7 +120,7 @@ type        : IDENT
 id_var_list: id_var_list COMMA IDENT
             { /* insere ultima vars na tabela de simbolos */
                
-                insert_symbol_table(&table, level, offset, token);
+                insert_symbol_table(&table, level, offset, token, var_category);
                 offset++;
                 list_size++;
                 
@@ -126,7 +128,7 @@ id_var_list: id_var_list COMMA IDENT
             | IDENT
             { /* insere vars na tabela de simbolos */
               
-                insert_symbol_table(&table, level, offset, token);
+                insert_symbol_table(&table, level, offset, token, var_category);
                 offset++;
                 list_size++;
 
@@ -241,7 +243,7 @@ cond_else : ELSE {
 } command | %prec LOWER_THAN_ELSE;
 
 
-/* ASSIGNMENT */
+/* ASSIGNMENT OPERATION */
 
 assignment: IDENT
 {
