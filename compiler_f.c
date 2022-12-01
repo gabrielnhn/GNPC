@@ -59,6 +59,7 @@ void insert_symbol_table_simple_var(symbol_table *table, int level, int offset, 
 	{
 		if (possible_level == level)
 		{
+            print_symbol_table(table);
 			print_error("Same variable name on same lexical level\n");
 		}
 	}

@@ -112,15 +112,15 @@ declaring_procedures_block: procedures | ;
 
 procedures: procedures procedure_def | procedure_def;
 
-procedure_def: PROCEDURE IDENT SEMICOLON block
+procedure_def: PROCEDURE {level++;} IDENT procedure_params SEMICOLON block {level--;};
 
-| PROCEDURE IDENT OPEN_PARENTHESIS
-{ param_count = 0; }
+procedure_params: OPEN_PARENTHESIS
+{ param_count = 0;}
 declare_params
 {
     update_symbol_table_offset(&table, param_count);
 }
-CLOSE_PARENTHESIS SEMICOLON block; 
+CLOSE_PARENTHESIS | ;
 
 
 declare_params: declare_params declare_param | declare_param;
@@ -143,7 +143,7 @@ id_param_list COLON type
 }
 optional_semicolon;
 
-id_param_list: id_simple_var_list COMMA IDENT
+id_param_list: id_param_list COMMA IDENT
 { /* last symbol insert */
     insert_symbol_table_param(&table, level, token);
     list_size++;
@@ -153,7 +153,6 @@ id_param_list: id_simple_var_list COMMA IDENT
     insert_symbol_table_param(&table, level, token);
     list_size++;
 };
-
 
 
 optional_semicolon: SEMICOLON | ;
