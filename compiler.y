@@ -8,7 +8,7 @@
 char string_buffer[69];
 char string_buffer2[69];
 symbol_table table;
-stack_t e_stack, f_stack, t_stack, label_stack;
+stack_t e_stack, f_stack, t_stack, label_stack, proc_stack;
 
 int num_vars, comparison, symbol_index;
 
@@ -259,14 +259,27 @@ command: assignment_operation  | loop | conditional | read | write | procedure_c
 procedure_call:
     IDENT
     {
-        printf("BRUH");
+        strcpy(token, $<text>1);
+
         assert_symbol_exists(&table, token);
         search_symbol_table_index(&table, token, &proc_index);
         assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
         symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
         parsed_params = 0;
+
+
+        stack_push(&proc_stack, proc_index);
     } 
     OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
+    {
+        stack_pop(&proc_stack, &proc_index);
+        int label = table.stack[proc_index].label;
+
+        sprintf(string_buffer, "CHPR R%.2d, %d", label, level);
+
+        generate_code(NULL, string_buffer);
+
+    }
     SEMICOLON
 ;
 
@@ -279,6 +292,8 @@ args_list: args_list COMMA ARGUMENT | ARGUMENT;
 ARGUMENT: 
     IDENT
     {
+        strcpy(token, $<text>1);
+
         // load var
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
@@ -286,10 +301,11 @@ ARGUMENT:
         // get type
         search_symbol_table_index(&table, token, &symbol_index);
         int type = table.stack[symbol_index].type;
-        int by_reference = table.stack[symbol_index].by_reference;
+        // int by_reference = table.stack[symbol_index].by_reference;
 
         assert_equal_things(type, proc_types[parsed_params], "Type");
-        assert_equal_things(by_reference, proc_byrefs[parsed_params], "By Reference");
+        // assert_equal_things(by_reference, proc_byrefs[parsed_params], "By Reference");
+        bool by_reference = proc_byrefs[parsed_params];
 
         int level, offset;
         search_symbol_table(&table, token, &level, &offset);
@@ -595,6 +611,8 @@ int main (int argc, char** argv) {
     init_stack(&t_stack);
     init_stack(&f_stack);
     init_stack(&label_stack);
+    init_stack(&proc_stack);
+
 
     yyin=fp;
     yyparse();
