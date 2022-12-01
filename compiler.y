@@ -231,7 +231,7 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop | conditional | read | write | procedure_call | %empty;
+command: assignment | compound_command | loop | conditional | read | write;
 
 procedure_call:
     IDENT
@@ -338,6 +338,7 @@ assignment:
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &left_side_level, &left_side_offset);
         search_symbol_table_index(&table, token, &left_side_index);
+        printf("ASSERTED %s\n", token);
     }
     ASSIGNMENT
     {

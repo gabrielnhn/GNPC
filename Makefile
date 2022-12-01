@@ -10,7 +10,7 @@ lex.yy.c: compiler.l compiler.h
 	flex compiler.l
 
 compiler.tab.c: compiler.y compiler.h
-	bison compiler.y -d -v
+	bison compiler.y -d -v -Wcex -Wall
 
 compiler.o : compiler.h compiler_f.c
 	gcc -g -c compiler_f.c  -o compiler.o 
