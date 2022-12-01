@@ -48,7 +48,7 @@ Grammar
 
    20 $@4: %empty
 
-   21 procedure_def: PROCEDURE $@4 IDENT procedure_params SEMICOLON block
+   21 procedure_def: PROCEDURE IDENT $@4 procedure_params SEMICOLON block
 
    22 $@5: %empty
 
@@ -504,11 +504,9 @@ State 19
 
 State 20
 
-   21 procedure_def: PROCEDURE . $@4 IDENT procedure_params SEMICOLON block
+   21 procedure_def: PROCEDURE . IDENT $@4 procedure_params SEMICOLON block
 
-    $default  reduce using rule 20 ($@4)
-
-    $@4  go to state 27
+    IDENT  shift, and go to state 27
 
 
 State 21
@@ -564,9 +562,11 @@ State 26
 
 State 27
 
-   21 procedure_def: PROCEDURE $@4 . IDENT procedure_params SEMICOLON block
+   21 procedure_def: PROCEDURE IDENT . $@4 procedure_params SEMICOLON block
 
-    IDENT  shift, and go to state 33
+    $default  reduce using rule 20 ($@4)
+
+    $@4  go to state 33
 
 
 State 28
@@ -623,7 +623,7 @@ State 32
 
 State 33
 
-   21 procedure_def: PROCEDURE $@4 IDENT . procedure_params SEMICOLON block
+   21 procedure_def: PROCEDURE IDENT $@4 . procedure_params SEMICOLON block
 
     OPEN_PARENTHESIS  shift, and go to state 51
 
@@ -796,7 +796,7 @@ State 51
 
 State 52
 
-   21 procedure_def: PROCEDURE $@4 IDENT procedure_params . SEMICOLON block
+   21 procedure_def: PROCEDURE IDENT $@4 procedure_params . SEMICOLON block
 
     SEMICOLON  shift, and go to state 71
 
@@ -987,7 +987,7 @@ State 70
 
 State 71
 
-   21 procedure_def: PROCEDURE $@4 IDENT procedure_params SEMICOLON . block
+   21 procedure_def: PROCEDURE IDENT $@4 procedure_params SEMICOLON . block
 
     VAR  shift, and go to state 13
 
@@ -1296,7 +1296,7 @@ State 94
 
 State 95
 
-   21 procedure_def: PROCEDURE $@4 IDENT procedure_params SEMICOLON block .
+   21 procedure_def: PROCEDURE IDENT $@4 procedure_params SEMICOLON block .
 
     $default  reduce using rule 21 (procedure_def)
 

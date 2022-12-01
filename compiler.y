@@ -6,6 +6,7 @@
 #include "compiler.h"
 
 char string_buffer[69];
+char string_buffer2[69];
 symbol_table table;
 stack_t e_stack, f_stack, t_stack, label_stack;
 
@@ -122,16 +123,40 @@ procedures: procedures procedure_def | procedure_def;
 
 procedure_def:
     PROCEDURE
-    {level++;}
     IDENT
-    procedure_params SEMICOLON block {level--;}
+    {
+        level++;
+
+        label_count++;
+        
+        // JUMP OUT OF PROCEDURE
+        stack_push(&label_stack, label_count);
+        sprintf(string_buffer, "DSVS R%.2d", label_count);
+        generate_code(NULL, string_buffer);
+        
+        // ENTER PROCEDURE
+        label_count++;  
+        sprintf(string_buffer, "R%.2d", label_count);
+        sprintf(string_buffer2, "ENPR %d", level);
+
+        generate_code(string_buffer, string_buffer2);
+        insert_symbol_table_proc(&table, level, token, label_count);
+    }
+    procedure_params SEMICOLON block
+    {
+        // PROCEDURE END
+        stack_pop(&label_stack, &return_label);
+        sprintf(string_buffer, "R%.2d", return_label);
+        generate_code(string_buffer, "NADA");
+        level--;
+    }
 ;
 
 procedure_params:
     OPEN_PARENTHESIS
     { param_count = 0;}
     declare_params
-    { update_symbol_table_offset(&table, param_count);}
+    { update_symbol_table_offset(&table, param_count, level);}
     CLOSE_PARENTHESIS |
 ;
 
@@ -166,11 +191,13 @@ id_param_list:
     { /* last symbol insert */
         insert_symbol_table_param(&table, level, token, by_reference);
         list_size++;
+        param_count++;
     }
     | IDENT
     { /* first to penultimate symbol insert */
         insert_symbol_table_param(&table, level, token, by_reference);
         list_size++;
+        param_count++;
     }
 ;
 
@@ -192,7 +219,7 @@ read:
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &read_level, &read_offset);
         generate_code(NULL, "LEIT");
-        sprintf(string_buffer, "ARMZ %d, %d", read_level, read_offset);
+        sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
         generate_code(NULL, string_buffer);
     }
     CLOSE_PARENTHESIS SEMICOLON
@@ -291,7 +318,7 @@ assignment:
         if (left_side_type != expr_type)
             print_error("LS Type Error");
 
-        sprintf(string_buffer, "ARMZ %d %d", left_side_level, left_side_offset);
+        sprintf(string_buffer, "ARMZ %d,%d", left_side_level, left_side_offset);
         generate_code(NULL, string_buffer);
     }
 ;
@@ -408,7 +435,7 @@ F:
         // load value
         int level, offset;
         search_symbol_table(&table, token, &level, &offset);
-        sprintf(string_buffer, "CRVL %d %d", level, offset);
+        sprintf(string_buffer, "CRVL %d,%d", level, offset);
         generate_code(NULL, string_buffer);
     }
 

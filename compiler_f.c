@@ -249,9 +249,9 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name, bool 
 	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
 }
 
-void update_symbol_table_offset(symbol_table *table, int symbols_to_update)
+void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int level)
 {
-    int offset = -4;
+    int offset = level - 4;
 	int i = table->size;
 	while (i > table->size - symbols_to_update)
 	{
@@ -264,4 +264,25 @@ void update_symbol_table_offset(symbol_table *table, int symbols_to_update)
         offset--;
 		i--;
 	}
+}
+
+void insert_symbol_table_proc(symbol_table *table, int level, char *name, int label)
+{
+	int possible_level, possible_offset;
+	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
+		if (possible_level == level)
+			print_error("Same variable name on same lexical level\n");
+
+	table->size += 1;
+	table->stack[table->size].level = level;
+	table->stack[table->size].type = -1;
+    table->stack[table->size].category = PROCEDURE_CATEGORY;
+    table->stack[table->size].label = label;
+
+
+	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
+	if (table->stack[table->size].name == NULL)
+		print_error("malloc() FAILED\n");
+
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
 }
