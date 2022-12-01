@@ -68,7 +68,7 @@ block:
 /* VARIABLE DECLARATION */
 
 declaring_vars_block:
-    VAR declare_vars |;
+    VAR declare_vars | %empty ;
 
 declare_vars:
     declare_vars declare_var | declare_var;
@@ -119,7 +119,7 @@ idents_list: idents_list COMMA IDENT | IDENT;
 
 /* PROCEDURES */
 
-declaring_procedures_block: procedures | ;
+declaring_procedures_block: procedures | %empty  ;
 
 procedures: procedures procedure_def | procedure_def;
 
@@ -173,7 +173,7 @@ procedure_params:
         table.stack[proc_index].param_num = param_count;
     
     }
-    CLOSE_PARENTHESIS |
+    CLOSE_PARENTHESIS | %empty 
 ;
 
 declare_params: declare_params declare_param | declare_param;
@@ -203,7 +203,7 @@ declare_param:
 ;
 
 by_reference_or_not:
-    VAR {by_reference = true;} | {by_reference = false;}
+    VAR {by_reference = true;} |  %empty {by_reference = false;}
 ;
 
 id_param_list:
@@ -222,7 +222,7 @@ id_param_list:
 ;
 
 
-optional_semicolon: SEMICOLON | ;
+optional_semicolon: SEMICOLON | %empty  ;
 
 /* COMMANDS */
 
@@ -325,7 +325,7 @@ cond_else :
 
         stack_push(&label_stack, label_count);
     }
-    command | %prec LOWER_THAN_ELSE;
+    command |  %empty %prec LOWER_THAN_ELSE;
 
 
 /* ASSIGNMENT OPERATION */
