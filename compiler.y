@@ -145,6 +145,13 @@ procedure_def:
     procedure_params SEMICOLON block
     {
         // PROCEDURE END
+
+        sprintf(string_buffer, "RTPR %d,%d", level, param_count);
+        generate_code(NULL, string_buffer);
+
+
+
+        // OUT OF PROCEDURE
         stack_pop(&label_stack, &return_label);
         sprintf(string_buffer, "R%.2d", return_label);
         generate_code(string_buffer, "NADA");
