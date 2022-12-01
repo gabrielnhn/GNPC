@@ -29,6 +29,8 @@ int read_offset = -1;
 
 int var_category = SIMPLE_VAR_CATEGORY;
 bool by_reference;
+int proc_index;
+
 
 %}
 
@@ -165,7 +167,12 @@ procedure_params:
     OPEN_PARENTHESIS
     { param_count = 0;}
     declare_params
-    { update_symbol_table_offset(&table, param_count, level);}
+    {
+        update_symbol_table_offset(&table, param_count, level);
+        symbol_table_last_proc_index(&table, &proc_index);
+        table.stack[proc_index].param_num = param_count;
+    
+    }
     CLOSE_PARENTHESIS |
 ;
 
@@ -186,6 +193,10 @@ declare_param:
         }
 
         update_symbol_table_type(&table, list_size, list_type);
+
+        symbol_table_last_proc_index(&table, &proc_index);
+        symbol_table_update_proc_param_array(&table, proc_index, list_size, list_type, by_reference);
+
         print_symbol_table(&table);
     }
     optional_semicolon
@@ -219,7 +230,15 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop | conditional | read | write;
+command: assignment | compound_command | loop | conditional | read | write | procedure_call;
+
+procedure_call:
+    IDENT
+    {
+        bool search_symbol_table_index(symbol_table *table, char *name, int *index);
+    }
+
+
 
 /* READ and WRITE*/
 read:
@@ -234,10 +253,10 @@ read:
     CLOSE_PARENTHESIS SEMICOLON
 ;
 
-write: WRITE OPEN_PARENTHESIS boolean_expr_list CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS SEMICOLON;
 
-boolean_expr_list:
-    boolean_expr_list COMMA boolean_expr
+write_boolean_expr_list:
+    write_boolean_expr_list COMMA boolean_expr
     { generate_code(NULL, "IMPR");}
     | boolean_expr
     { generate_code(NULL, "IMPR");}

@@ -122,6 +122,14 @@ void print_symbol_table(symbol_table *table)
         if (s.category == PARAM_CATEGORY)
             printf("Byref:%d", s.by_reference);
 
+        if ((s.category == PROCEDURE_CATEGORY) or (s.category == FUNCTION_CATEGORY))
+        {
+            printf("|");
+            for(int i = 0; i <= s.param_num; i++)
+                printf("[t%d, byr%d], ", s.param_types[i], s.param_byrefs[i]);
+            printf("|");
+        }
+
         printf("\n"); 
 	}
 }
@@ -278,6 +286,8 @@ void insert_symbol_table_proc(symbol_table *table, int level, char *name, int la
 	table->stack[table->size].type = -1;
     table->stack[table->size].category = PROCEDURE_CATEGORY;
     table->stack[table->size].label = label;
+    table->stack[table->size].param_types[0] = -1;
+    table->stack[table->size].param_byrefs[0] = -1;
 
 
 	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
@@ -304,5 +314,45 @@ void remove_symbols_from_table_until_proc(symbol_table *table)
 		i--;
 	    table->size -= 1;
 	}
+
+}
+
+bool symbol_table_last_proc_index(symbol_table *table, int *index)
+{
+	for (int i = table->size; i >= 0; i--)
+	{
+        if ((table->stack[i].category == PROCEDURE_CATEGORY) or (table->stack[i].category == FUNCTION_CATEGORY))
+        {
+			*index = i;
+			return true;
+		}
+	}
+	// not found
+	return false;
+}
+
+void symbol_table_update_proc_param_array(symbol_table *table, int index, int params_to_update, int type, bool byref)
+{
+    symbol_t* proc = &(table->stack[index]);
+
+    int where_to_start = 0;
+    while(proc->param_types[where_to_start] != -1)
+    {
+        where_to_start++;
+        if ((where_to_start + params_to_update - 1) > MAX_PARAMS)
+        {
+            print_error("All params were filled?");
+        }
+    }
+
+    int i;
+    for(i = where_to_start; i < where_to_start + params_to_update; i++)
+    {
+        proc->param_byrefs[i] = byref;
+        proc->param_types[i] = type;
+    }
+
+    proc->param_byrefs[i] = -1;
+    proc->param_types[i] = -1;
 
 }

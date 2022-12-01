@@ -51,6 +51,8 @@ void yyerror(const char *s);
 ///// symbol table
 #define MAX_SYMBOLS 69420
 #define MAX_SYMBOL_NAME 100
+#define MAX_PARAMS 50
+
 #include <string.h>
 #include <stdio.h>
 #include <iso646.h>
@@ -76,6 +78,11 @@ typedef struct
     char* name;
     bool by_reference;
     int label;
+
+    int param_types[MAX_PARAMS];
+    int param_byrefs[MAX_PARAMS];
+    int param_num;
+
 } symbol_t;
 
 typedef struct
@@ -126,3 +133,6 @@ void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int 
 void insert_symbol_table_proc(symbol_table *table, int level, char *name, int label);
 
 void remove_symbols_from_table_until_proc(symbol_table *table);
+bool symbol_table_last_proc_index(symbol_table *table, int *index);
+
+void symbol_table_update_proc_param_array(symbol_table *table, int index, int params_to_update, int type, bool byref);
