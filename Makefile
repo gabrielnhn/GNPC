@@ -13,7 +13,7 @@ compiler.tab.c: compiler.y compiler.h
 	bison compiler.y -d -v
 
 compiler.o : compiler.h compiler_f.c
-	gcc -c compiler_f.c  -o compiler.o 
+	gcc -g -c compiler_f.c  -o compiler.o 
 
 clean :
 	rm -f compiler.tab.* lex.yy.c compiler.o compiler

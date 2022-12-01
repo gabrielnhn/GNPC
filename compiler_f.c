@@ -124,10 +124,10 @@ void print_symbol_table(symbol_table *table)
 
         if ((s.category == PROCEDURE_CATEGORY) or (s.category == FUNCTION_CATEGORY))
         {
-            printf("|");
+            printf("{");
             for(int i = 0; i < s.param_num; i++)
                 printf("[t%d, byr%d], ", s.param_types[i], s.param_byrefs[i]);
-            printf("|");
+            printf("}");
         }
 
         printf("\n"); 
@@ -288,6 +288,7 @@ void insert_symbol_table_proc(symbol_table *table, int level, char *name, int la
     table->stack[table->size].label = label;
     table->stack[table->size].param_types[0] = -1;
     table->stack[table->size].param_byrefs[0] = -1;
+    table->stack[table->size].param_num = 0;
 
 
 	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
@@ -339,7 +340,7 @@ void symbol_table_update_proc_param_array(symbol_table *table, int index, int pa
     while(proc->param_types[where_to_start] != -1)
     {
         where_to_start++;
-        if ((where_to_start + params_to_update - 1) > MAX_PARAMS)
+        if ((where_to_start + params_to_update - 1) > MAX_PARAMS_SIZE)
         {
             print_error("All params were filled?");
         }

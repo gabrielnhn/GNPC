@@ -46,12 +46,10 @@ int yylex();
 void yyerror(const char *s);
 
 
-
-
 ///// symbol table
-#define MAX_SYMBOLS 69420
+#define MAX_SYMBOLS 420
 #define MAX_SYMBOL_NAME 100
-#define MAX_PARAMS 50
+#define MAX_PARAMS_SIZE 50
 
 #include <string.h>
 #include <stdio.h>
@@ -79,8 +77,8 @@ typedef struct
     bool by_reference;
     int label;
 
-    int param_types[MAX_PARAMS];
-    int param_byrefs[MAX_PARAMS];
+    int param_types[MAX_PARAMS_SIZE];
+    int param_byrefs[MAX_PARAMS_SIZE];
     int param_num;
 
 } symbol_t;
