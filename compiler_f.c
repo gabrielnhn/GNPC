@@ -125,7 +125,7 @@ void print_symbol_table(symbol_table *table)
         if ((s.category == PROCEDURE_CATEGORY) or (s.category == FUNCTION_CATEGORY))
         {
             printf("|");
-            for(int i = 0; i <= s.param_num; i++)
+            for(int i = 0; i < s.param_num; i++)
                 printf("[t%d, byr%d], ", s.param_types[i], s.param_byrefs[i]);
             printf("|");
         }

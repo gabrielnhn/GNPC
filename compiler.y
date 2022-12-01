@@ -333,11 +333,16 @@ cond_else :
 assignment:
     IDENT
     {
+        printf("LEFT SIDE OPERAND IS %s\n", token);
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &left_side_level, &left_side_offset);
         search_symbol_table_index(&table, token, &left_side_index);
     }
-    ASSIGNMENT boolean_expr SEMICOLON
+    ASSIGNMENT
+    {
+        printf("READ :=:=:=:=\n");
+    }
+    boolean_expr SEMICOLON
     {
         int expr_type;
         stack_pop(&e_stack, &expr_type);
@@ -354,13 +359,6 @@ assignment:
 /* BOOLEAN EXPRESSIONS */
 
 boolean_expr:
-
-    // FUNCTION CALL
-    /* IDENT
-    {
-
-    } | */
-
 
     arithmetic_expr |
     boolean_expr EQUAL arithmetic_expr
