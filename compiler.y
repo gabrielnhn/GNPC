@@ -40,6 +40,17 @@ int parsed_params;
 
 %}
 
+%union
+{
+    char text[TOKEN_SIZE];
+    int ival;
+    double dub;
+};
+
+%token <text> s1 s2
+%token <ival> s3
+%token <dub>  s4
+
 %token PROGRAM OPEN_PARENTHESIS CLOSE_PARENTHESIS
 %token COMMA SEMICOLON COLON DOT
 %token T_BEGIN T_END VAR IDENT ASSIGNMENT
@@ -403,10 +414,9 @@ cond_else :
 assignment_operation:
     IDENT
     {
-        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
-        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
-        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
-        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
+        // printf("\n\ntoken: '%s'\n $1: '%s'", token, $<text>1);
+
+        strcpy(token, $<text>1);
 
         printf("\nIDENT LEFT SIDE OF ASSIGNMENT\n");
         assert_symbol_exists(&table, token);
