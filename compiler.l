@@ -185,7 +185,7 @@ write      { symbol = symb_write;
           return MINUS;
  }
 
-:= { symbol = symb_assignment;
+\:= { symbol = symb_assignment;
           strncpy (token, yytext, TOKEN_SIZE);
           PRINT(" assignment  ");
           return ASSIGNMENT;

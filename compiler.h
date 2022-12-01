@@ -13,6 +13,8 @@
 
 #define TOKEN_SIZE 16
 
+#define YYDEBUG 1
+
 typedef enum symbols
 {
     symb_program, symb_var, symb_begin, symb_end,

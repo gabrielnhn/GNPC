@@ -53,10 +53,9 @@ int parsed_params;
 %nonassoc ELSE
 %define parse.error verbose
 %define parse.assert true
-%define parse.lac full
+%define parse.lac none
+%define lr.default-reduction consistent
 
-%precedence "IDENT"
-%precedence "boolean_expr"
 
 %%
 
@@ -242,26 +241,26 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-/* command: assignment | compound_command | loop | conditional | read | write; */
-command: assignment | compound_command | loop | conditional | read | write | procedure_call;
+/* command: assignment_operation | compound_command | loop | conditional | read | write; */
+command: assignment_operation  | loop | conditional | read | write | procedure_call;
 
 
 procedure_call:
     IDENT
     {
-        // assert_symbol_exists(&table, token);
-        // search_symbol_table_index(&table, token, &proc_index);
-        // assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
-        // symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
-        // parsed_params = 0;
         printf("BRUH");
+        assert_symbol_exists(&table, token);
+        search_symbol_table_index(&table, token, &proc_index);
+        assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
+        symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
+        parsed_params = 0;
     } 
-    procedure_arguments 
+    OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
     SEMICOLON
 ;
 
 procedure_arguments:
-    OPEN_PARENTHESIS args_list CLOSE_PARENTHESIS
+    args_list 
 ;
 
 args_list: args_list COMMA ARGUMENT | ARGUMENT;
@@ -269,7 +268,6 @@ args_list: args_list COMMA ARGUMENT | ARGUMENT;
 ARGUMENT: 
     IDENT
     {
-        printf("IDENT ARGUMENT OF PROCEDURE");
         // load var
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
@@ -310,12 +308,11 @@ ARGUMENT:
 
 
 
-
-
 /* READ and WRITE*/
 read:
     READ OPEN_PARENTHESIS IDENT
     {
+        printf("\nIDENT ARGUMENT OF READ()\n");
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &read_level, &read_offset);
         generate_code(NULL, "LEIT");
@@ -403,9 +400,15 @@ cond_else :
 
 /* ASSIGNMENT OPERATION */
 
-assignment:
+assignment_operation:
     IDENT
     {
+        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
+        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
+        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
+        printf("\nyyt: '%s'\ntoken: '%s'\n $1: '%s'", yylex, token, $1);
+
+        printf("\nIDENT LEFT SIDE OF ASSIGNMENT\n");
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &left_side_level, &left_side_offset);
         search_symbol_table_index(&table, token, &left_side_index);
@@ -526,6 +529,7 @@ F:
     } 
     |IDENT
     {
+        printf("\nIDENT ARGUMENT OF boolean_expr\n");
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
 
@@ -554,6 +558,9 @@ F:
 /* MAIN */
 
 int main (int argc, char** argv) {
+
+    yydebug = 1;
+
     FILE* fp;
     extern FILE* yyin;
 

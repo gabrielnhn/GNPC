@@ -1,8 +1,9 @@
 program exemplo75 (input, output);
-var m,n :  integer;
+var b,n :  integer;
 begin    
 
-    m := 2;
+    b := 2;
+    n := b;
 
 end.
 
