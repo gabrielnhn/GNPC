@@ -52,7 +52,7 @@ void init_symbol_table(symbol_table *table)
 	table->size = -1;
 }
 
-void insert_symbol_table(symbol_table *table, int level, int offset, char *name, int category)
+void insert_symbol_table_simple_var(symbol_table *table, int level, int offset, char *name)
 {
 	int possible_level, possible_offset;
 	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
@@ -68,6 +68,7 @@ void insert_symbol_table(symbol_table *table, int level, int offset, char *name,
 	table->stack[table->size].level = level;
 	table->stack[table->size].offset = offset;
 	table->stack[table->size].type = -1;
+    table->stack[table->size].category = SIMPLE_VAR_CATEGORY;
 
 	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
 
@@ -221,4 +222,40 @@ int assert_equal_types(stack_t* a, stack_t* b)
 	}
 
 	return a_type;
+}
+
+void insert_symbol_table_param(symbol_table *table, int level, char *name)
+{
+	int possible_level, possible_offset;
+	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
+		if (possible_level == level)
+			print_error("Same variable name on same lexical level\n");
+
+	table->size += 1;
+	table->stack[table->size].level = level;
+	table->stack[table->size].type = -1;
+    table->stack[table->size].category = PARAM_CATEGORY;
+
+	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
+	if (table->stack[table->size].name == NULL)
+		print_error("malloc() FAILED\n");
+
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+}
+
+void update_symbol_table_offset(symbol_table *table, int symbols_to_update)
+{
+    int offset = -4;
+	int i = table->size;
+	while (i > table->size - symbols_to_update)
+	{
+		if (i < 0)
+		{
+			print_error("Trying to set type of non-existing symbol\n");
+		}
+
+		table->stack[i].offset = offset;
+        offset--;
+		i--;
+	}
 }

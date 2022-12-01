@@ -62,6 +62,8 @@ void yyerror(const char *s);
 
 #define SIMPLE_VAR_CATEGORY 1
 #define PROCEDURE_CATEGORY 2
+#define PARAM_CATEGORY 2
+
 
 
 typedef struct
@@ -95,7 +97,7 @@ typedef struct
 int print_error ( char* erro );
 
 void init_symbol_table(symbol_table* table);
-void insert_symbol_table(symbol_table* table, int level, int offset, char* name, int category);
+void insert_symbol_table_simple_var(symbol_table* table, int level, int offset, char* name);
 void update_symbol_table_type(symbol_table* table, int symbols_to_update, int type);
 void remove_symbols_from_table(symbol_table* table, int symbols_to_remove);
 void print_symbol_table(symbol_table* table);
@@ -115,4 +117,7 @@ bool stack_pop(stack_t *stack, int* x);
 void assert_symbol_exists(symbol_table *table, char *name);
 // void assert_equals(int a, int b);
 int assert_equal_types(stack_t* a, stack_t* b);
+
+void insert_symbol_table_param(symbol_table *table, int level, char *name);
+void update_symbol_table_offset(symbol_table *table, int symbols_to_update);
 

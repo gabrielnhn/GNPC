@@ -1,8 +1,3 @@
-
-// Testar se funciona corretamente o empilhamento de par�metros
-// passados por valor ou por refer�ncia.
-
-
 %{
 #include <stdio.h>
 #include <ctype.h>
@@ -11,12 +6,14 @@
 #include "compiler.h"
 
 char string_buffer[69];
-
-int num_vars;
 symbol_table table;
 stack_t e_stack, f_stack, t_stack, label_stack;
+
+int num_vars, comparison, symbol_index;
+
 int label_count = -1;
 int list_size = 0;
+int param_count;
 int level = 0;
 int offset = 0;
 int list_type = -1;
@@ -29,12 +26,7 @@ int return_label = -1;
 int read_level = -1;
 int read_offset = -1;
 
-int comparison;
-int symbol_index;
-
-
 int var_category = SIMPLE_VAR_CATEGORY;
-
 
 %}
 
@@ -65,7 +57,9 @@ block DOT
     generate_code (NULL, "PARA");
 };
 
-block: declaring_vars_block compound_command;
+block: declaring_vars_block  declaring_procedures_block compound_command;
+
+/* VARIABLE DECLARATION */
 
 declaring_vars_block: VAR declare_vars |;
 
@@ -73,7 +67,7 @@ declare_vars: declare_vars declare_var | declare_var;
 
 declare_var:
 {list_size = 0;}
-id_var_list COLON type
+id_simple_var_list COLON type
 { 
     /* AMEM */
     sprintf(string_buffer, "AMEM %d", list_size);
@@ -94,24 +88,78 @@ SEMICOLON;
 
 type: IDENT;
 
-id_var_list: id_var_list COMMA IDENT
-{ /* insere ultima vars na tabela de simbolos */
+id_simple_var_list: id_simple_var_list COMMA IDENT
+{ /* last symbol insert */
     
-    insert_symbol_table(&table, level, offset, token, var_category);
+    insert_symbol_table_simple_var(&table, level, offset, token);
     offset++;
     list_size++;
     
 }
 | IDENT
-{ /* insere vars na tabela de simbolos */
+{ /* first to penultimate symbol insert */
     
-    insert_symbol_table(&table, level, offset, token, var_category);
+    insert_symbol_table_simple_var(&table, level, offset, token);
     offset++;
     list_size++;
-
 };
 
 idents_list: idents_list COMMA IDENT | IDENT;
+
+/* PROCEDURES */
+
+declaring_procedures_block: procedures | ;
+
+procedures: procedures procedure_def | procedure_def;
+
+procedure_def: PROCEDURE IDENT SEMICOLON block
+
+| PROCEDURE IDENT OPEN_PARENTHESIS
+{ param_count = 0; }
+declare_params
+{
+    update_symbol_table_offset(&table, param_count);
+}
+CLOSE_PARENTHESIS SEMICOLON block; 
+
+
+declare_params: declare_params declare_param | declare_param;
+
+
+declare_param:
+{list_size = 0;}
+id_param_list COLON type
+{ 
+    /* SET VARIABLE TYPES */
+    list_type = get_type(token);
+    if (not list_type)
+    {
+        sprintf(string_buffer, "Unsupported type '%s'", token);
+        print_error(string_buffer);
+    }
+
+    update_symbol_table_type(&table, list_size, list_type);
+    print_symbol_table(&table);
+}
+optional_semicolon;
+
+id_param_list: id_simple_var_list COMMA IDENT
+{ /* last symbol insert */
+    insert_symbol_table_param(&table, level, token);
+    list_size++;
+}
+| IDENT
+{ /* first to penultimate symbol insert */
+    insert_symbol_table_param(&table, level, token);
+    list_size++;
+};
+
+
+
+optional_semicolon: SEMICOLON | ;
+
+
+/* COMMANDS */
 
 compound_command: T_BEGIN commands T_END;
 
