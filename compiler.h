@@ -134,3 +134,6 @@ void remove_symbols_from_table_until_proc(symbol_table *table);
 bool symbol_table_last_proc_index(symbol_table *table, int *index);
 
 void symbol_table_update_proc_param_array(symbol_table *table, int index, int params_to_update, int type, bool byref);
+void symbol_table_get_proc_arrays(symbol_table *table, int index, int** types, int** byrefs, int* num);
+
+int assert_equal_things(int a, int b, char* thing);

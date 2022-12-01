@@ -31,6 +31,12 @@ int var_category = SIMPLE_VAR_CATEGORY;
 bool by_reference;
 int proc_index;
 
+int* proc_types;
+int* proc_byrefs;
+int proc_num_params;
+int parsed_params;
+
+
 
 %}
 
@@ -46,6 +52,11 @@ int proc_index;
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %define parse.error verbose
+%define parse.assert true
+%define parse.lac full
+
+%precedence "IDENT"
+%precedence "boolean_expr"
 
 %%
 
@@ -231,13 +242,73 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment | compound_command | loop | conditional | read | write;
+/* command: assignment | compound_command | loop | conditional | read | write; */
+command: assignment | compound_command | loop | conditional | read | write | procedure_call;
+
 
 procedure_call:
     IDENT
     {
-        bool search_symbol_table_index(symbol_table *table, char *name, int *index);
+        // assert_symbol_exists(&table, token);
+        // search_symbol_table_index(&table, token, &proc_index);
+        // assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
+        // symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
+        // parsed_params = 0;
+        printf("BRUH");
+    } 
+    procedure_arguments 
+    SEMICOLON
+;
+
+procedure_arguments:
+    OPEN_PARENTHESIS args_list CLOSE_PARENTHESIS
+;
+
+args_list: args_list COMMA ARGUMENT | ARGUMENT;
+
+ARGUMENT: 
+    IDENT
+    {
+        printf("IDENT ARGUMENT OF PROCEDURE");
+        // load var
+        assert_symbol_exists(&table, token);
+        printf("\nLOAD VARIABLE %s\n", token);
+
+        // get type
+        search_symbol_table_index(&table, token, &symbol_index);
+        int type = table.stack[symbol_index].type;
+        int by_reference = table.stack[symbol_index].by_reference;
+
+        assert_equal_things(type, proc_types[parsed_params], "Type");
+        assert_equal_things(by_reference, proc_byrefs[parsed_params], "By Reference");
+
+        int level, offset;
+        search_symbol_table(&table, token, &level, &offset);
+        
+        if (not by_reference)
+            // load value
+            sprintf(string_buffer, "CRVL %d,%d", level, offset);
+        else
+            // load address
+            sprintf(string_buffer, "CREN %d,%d", level, offset);
+        
+        generate_code(NULL, string_buffer);
+        parsed_params++;
     }
+    | boolean_expr 
+    {
+        // get expr type
+        int type;
+        stack_pop(&e_stack, &type);
+
+        assert_equal_things(type, proc_types[parsed_params], "Type");
+        assert_equal_things(false, proc_byrefs[parsed_params], "By Reference");
+
+        parsed_params++;
+    }
+;
+
+
 
 
 
@@ -326,7 +397,8 @@ cond_else :
 
         stack_push(&label_stack, label_count);
     }
-    command |  %empty %prec LOWER_THAN_ELSE;
+    command |  %empty %prec LOWER_THAN_ELSE
+;
 
 
 /* ASSIGNMENT OPERATION */
@@ -334,17 +406,11 @@ cond_else :
 assignment:
     IDENT
     {
-        printf("LEFT SIDE OPERAND IS %s\n", token);
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &left_side_level, &left_side_offset);
         search_symbol_table_index(&table, token, &left_side_index);
-        printf("ASSERTED %s\n", token);
     }
-    ASSIGNMENT
-    {
-        printf("READ :=:=:=:=\n");
-    }
-    boolean_expr SEMICOLON
+    ASSIGNMENT boolean_expr SEMICOLON
     {
         int expr_type;
         stack_pop(&e_stack, &expr_type);

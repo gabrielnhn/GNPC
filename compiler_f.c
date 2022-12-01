@@ -41,7 +41,7 @@ void generate_code(char *rot, char *comando)
 
 int print_error(char *erro)
 {
-	fprintf(stderr, "Error on line %d - %s\n", nl, erro);
+	fprintf(stderr, "Error on line %d: %s\n", nl, erro);
 	exit(-1);
 }
 
@@ -184,7 +184,7 @@ void assert_symbol_exists(symbol_table *table, char *name)
 	int symbol_index;
 	if (search_symbol_table_index(table, token, &symbol_index) == false)
 	{
-		sprintf(a_string_buffer, "Variable %s does not exist", token);
+		sprintf(a_string_buffer, "Name '%s' does not exist", token);
 		print_error(a_string_buffer);
 	}
 }
@@ -356,4 +356,28 @@ void symbol_table_update_proc_param_array(symbol_table *table, int index, int pa
     proc->param_byrefs[i] = -1;
     proc->param_types[i] = -1;
 
+}
+
+void symbol_table_get_proc_arrays(symbol_table *table, int index, int** types, int** byrefs, int* num)
+{
+    symbol_t* proc = &(table->stack[index]);
+
+    if ((proc->category != FUNCTION_CATEGORY) and (proc->category != PROCEDURE_CATEGORY))
+        print_error("Symbol is not a procedure/function");
+
+    *byrefs = proc->param_byrefs;
+    *types = proc->param_types;
+    *num = proc->param_num;
+}
+
+int assert_equal_things(int a, int b, char* thing)
+{
+
+	if (a != b)
+	{
+        sprintf(a_string_buffer, "%s Error", thing);
+		print_error(a_string_buffer);
+	}
+
+	return a;
 }
