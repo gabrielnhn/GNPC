@@ -47,10 +47,6 @@ int parsed_params;
     double dub;
 };
 
-%token <text> s1 s2
-%token <ival> s3
-%token <dub>  s4
-
 %token PROGRAM OPEN_PARENTHESIS CLOSE_PARENTHESIS
 %token COMMA SEMICOLON COLON DOT
 %token T_BEGIN T_END VAR IDENT ASSIGNMENT
@@ -183,6 +179,9 @@ procedure_def:
         generate_code(string_buffer, "NADA");
         level--;
     }
+
+    // FUNCTION (WITH RETURN VALUE) */
+
 ;
 
 procedure_params:
@@ -342,8 +341,22 @@ read:
         printf("\nIDENT ARGUMENT OF READ()\n");
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &read_level, &read_offset);
+
+        int symbol_index;
+        search_symbol_table_index(&table, token, &symbol_index);
+        int category = table.stack[left_side_index].category;
+        bool byref = table.stack[left_side_index].by_reference;
+
+        if (category == PROCEDURE_CATEGORY)
+            print_error("Trying to READ procedure?");
+
         generate_code(NULL, "LEIT");
-        sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
+
+        if (byref)
+            sprintf(string_buffer, "ARMI %d,%d", read_level, read_offset);
+        else
+            sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
+
         generate_code(NULL, string_buffer);
     }
     CLOSE_PARENTHESIS SEMICOLON
@@ -444,11 +457,15 @@ assignment_operation:
         int expr_type;
         stack_pop(&e_stack, &expr_type);
         left_side_type = table.stack[left_side_index].type;
+        bool byref = table.stack[left_side_index].by_reference;
 
         if (left_side_type != expr_type)
             print_error("LS Type Error");
 
-        sprintf(string_buffer, "ARMZ %d,%d", left_side_level, left_side_offset);
+        if (byref)
+            sprintf(string_buffer, "ARMI %d,%d", left_side_level, left_side_offset);
+        else
+            sprintf(string_buffer, "ARMZ %d,%d", left_side_level, left_side_offset);
         generate_code(NULL, string_buffer);
     }
 ;
@@ -562,12 +579,18 @@ F:
         // stack type
         search_symbol_table_index(&table, token, &symbol_index);
         int type = table.stack[symbol_index].type;
+        bool byref = table.stack[symbol_index].by_reference;
         stack_push(&f_stack, type);
 
         // load value
         int level, offset;
         search_symbol_table(&table, token, &level, &offset);
-        sprintf(string_buffer, "CRVL %d,%d", level, offset);
+
+        if (byref)
+            sprintf(string_buffer, "CREN %d,%d", level, offset);
+        else
+            sprintf(string_buffer, "CRVL %d,%d", level, offset);
+
         generate_code(NULL, string_buffer);
     }
 

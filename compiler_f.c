@@ -381,3 +381,28 @@ int assert_equal_things(int a, int b, char* thing)
 
 	return a;
 }
+
+
+void insert_symbol_table_function(symbol_table *table, int level, char *name, int label)
+{
+	int possible_level, possible_offset;
+	if (search_symbol_table(table, name, &possible_level, &possible_offset) == true)
+		if (possible_level == level)
+			print_error("Same variable name on same lexical level\n");
+
+	table->size += 1;
+	table->stack[table->size].level = level;
+	table->stack[table->size].type = -1;
+    table->stack[table->size].category = PROCEDURE_CATEGORY;
+    table->stack[table->size].label = label;
+    table->stack[table->size].param_types[0] = -1;
+    table->stack[table->size].param_byrefs[0] = -1;
+    table->stack[table->size].param_num = 0;
+
+
+	table->stack[table->size].name = (char *)malloc(strnlen(name, MAX_SYMBOL_NAME) + 1);
+	if (table->stack[table->size].name == NULL)
+		print_error("malloc() FAILED\n");
+
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+}
