@@ -298,7 +298,7 @@ void insert_symbol_table_proc(symbol_table *table, int level, char *name, int la
 	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
 }
 
-void remove_symbols_from_table_until_proc(symbol_table *table)
+void remove_symbols_from_table_until_proc(symbol_table *table, int level)
 {
 	int i = table->size;
 	while (true)
@@ -308,7 +308,7 @@ void remove_symbols_from_table_until_proc(symbol_table *table)
 			print_error("Trying to remove non-existing symbol\n");
 		}
 
-        if ((table->stack[i].category == PROCEDURE_CATEGORY) or (table->stack[i].category == FUNCTION_CATEGORY))
+        if ((table->stack[i].level == level) and ((table->stack[i].category == PROCEDURE_CATEGORY) or (table->stack[i].category == FUNCTION_CATEGORY)))
             break;
 
 		free(table->stack[i].name);

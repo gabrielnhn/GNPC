@@ -168,8 +168,9 @@ procedure_def:
         sprintf(string_buffer, "RTPR %d,%d", level, param_count);
         generate_code(NULL, string_buffer);
 
+        print_symbol_table(&table);
         // REMOVE SYMBOLS
-        remove_symbols_from_table_until_proc(&table);
+        remove_symbols_from_table_until_proc(&table, level);
         print_symbol_table(&table);
 
 
@@ -608,7 +609,7 @@ F:
 
 int main (int argc, char** argv) {
 
-    yydebug = 1;
+    /* yydebug = 1; */
 
     FILE* fp;
     extern FILE* yyin;

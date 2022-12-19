@@ -27,7 +27,7 @@ newline [\n]
 
 discard [\t ]+
 
-ident [a-zA-Z][a-zA-Z0-9]*
+ident [a-zA-Z][a-z_A-Z0-9]*
 
 number [0-9]+
 

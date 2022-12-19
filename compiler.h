@@ -132,7 +132,7 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name, bool 
 void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int level);
 void insert_symbol_table_proc(symbol_table *table, int level, char *name, int label);
 
-void remove_symbols_from_table_until_proc(symbol_table *table);
+void remove_symbols_from_table_until_proc(symbol_table *table, int level);
 bool symbol_table_last_proc_index(symbol_table *table, int *index);
 
 void symbol_table_update_proc_param_array(symbol_table *table, int index, int params_to_update, int type, bool byref);
