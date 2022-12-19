@@ -86,7 +86,7 @@ block:
 /* VARIABLE DECLARATION */
 
 declaring_vars_block:
-    VAR declare_vars | %empty ;
+    VAR {offset = 0;} declare_vars | %empty ;
 
 declare_vars:
     declare_vars declare_var | declare_var;

@@ -259,7 +259,8 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name, bool 
 
 void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int level)
 {
-    int offset = level - 4;
+    printf("Updating %d params's offset\n", symbols_to_update);
+    int offset = -4;
 	int i = table->size;
 	while (i > table->size - symbols_to_update)
 	{
