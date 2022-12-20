@@ -299,7 +299,7 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment_operation  | loop | conditional | read | write | procedure_call;
+command: assignment_operation | loop | conditional | read | write | procedure_call;
 
 procedure_call:
     IDENT
@@ -615,28 +615,35 @@ F:
         sprintf(string_buffer, "CRCT %s", token);
         generate_code(NULL, string_buffer);
     } 
-    |IDENT
+    | IDENT
     {
         printf("\nIDENT ARGUMENT OF boolean_expr\n");
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
+        search_symbol_table_index(&table, token, &symbol_index);
 
         // stack type
-        search_symbol_table_index(&table, token, &symbol_index);
         int type = table.stack[symbol_index].type;
         bool byref = table.stack[symbol_index].by_reference;
         stack_push(&f_stack, type);
 
-        // load value
-        int level, offset;
-        search_symbol_table(&table, token, &level, &offset);
 
-        if (byref)
-            sprintf(string_buffer, "CREN %d,%d", level, offset);
-        else
-            sprintf(string_buffer, "CRVL %d,%d", level, offset);
+        int category = table.stack[symbol_index].category;
 
-        generate_code(NULL, string_buffer);
+        else // simple var OR param
+        {
+
+            // load value
+            int level, offset;
+            search_symbol_table(&table, token, &level, &offset);
+
+            if (byref)
+                sprintf(string_buffer, "CRVI %d,%d", level, offset);
+            else
+                sprintf(string_buffer, "CRVL %d,%d", level, offset);
+
+            generate_code(NULL, string_buffer);
+        }
     }
 
     | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
