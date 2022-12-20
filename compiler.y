@@ -63,7 +63,6 @@ int parsed_params;
 %define parse.lac none
 %define lr.default-reduction consistent
 
-
 %%
 
 program:
@@ -299,7 +298,12 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-command: assignment_operation | loop | conditional | read | write | procedure_call;
+/* command: assignment_operation | loop | conditional | read | write | procedure_call; */
+command: IDENT starts_with_ident | assignment_operation | loop | conditional | read | write | procedure_call;
+
+
+starts_with_ident
+
 
 procedure_call:
     IDENT
@@ -308,7 +312,12 @@ procedure_call:
 
         assert_symbol_exists(&table, token);
         search_symbol_table_index(&table, token, &proc_index);
-        assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
+        // assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
+
+        if ((table.stack[proc_index].category != PROCEDURE_CATEGORY) and (table.stack[proc_index].category != FUNCTION_CATEGORY))
+            print_error("Symbol is not function/procedure\n");
+
+
         symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
         parsed_params = 0;
 
@@ -334,7 +343,7 @@ procedure_arguments:
 args_list: args_list COMMA ARGUMENT | ARGUMENT;
 
 ARGUMENT: 
-    IDENT
+    IDENT 
     {
         strcpy(token, $<text>1);
 
@@ -615,8 +624,18 @@ F:
         sprintf(string_buffer, "CRCT %s", token);
         generate_code(NULL, string_buffer);
     } 
-    | IDENT
+    | IDENT CONTINUA_IDENT
+    
+    | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
     {
+        int type;
+        stack_pop(&e_stack, &type);
+        stack_push(&f_stack, type);
+    }
+;
+
+CONTINUA_IDENT:
+{
         printf("\nIDENT ARGUMENT OF boolean_expr\n");
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
@@ -630,29 +649,24 @@ F:
 
         int category = table.stack[symbol_index].category;
 
-        else // simple var OR param
-        {
+        // else // simple var OR param
+        // {
 
-            // load value
-            int level, offset;
-            search_symbol_table(&table, token, &level, &offset);
+        // load value
+        int level, offset;
+        search_symbol_table(&table, token, &level, &offset);
 
-            if (byref)
-                sprintf(string_buffer, "CRVI %d,%d", level, offset);
-            else
-                sprintf(string_buffer, "CRVL %d,%d", level, offset);
+        if (byref)
+            sprintf(string_buffer, "CRVI %d,%d", level, offset);
+        else
+            sprintf(string_buffer, "CRVL %d,%d", level, offset);
 
-            generate_code(NULL, string_buffer);
-        }
+        generate_code(NULL, string_buffer);
+        // }
     }
 
-    | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
-    {
-        int type;
-        stack_pop(&e_stack, &type);
-        stack_push(&f_stack, type);
-    }
-;
+    /* | { generate_code(NULL, "AMEM 1");} procedure_call */
+
 
 %%
 

@@ -210,178 +210,180 @@ Terminals, with rules where they appear
     READ (296) 59
     WRITE (297) 60
     LOWER_THAN_ELSE (298)
+    MORE_PRIORITY (299)
+    LESS_PRIORITY (300)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (44)
+    $accept (46)
         on left: 0
-    program (45)
+    program (47)
         on left: 2
         on right: 0
-    $@1 (46)
+    $@1 (48)
         on left: 1
         on right: 2
-    block (47)
+    block (49)
         on left: 3
         on right: 2 22 25
-    declaring_vars_block (48)
+    declaring_vars_block (50)
         on left: 5 6
         on right: 3
-    $@2 (49)
+    $@2 (51)
         on left: 4
         on right: 5
-    declare_vars (50)
+    declare_vars (52)
         on left: 7 8
         on right: 5 7
-    declare_var (51)
+    declare_var (53)
         on left: 11
         on right: 7 8
-    $@3 (52)
+    $@3 (54)
         on left: 9
         on right: 11
-    $@4 (53)
+    $@4 (55)
         on left: 10
         on right: 11
-    type (54)
+    type (56)
         on left: 12
         on right: 11 34
-    id_simple_var_list (55)
+    id_simple_var_list (57)
         on left: 13 14
         on right: 11 13
-    idents_list (56)
+    idents_list (58)
         on left: 15 16
         on right: 2 15
-    declaring_procedures_block (57)
+    declaring_procedures_block (59)
         on left: 17 18
         on right: 3
-    procedures (58)
+    procedures (60)
         on left: 19 20
         on right: 17 19
-    procedure_def (59)
+    procedure_def (61)
         on left: 22 25
         on right: 19 20
-    $@5 (60)
+    $@5 (62)
         on left: 21
         on right: 22
-    $@6 (61)
+    $@6 (63)
         on left: 23
         on right: 25
-    $@7 (62)
+    $@7 (64)
         on left: 24
         on right: 25
-    procedure_params (63)
+    procedure_params (65)
         on left: 28 29
         on right: 22 25
-    $@8 (64)
+    $@8 (66)
         on left: 26
         on right: 28
-    $@9 (65)
+    $@9 (67)
         on left: 27
         on right: 28
-    declare_params (66)
+    declare_params (68)
         on left: 30 31
         on right: 28 30
-    declare_param (67)
+    declare_param (69)
         on left: 34
         on right: 30 31
-    $@10 (68)
+    $@10 (70)
         on left: 32
         on right: 34
-    $@11 (69)
+    $@11 (71)
         on left: 33
         on right: 34
-    by_reference_or_not (70)
+    by_reference_or_not (72)
         on left: 35 36
         on right: 34
-    id_param_list (71)
+    id_param_list (73)
         on left: 37 38
         on right: 34 37
-    optional_semicolon (72)
+    optional_semicolon (74)
         on left: 39 40
         on right: 34
-    compound_command (73)
+    compound_command (75)
         on left: 41
         on right: 3
-    commands (74)
+    commands (76)
         on left: 42 43
         on right: 41 42
-    command (75)
+    command (77)
         on left: 44 45 46 47 48 49
         on right: 42 43 65 68 70
-    procedure_call (76)
+    procedure_call (78)
         on left: 52
         on right: 49
-    $@12 (77)
+    $@12 (79)
         on left: 50
         on right: 52
-    $@13 (78)
+    $@13 (80)
         on left: 51
         on right: 52
-    procedure_arguments (79)
+    procedure_arguments (81)
         on left: 53
         on right: 52
-    args_list (80)
+    args_list (82)
         on left: 54 55
         on right: 53 54
-    ARGUMENT (81)
+    ARGUMENT (83)
         on left: 56 57
         on right: 54 55
-    read (82)
+    read (84)
         on left: 59
         on right: 47
-    $@14 (83)
+    $@14 (85)
         on left: 58
         on right: 59
-    write (84)
+    write (86)
         on left: 60
         on right: 48
-    write_boolean_expr_list (85)
+    write_boolean_expr_list (87)
         on left: 61 62
         on right: 60 61
-    loop (86)
+    loop (88)
         on left: 65
         on right: 45
-    $@15 (87)
+    $@15 (89)
         on left: 63
         on right: 65
-    $@16 (88)
+    $@16 (90)
         on left: 64
         on right: 65
-    conditional (89)
+    conditional (91)
         on left: 66
         on right: 46
-    if_then (90)
+    if_then (92)
         on left: 68
         on right: 66
-    $@17 (91)
+    $@17 (93)
         on left: 67
         on right: 68
-    cond_else (92)
+    cond_else (94)
         on left: 70 71
         on right: 66
-    $@18 (93)
+    $@18 (95)
         on left: 69
         on right: 70
-    assignment_operation (94)
+    assignment_operation (96)
         on left: 73
         on right: 44
-    $@19 (95)
+    $@19 (97)
         on left: 72
         on right: 73
-    boolean_expr (96)
+    boolean_expr (98)
         on left: 74 75 76 77 78 79 80
         on right: 57 61 62 65 68 73 75 76 77 78 79 80 90
-    arithmetic_expr (97)
+    arithmetic_expr (99)
         on left: 81
         on right: 74 75 76 77 78 79 80
-    E (98)
+    E (100)
         on left: 82 83 84
         on right: 81 82 83
-    T (99)
+    T (101)
         on left: 85 86 87
         on right: 82 83 84 85 86
-    F (100)
+    F (102)
         on left: 88 89 90
         on right: 85 86 87
 
