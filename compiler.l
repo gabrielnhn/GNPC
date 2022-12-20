@@ -97,6 +97,14 @@ procedure      { symbol = symb_procedure;
           return PROCEDURE;
  }
 
+function      { symbol = symb_function;
+          strncpy (token, yytext, TOKEN_SIZE);
+          strncpy (yylval.text, yytext, TOKEN_SIZE);
+
+          PRINT("function  ");
+          return FUNCTION;
+ }
+
 begin { symbol = symb_begin;
           strncpy (token, yytext, TOKEN_SIZE);
           strncpy (yylval.text, yytext, TOKEN_SIZE);

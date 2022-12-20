@@ -50,7 +50,7 @@ int parsed_params;
 %token PROGRAM OPEN_PARENTHESIS CLOSE_PARENTHESIS
 %token COMMA SEMICOLON COLON DOT
 %token T_BEGIN T_END VAR IDENT ASSIGNMENT
-%token LABEL TYPE ARRAY OF PROCEDURE
+%token LABEL TYPE ARRAY OF PROCEDURE FUNCTION
 %token GOTO IF THEN ELSE WHILE DO
 %token OR AND NOT DIV ASTERISK PLUS MINUS
 %token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
@@ -146,7 +146,6 @@ procedure_def:
     IDENT
     {
         level++;
-
         label_count++;
         
         // JUMP OUT OF PROCEDURE
@@ -182,6 +181,44 @@ procedure_def:
     }
 
     // FUNCTION (WITH RETURN VALUE) */
+    |
+    FUNCTION
+    IDENT
+    {
+        level++;
+        label_count++;
+        
+        // JUMP OUT OF PROCEDURE
+        stack_push(&label_stack, label_count);
+        sprintf(string_buffer, "DSVS R%.2d", label_count);
+        generate_code(NULL, string_buffer);
+        
+        // ENTER PROCEDURE
+        label_count++;  
+        sprintf(string_buffer, "R%.2d", label_count);
+        sprintf(string_buffer2, "ENPR %d", level);
+
+        generate_code(string_buffer, string_buffer2);
+        insert_symbol_table_proc(&table, level, token, label_count);
+    }
+    procedure_params SEMICOLON block
+    {
+        // PROCEDURE RETURN
+        sprintf(string_buffer, "RTPR %d,%d", level, param_count);
+        generate_code(NULL, string_buffer);
+
+        print_symbol_table(&table);
+        // REMOVE SYMBOLS
+        remove_symbols_from_table_until_proc(&table, level);
+        print_symbol_table(&table);
+
+
+        // OUT OF PROCEDURE
+        stack_pop(&label_stack, &return_label);
+        sprintf(string_buffer, "R%.2d", return_label);
+        generate_code(string_buffer, "NADA");
+        level--;
+    }
 
 ;
 
@@ -203,7 +240,7 @@ declare_params: declare_params declare_param | declare_param;
 
 declare_param:
     by_reference_or_not
-    {list_size = 0;}
+    { list_size = 0;}
     id_param_list COLON type
     { 
         /* SET VARIABLE TYPES */
@@ -215,10 +252,8 @@ declare_param:
         }
 
         update_symbol_table_type(&table, list_size, list_type);
-
         symbol_table_last_proc_index(&table, &proc_index);
         symbol_table_update_proc_param_array(&table, proc_index, list_size, list_type, by_reference);
-
         print_symbol_table(&table);
     }
     optional_semicolon
@@ -252,9 +287,7 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-/* command: assignment_operation | compound_command | loop | conditional | read | write; */
 command: assignment_operation  | loop | conditional | read | write | procedure_call;
-
 
 procedure_call:
     IDENT
@@ -266,7 +299,6 @@ procedure_call:
         assert_equal_things(table.stack[proc_index].category, PROCEDURE_CATEGORY, "Category");
         symbol_table_get_proc_arrays(&table, proc_index, &proc_types, &proc_byrefs, &proc_num_params);
         parsed_params = 0;
-
 
         stack_push(&proc_stack, proc_index);
     } 
