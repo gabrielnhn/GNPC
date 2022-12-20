@@ -299,16 +299,16 @@ compound_command: T_BEGIN commands T_END;
 commands: commands command | command;
 
 /* command: assignment_operation | loop | conditional | read | write | procedure_call; */
-command: IDENT starts_with_ident | assignment_operation | loop | conditional | read | write | procedure_call;
+command: IDENT starts_with_ident | loop | conditional | read | write;
 
 
-starts_with_ident
+starts_with_ident: procedure_call SEMICOLON | assignment_operation;
 
 
 procedure_call:
-    IDENT
     {
-        strcpy(token, $<text>1);
+        strcpy(token, $<text>-1);
+        printf("PROCEDURE CALL TOKEN %s\n", token);
 
         assert_symbol_exists(&table, token);
         search_symbol_table_index(&table, token, &proc_index);
@@ -326,14 +326,22 @@ procedure_call:
     OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
     {
         stack_pop(&proc_stack, &proc_index);
+
         int label = table.stack[proc_index].label;
 
         sprintf(string_buffer, "CHPR R%.2d, %d", label, level);
 
         generate_code(NULL, string_buffer);
 
+        int category = table.stack[proc_index].category;
+
+        if (category == FUNCTION_CATEGORY)
+        {
+            int type = table.stack[proc_index].type;
+            stack_push(&f_stack, type);
+        }
+
     }
-    SEMICOLON
 ;
 
 procedure_arguments:
@@ -495,11 +503,10 @@ cond_else :
 /* ASSIGNMENT OPERATION */
 
 assignment_operation:
-    IDENT
     {
-        // printf("\n\ntoken: '%s'\n $1: '%s'", token, $<text>1);
+        printf("\n\ntoken: '%s'\n $1: '%s'", token, $<text>0);
 
-        strcpy(token, $<text>1);
+        strcpy(token, $<text>0);
 
         printf("\nIDENT LEFT SIDE OF ASSIGNMENT\n");
         assert_symbol_exists(&table, token);
@@ -635,7 +642,9 @@ F:
 ;
 
 CONTINUA_IDENT:
+%empty
 {
+        strcpy(token, $<text>0);
         printf("\nIDENT ARGUMENT OF boolean_expr\n");
         assert_symbol_exists(&table, token);
         printf("\nLOAD VARIABLE %s\n", token);
@@ -665,7 +674,8 @@ CONTINUA_IDENT:
         // }
     }
 
-    /* | { generate_code(NULL, "AMEM 1");} procedure_call */
+    | { generate_code(NULL, "AMEM 1");} procedure_call
+;
 
 
 %%
