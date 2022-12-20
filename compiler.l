@@ -17,7 +17,7 @@ Editado por Gabriel Nascarella Hishida do Nascimento
 #include "compiler.tab.h"
 
 //#define PRINT(STR) {};
-#define PRINT(STR) printf("..%s => %s \n", STR, token);
+#define PRINT(STR) printf("..%s => '%s' \n", STR, token);
 
 int nl = 1;
 

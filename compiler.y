@@ -204,7 +204,6 @@ procedure_def:
     procedure_params 
     COLON IDENT
     {
-        strcpy(token, $<text>1);
         int func_type = get_type(token);
         if (not func_type)
             print_error("Function with illegal type");

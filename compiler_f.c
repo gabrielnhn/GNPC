@@ -115,10 +115,24 @@ void remove_symbols_from_table(symbol_table *table, int symbols_to_remove)
 
 void print_symbol_table(symbol_table *table)
 {
+    printf("--\n");
 	for (int i = 0; i <= table->size; i++)
 	{
 		symbol_t s = table->stack[i];
-		printf("Symbol %s - l%d off%d t%d ", s.name, s.level, s.offset, s.type);
+
+        if (s.category == PROCEDURE_CATEGORY)
+            printf("Proc");
+        
+        else if (s.category == FUNCTION_CATEGORY)
+            printf("Func");
+
+        else if (s.category == SIMPLE_VAR_CATEGORY)
+            printf("Var");
+
+        else if (s.category == PARAM_CATEGORY)
+            printf("Param");
+    
+    	printf(" %s - l%d off%d t%d ", s.name, s.level, s.offset, s.type);
         if (s.category == PARAM_CATEGORY)
             printf("Byref:%d", s.by_reference);
 
@@ -132,6 +146,7 @@ void print_symbol_table(symbol_table *table)
 
         printf("\n"); 
 	}
+    printf("--\n");
 }
 
 // true if found, false otherwise. Return level and offset by reference.
@@ -156,7 +171,10 @@ bool search_symbol_table(symbol_table *table, char *name, int *level, int *offse
 int get_type(char *type)
 {
 	if (strncmp(type, "integer", MAX_SYMBOL_NAME) == 0)
+    {
+        printf("GOT INT INT INTINTINTITNITNTINTINTITNIT");
 		return INTEGER_TYPE;
+    }
 
 	else
 		return 0;
@@ -394,7 +412,7 @@ void insert_symbol_table_function(symbol_table *table, int level, char *name, in
 	table->size += 1;
 	table->stack[table->size].level = level;
 	table->stack[table->size].type = -1;
-    table->stack[table->size].category = PROCEDURE_CATEGORY;
+    table->stack[table->size].category = FUNCTION_CATEGORY;
     table->stack[table->size].label = label;
     table->stack[table->size].param_types[0] = -1;
     table->stack[table->size].param_byrefs[0] = -1;
