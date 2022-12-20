@@ -407,3 +407,4 @@ void insert_symbol_table_function(symbol_table *table, int level, char *name, in
 
 	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
 }
+

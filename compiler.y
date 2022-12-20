@@ -188,22 +188,35 @@ procedure_def:
         level++;
         label_count++;
         
-        // JUMP OUT OF PROCEDURE
+        // JUMP OUT OF FUNCTION
         stack_push(&label_stack, label_count);
         sprintf(string_buffer, "DSVS R%.2d", label_count);
         generate_code(NULL, string_buffer);
         
-        // ENTER PROCEDURE
+        // ENTER FUNCTION
         label_count++;  
         sprintf(string_buffer, "R%.2d", label_count);
         sprintf(string_buffer2, "ENPR %d", level);
 
         generate_code(string_buffer, string_buffer2);
-        insert_symbol_table_proc(&table, level, token, label_count);
+        insert_symbol_table_function(&table, level, token, label_count);
     }
-    procedure_params SEMICOLON block
+    procedure_params 
+    COLON IDENT
     {
-        // PROCEDURE RETURN
+        strcpy(token, $<text>1);
+        int func_type = get_type(token);
+        if (not func_type)
+            print_error("Function with illegal type");
+
+        symbol_table_last_proc_index(&table, &proc_index);
+        table.stack[proc_index].type = func_type;
+
+    }
+    
+    SEMICOLON block
+    {
+        // FUNCTION RETURN
         sprintf(string_buffer, "RTPR %d,%d", level, param_count);
         generate_code(NULL, string_buffer);
 
@@ -230,7 +243,7 @@ procedure_params:
         update_symbol_table_offset(&table, param_count, level);
         symbol_table_last_proc_index(&table, &proc_index);
         table.stack[proc_index].param_num = param_count;
-    
+        table.stack[proc_index].offset = -(4 + param_count);
     }
     CLOSE_PARENTHESIS | %empty 
 ;

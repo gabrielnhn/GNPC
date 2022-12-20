@@ -139,3 +139,5 @@ void symbol_table_update_proc_param_array(symbol_table *table, int index, int pa
 void symbol_table_get_proc_arrays(symbol_table *table, int index, int** types, int** byrefs, int* num);
 
 int assert_equal_things(int a, int b, char* thing);
+
+void insert_symbol_table_function(symbol_table *table, int level, char *name, int label);
