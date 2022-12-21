@@ -7,6 +7,7 @@
 
 char string_buffer[69];
 char string_buffer2[69];
+char ident[69];
 symbol_table table;
 stack_t e_stack, f_stack, t_stack, label_stack, proc_stack;
 
@@ -298,16 +299,15 @@ compound_command: T_BEGIN commands T_END;
 
 commands: commands command | command;
 
-/* command: assignment_operation | loop | conditional | read | write | procedure_call; */
-command: IDENT starts_with_ident | loop | conditional | read | write;
-
+        
+command: IDENT { strcpy(ident, token);} starts_with_ident | loop | conditional | read | write | compound_command;
 
 starts_with_ident: procedure_call SEMICOLON | assignment_operation;
 
 
 procedure_call:
     {
-        strcpy(token, $<text>-1);
+        strcpy(token, ident);
         printf("PROCEDURE CALL TOKEN %s\n", token);
 
         assert_symbol_exists(&table, token);
@@ -375,8 +375,16 @@ ARGUMENT:
             // load value
             sprintf(string_buffer, "CRVL %d,%d", level, offset);
         else
-            // load address
-            sprintf(string_buffer, "CREN %d,%d", level, offset);
+        {
+            int category = table.stack[symbol_index].category;
+
+            if (category == PARAM_CATEGORY)
+                sprintf(string_buffer, "CRVL %d,%d", level, offset);
+            else
+                // load address
+                sprintf(string_buffer, "CREN %d,%d", level, offset);
+
+        }
         
         generate_code(NULL, string_buffer);
         parsed_params++;
@@ -506,7 +514,9 @@ assignment_operation:
     {
         printf("\n\ntoken: '%s'\n $1: '%s'", token, $<text>0);
 
-        strcpy(token, $<text>0);
+        // strcpy(token, $<text>0);
+        strcpy(token, ident);
+
 
         printf("\nIDENT LEFT SIDE OF ASSIGNMENT\n");
         assert_symbol_exists(&table, token);
@@ -631,7 +641,12 @@ F:
         sprintf(string_buffer, "CRCT %s", token);
         generate_code(NULL, string_buffer);
     } 
-    | IDENT CONTINUA_IDENT
+    | IDENT
+    {
+        strcpy(ident, token);
+        printf("COPY OF IDENT: `%s`\n", ident);
+    }
+    IDENT_CONTINUES
     
     | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
     {
@@ -641,40 +656,40 @@ F:
     }
 ;
 
-CONTINUA_IDENT:
+IDENT_CONTINUES:
 %empty
 {
-        strcpy(token, $<text>0);
-        printf("\nIDENT ARGUMENT OF boolean_expr\n");
-        assert_symbol_exists(&table, token);
-        printf("\nLOAD VARIABLE %s\n", token);
-        search_symbol_table_index(&table, token, &symbol_index);
+    strcpy(token, ident);
+    printf("\nIDENT ARGUMENT OF boolean_expr\n");
+    assert_symbol_exists(&table, token);
+    printf("\nLOAD VARIABLE %s\n", token);
+    search_symbol_table_index(&table, token, &symbol_index);
 
-        // stack type
-        int type = table.stack[symbol_index].type;
-        bool byref = table.stack[symbol_index].by_reference;
-        stack_push(&f_stack, type);
+    // stack type
+    int type = table.stack[symbol_index].type;
+    bool byref = table.stack[symbol_index].by_reference;
+    stack_push(&f_stack, type);
 
 
-        int category = table.stack[symbol_index].category;
+    int category = table.stack[symbol_index].category;
 
-        // else // simple var OR param
-        // {
+    // load value
+    int level, offset;
+    search_symbol_table(&table, token, &level, &offset);
 
-        // load value
-        int level, offset;
-        search_symbol_table(&table, token, &level, &offset);
+    if (byref)
+        sprintf(string_buffer, "CRVI %d,%d", level, offset);
+    else
+        sprintf(string_buffer, "CRVL %d,%d", level, offset);
 
-        if (byref)
-            sprintf(string_buffer, "CRVI %d,%d", level, offset);
-        else
-            sprintf(string_buffer, "CRVL %d,%d", level, offset);
+    generate_code(NULL, string_buffer);
+}
 
-        generate_code(NULL, string_buffer);
-        // }
-    }
-
-    | { generate_code(NULL, "AMEM 1");} procedure_call
+| 
+{
+    generate_code(NULL, "AMEM 1");
+    printf("BEFORE PROCEDURE_CALL IDENT IS `%s`\n", ident);
+} procedure_call
 ;
 
 

@@ -172,7 +172,6 @@ int get_type(char *type)
 {
 	if (strncmp(type, "integer", MAX_SYMBOL_NAME) == 0)
     {
-        printf("GOT INT INT INTINTINTITNITNTINTINTITNIT");
 		return INTEGER_TYPE;
     }
 
