@@ -177,7 +177,7 @@ procedure_def:
         sprintf(string_buffer, "R%.2d", return_label);
         generate_code(string_buffer, "NADA");
         level--;
-    }
+    } SEMICOLON
 
     // FUNCTION (WITH RETURN VALUE) */
     |
@@ -229,7 +229,7 @@ procedure_def:
         sprintf(string_buffer, "R%.2d", return_label);
         generate_code(string_buffer, "NADA");
         level--;
-    }
+    } SEMICOLON
 
 ;
 
