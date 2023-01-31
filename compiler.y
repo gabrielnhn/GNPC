@@ -297,12 +297,12 @@ optional_semicolon: SEMICOLON | %empty  ;
 
 compound_command: T_BEGIN commands T_END;
 
-commands: commands command | command;
+commands: commands SEMICOLON command | command;
 
         
 command: IDENT { strcpy(ident, token);} starts_with_ident | loop | conditional | read | write | compound_command;
 
-starts_with_ident: procedure_call SEMICOLON | assignment_operation;
+starts_with_ident: procedure_call | assignment_operation;
 
 
 procedure_call:
@@ -429,10 +429,10 @@ read:
 
         generate_code(NULL, string_buffer);
     }
-    CLOSE_PARENTHESIS SEMICOLON
+    CLOSE_PARENTHESIS 
 ;
 
-write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS;
 
 write_boolean_expr_list:
     write_boolean_expr_list COMMA boolean_expr
@@ -523,7 +523,7 @@ assignment_operation:
         search_symbol_table(&table, token, &left_side_level, &left_side_offset);
         search_symbol_table_index(&table, token, &left_side_index);
     }
-    ASSIGNMENT boolean_expr SEMICOLON
+    ASSIGNMENT boolean_expr
     {
         int expr_type;
         stack_pop(&e_stack, &expr_type);
