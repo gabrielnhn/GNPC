@@ -405,31 +405,46 @@ ARGUMENT:
 
 
 /* READ and WRITE*/
-read:
-    READ OPEN_PARENTHESIS IDENT
+read: READ OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS ;
+
+read_ident_list:
+    read_ident_list COMMA IDENT
     {
         printf("\nIDENT ARGUMENT OF READ()\n");
         assert_symbol_exists(&table, token);
         search_symbol_table(&table, token, &read_level, &read_offset);
-
         int symbol_index;
         search_symbol_table_index(&table, token, &symbol_index);
         int category = table.stack[left_side_index].category;
         bool byref = table.stack[left_side_index].by_reference;
-
         if (category == PROCEDURE_CATEGORY)
             print_error("Trying to READ procedure?");
-
         generate_code(NULL, "LEIT");
-
         if (byref)
             sprintf(string_buffer, "ARMI %d,%d", read_level, read_offset);
         else
             sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
-
         generate_code(NULL, string_buffer);
     }
-    CLOSE_PARENTHESIS 
+    | IDENT
+    {
+        printf("\nIDENT ARGUMENT OF READ()\n");
+        assert_symbol_exists(&table, token);
+        search_symbol_table(&table, token, &read_level, &read_offset);
+        int symbol_index;
+        search_symbol_table_index(&table, token, &symbol_index);
+        int category = table.stack[left_side_index].category;
+        bool byref = table.stack[left_side_index].by_reference;
+        if (category == PROCEDURE_CATEGORY)
+            print_error("Trying to READ procedure?");
+        generate_code(NULL, "LEIT");
+        if (byref)
+            sprintf(string_buffer, "ARMI %d,%d", read_level, read_offset);
+        else
+            sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
+        generate_code(NULL, string_buffer);
+    }
+    
 ;
 
 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS;
