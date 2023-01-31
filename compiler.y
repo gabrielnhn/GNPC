@@ -172,7 +172,7 @@ procedure_def:
         generate_code(NULL, string_buffer);
 
         // PROCEDURE RETURN
-        sprintf(string_buffer, "RTPR %d,%d", level, param_count);
+        sprintf(string_buffer, "RTPR %d, %d", level, param_count);
         generate_code(NULL, string_buffer);
 
         print_symbol_table(&table);
@@ -230,7 +230,7 @@ procedure_def:
         generate_code(NULL, string_buffer);
 
         // FUNCTION RETURN
-        sprintf(string_buffer, "RTPR %d,%d", level, param_count);
+        sprintf(string_buffer, "RTPR %d, %d", level, param_count);
         generate_code(NULL, string_buffer);
 
         print_symbol_table(&table);
@@ -409,16 +409,16 @@ ARGUMENT:
         
         if (not by_reference)
             // load value
-            sprintf(string_buffer, "CRVL %d,%d", level, offset);
+            sprintf(string_buffer, "CRVL %d, %d", level, offset);
         else
         {
             int category = table.stack[symbol_index].category;
 
             if (category == PARAM_CATEGORY)
-                sprintf(string_buffer, "CRVL %d,%d", level, offset);
+                sprintf(string_buffer, "CRVL %d, %d", level, offset);
             else
                 // load address
-                sprintf(string_buffer, "CREN %d,%d", level, offset);
+                sprintf(string_buffer, "CREN %d, %d", level, offset);
 
         }
         
@@ -457,9 +457,9 @@ read_ident_list:
             print_error("Trying to READ procedure?");
         generate_code(NULL, "LEIT");
         if (byref)
-            sprintf(string_buffer, "ARMI %d,%d", read_level, read_offset);
+            sprintf(string_buffer, "ARMI %d, %d", read_level, read_offset);
         else
-            sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
+            sprintf(string_buffer, "ARMZ %d, %d", read_level, read_offset);
         generate_code(NULL, string_buffer);
     }
     | IDENT
@@ -475,9 +475,9 @@ read_ident_list:
             print_error("Trying to READ procedure?");
         generate_code(NULL, "LEIT");
         if (byref)
-            sprintf(string_buffer, "ARMI %d,%d", read_level, read_offset);
+            sprintf(string_buffer, "ARMI %d, %d", read_level, read_offset);
         else
-            sprintf(string_buffer, "ARMZ %d,%d", read_level, read_offset);
+            sprintf(string_buffer, "ARMZ %d, %d", read_level, read_offset);
         generate_code(NULL, string_buffer);
     }
     
@@ -585,9 +585,9 @@ assignment_operation:
             print_error("LS Type Error");
 
         if (byref)
-            sprintf(string_buffer, "ARMI %d,%d", left_side_level, left_side_offset);
+            sprintf(string_buffer, "ARMI %d, %d", left_side_level, left_side_offset);
         else
-            sprintf(string_buffer, "ARMZ %d,%d", left_side_level, left_side_offset);
+            sprintf(string_buffer, "ARMZ %d, %d", left_side_level, left_side_offset);
         generate_code(NULL, string_buffer);
     }
 ;
@@ -694,7 +694,9 @@ F:
     } 
     | IDENT
     {
-        strcpy(ident, token);
+        // strcpy(ident, token);
+        strcpy(ident, $<text>1);
+
         printf("COPY OF IDENT: `%s`\n", ident);
     }
     IDENT_CONTINUES
@@ -729,9 +731,9 @@ IDENT_CONTINUES:
     search_symbol_table(&table, token, &level, &offset);
 
     if (byref)
-        sprintf(string_buffer, "CRVI %d,%d", level, offset);
+        sprintf(string_buffer, "CRVI %d, %d", level, offset);
     else
-        sprintf(string_buffer, "CRVL %d,%d", level, offset);
+        sprintf(string_buffer, "CRVL %d, %d", level, offset);
 
     generate_code(NULL, string_buffer);
 }
