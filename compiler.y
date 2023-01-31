@@ -359,6 +359,25 @@ procedure_call_continues:
 
     }
     | %empty
+    {
+        printf("PROCEDURE CALL WITHOUT ();");
+        stack_pop(&proc_stack, &proc_index);
+
+        int label = table.stack[proc_index].label;
+
+        sprintf(string_buffer, "CHPR R%.2d, %d", label, level);
+
+        generate_code(NULL, string_buffer);
+
+        int category = table.stack[proc_index].category;
+
+        if (category == FUNCTION_CATEGORY)
+        {
+            int type = table.stack[proc_index].type;
+            stack_push(&f_stack, type);
+        }
+
+    }
 ;
 
 procedure_arguments:
