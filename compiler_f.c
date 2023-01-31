@@ -315,7 +315,7 @@ void insert_symbol_table_proc(symbol_table *table, int level, char *name, int la
 		print_error("malloc() FAILED\n");
 
     // printf("proc name %s has len  %ld\n", name, strnlen(name, MAX_SYMBOL_NAME));
-	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME) + 1);
     printf("JUST ADDED %s\n", name);
     print_symbol_table(table);
 }
@@ -426,6 +426,6 @@ void insert_symbol_table_function(symbol_table *table, int level, char *name, in
 	if (table->stack[table->size].name == NULL)
 		print_error("malloc() FAILED\n");
 
-	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME) + 1);
 }
 
