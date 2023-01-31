@@ -83,7 +83,7 @@ program:
 ;
 
 block:
-    declaring_vars_block declaring_procedures_block compound_command;
+    declaring_vars_block { stack_push(&var_count_stack, offset); } declaring_procedures_block compound_command;
 
 /* VARIABLE DECLARATION */
 
@@ -91,7 +91,7 @@ declaring_vars_block:
     VAR {offset = 0;} declare_vars | %empty ;
 
 declare_vars:
-    declare_vars declare_var | declare_var { stack_push(&var_count_stack, offset); };
+    declare_vars declare_var | declare_var;
 
 declare_var:
     {list_size = 0;}
