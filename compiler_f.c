@@ -202,6 +202,7 @@ void assert_symbol_exists(symbol_table *table, char *name)
 	if (search_symbol_table_index(table, token, &symbol_index) == false)
 	{
 		sprintf(a_string_buffer, "Name '%s' does not exist", token);
+        print_symbol_table(table);
 		print_error(a_string_buffer);
 	}
 }
@@ -313,7 +314,10 @@ void insert_symbol_table_proc(symbol_table *table, int level, char *name, int la
 	if (table->stack[table->size].name == NULL)
 		print_error("malloc() FAILED\n");
 
+    // printf("proc name %s has len  %ld\n", name, strnlen(name, MAX_SYMBOL_NAME));
 	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+    printf("JUST ADDED %s\n", name);
+    print_symbol_table(table);
 }
 
 void remove_symbols_from_table_until_proc(symbol_table *table, int level)

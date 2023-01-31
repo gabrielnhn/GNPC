@@ -161,7 +161,10 @@ procedure_def:
         sprintf(string_buffer2, "ENPR %d", level);
 
         generate_code(string_buffer, string_buffer2);
-        insert_symbol_table_proc(&table, level, token, label_count);
+
+        strcpy(ident, $<text>2);
+        printf("PROCEDURE_NAME: `%s`\n", ident);
+        insert_symbol_table_proc(&table, level, ident, label_count);
     }
     procedure_params SEMICOLON block
     {
@@ -207,7 +210,11 @@ procedure_def:
         sprintf(string_buffer2, "ENPR %d", level);
 
         generate_code(string_buffer, string_buffer2);
-        insert_symbol_table_function(&table, level, token, label_count);
+        
+        strcpy(ident, $<text>2);
+        printf("FUNCTION_NAME: `%s`\n", ident);
+
+        insert_symbol_table_function(&table, level, ident, label_count);
     }
     procedure_params 
     COLON IDENT
