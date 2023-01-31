@@ -9,7 +9,7 @@ char string_buffer[69];
 char string_buffer2[69];
 char ident[69];
 symbol_table table;
-stack_t e_stack, f_stack, t_stack, label_stack, proc_stack;
+stack_t e_stack, f_stack, t_stack, label_stack, proc_stack, var_count_stack;
 
 int num_vars, comparison, symbol_index;
 
@@ -73,8 +73,10 @@ program:
     PROGRAM IDENT OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
     block DOT
     {
+        int to_deallocate;
         remove_symbols_from_table(&table, table.size);
-        sprintf(string_buffer, "DMEM %d", offset);
+        stack_pop(&var_count_stack, &to_deallocate);
+        sprintf(string_buffer, "DMEM %d", to_deallocate);
         generate_code(NULL, string_buffer);
         generate_code (NULL, "PARA");
     }
@@ -89,7 +91,7 @@ declaring_vars_block:
     VAR {offset = 0;} declare_vars | %empty ;
 
 declare_vars:
-    declare_vars declare_var | declare_var;
+    declare_vars declare_var | declare_var { stack_push(&var_count_stack, offset); };
 
 declare_var:
     {list_size = 0;}
@@ -163,6 +165,12 @@ procedure_def:
     }
     procedure_params SEMICOLON block
     {
+        // DEALLOCATE
+        int to_deallocate;
+        stack_pop(&var_count_stack, &to_deallocate);
+        sprintf(string_buffer, "DMEM %d", to_deallocate);
+        generate_code(NULL, string_buffer);
+
         // PROCEDURE RETURN
         sprintf(string_buffer, "RTPR %d,%d", level, param_count);
         generate_code(NULL, string_buffer);
@@ -215,6 +223,12 @@ procedure_def:
     
     SEMICOLON block
     {
+        // DEALLOCATE
+        int to_deallocate;
+        stack_pop(&var_count_stack, &to_deallocate);
+        sprintf(string_buffer, "DMEM %d", to_deallocate);
+        generate_code(NULL, string_buffer);
+
         // FUNCTION RETURN
         sprintf(string_buffer, "RTPR %d,%d", level, param_count);
         generate_code(NULL, string_buffer);
@@ -322,7 +336,9 @@ procedure_call:
         parsed_params = 0;
 
         stack_push(&proc_stack, proc_index);
-    } 
+    } procedure_call_continues;
+
+procedure_call_continues:
     OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
     {
         stack_pop(&proc_stack, &proc_index);
@@ -342,6 +358,7 @@ procedure_call:
         }
 
     }
+    | %empty
 ;
 
 procedure_arguments:
@@ -741,6 +758,8 @@ int main (int argc, char** argv) {
     init_stack(&f_stack);
     init_stack(&label_stack);
     init_stack(&proc_stack);
+    init_stack(&var_count_stack);
+
 
 
     yyin=fp;
