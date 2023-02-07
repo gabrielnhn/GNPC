@@ -316,7 +316,7 @@ optional_semicolon: SEMICOLON | %empty  ;
 
 /* COMMANDS */
 
-compound_command: T_BEGIN commands T_END;
+compound_command: T_BEGIN commands optional_semicolon T_END;
 
 commands: commands SEMICOLON command | command;
 
