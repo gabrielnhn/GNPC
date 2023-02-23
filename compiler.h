@@ -144,3 +144,5 @@ void symbol_table_get_proc_arrays(symbol_table *table, int index, int** types, i
 int assert_equal_things(int a, int b, char* thing);
 
 void insert_symbol_table_function(symbol_table *table, int level, char *name, int label);
+
+void remove_symbols_from_proc(symbol_table *table, int local_var_count, int param_count);

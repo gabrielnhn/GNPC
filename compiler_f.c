@@ -78,7 +78,7 @@ void insert_symbol_table_simple_var(symbol_table *table, int level, int offset, 
 		print_error("malloc() FAILED\n");
 	}
 
-	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME) + 1);
 }
 
 void update_symbol_table_type(symbol_table *table, int symbols_to_update, int type)
@@ -120,6 +120,8 @@ void print_symbol_table(symbol_table *table)
 	{
 		symbol_t s = table->stack[i];
 
+        printf("%d :", i);
+
         if (s.category == PROCEDURE_CATEGORY)
             printf("Proc");
         
@@ -142,6 +144,8 @@ void print_symbol_table(symbol_table *table)
             for(int i = 0; i < s.param_num; i++)
                 printf("[t%d, byr%d], ", s.param_types[i], s.param_byrefs[i]);
             printf("}");
+
+            printf("Forwarded: %d", s.forwarded);
         }
 
         printf("\n"); 
@@ -284,7 +288,7 @@ void insert_symbol_table_param(symbol_table *table, int level, char *name, bool 
 	if (table->stack[table->size].name == NULL)
 		print_error("malloc() FAILED\n");
 
-	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME));
+	strncpy(table->stack[table->size].name, name, strnlen(name, MAX_SYMBOL_NAME) + 1);
 }
 
 void update_symbol_table_offset(symbol_table *table, int symbols_to_update, int level)
@@ -351,6 +355,26 @@ void remove_symbols_from_table_until_proc(symbol_table *table, int level)
 	}
 
 }
+
+void remove_symbols_from_proc(symbol_table *table, int local_var_count, int param_count)
+{
+	int i = table->size;
+
+    for (i = table->size; i > table->size - (local_var_count + param_count); i--)
+	{
+		if (i < 0)
+		    print_error("Trying to remove non-existing symbol\n");
+
+        if (((table->stack[i].category == PROCEDURE_CATEGORY) or (table->stack[i].category == FUNCTION_CATEGORY)))
+            break;
+
+		free(table->stack[i].name);
+	    table->size -= 1;
+	}
+
+}
+
+
 
 bool symbol_table_last_proc_index(symbol_table *table, int *index)
 {

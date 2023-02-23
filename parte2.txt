@@ -21,4 +21,7 @@ Stack pra ver se falta alguma implementacao
 flag de "forwarded" pra descobrir se devo tirar algum item da stack de "falta implementacao"
 
 
+TAMBEM O FATO DE QUE NAO PODE DEIXAR PASSAR OS PARAMETROS PRA TABELA DE SIMBOLOS, 
+pois a ordem das funcoes e procedimentos fica completamente diferente
+
 Alterações majoritariamente em 'procedure_def'.

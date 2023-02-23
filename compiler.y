@@ -156,16 +156,21 @@ procedure_def:
         int exists;
         if (not search_symbol_table_index(&table, ident, &exists))
         {
+            printf("PROCEDURE NEVER SEEN BEFORE\n");
             // NEW PROCEDURE
             level++;
             label_count++;
             insert_symbol_table_proc(&table, level, ident, label_count);
+            int index;
+            symbol_table_last_proc_index(&table, &index);
+            table.stack[index].forwarded = false;
 
         }
         // PUSH PROCEDURE INDEX TO THE STACK
         int index;
-        symbol_table_last_proc_index(&table, &index);
-        table.stack[index].forwarded = false;
+        // symbol_table_last_proc_index(&table, &index);
+        search_symbol_table_index(&table, ident, &index);
+
         stack_push(&forward_stack, index);
     }
     procedure_params SEMICOLON procedure_def_continues;
@@ -181,16 +186,19 @@ procedure_def:
         int exists;
         if (not search_symbol_table_index(&table, ident, &exists))
         {
+            printf("FUNCTION NEVER SEEN BEFORE\n");
             // NEW PROCEDURE
             level++;
             label_count++;
             insert_symbol_table_function(&table, level, ident, label_count);
-
+            int index;
+            symbol_table_last_proc_index(&table, &index);
+            table.stack[index].forwarded = false;
         }
         // PUSH PROCEDURE INDEX TO THE STACK
         int index;
-        symbol_table_last_proc_index(&table, &index);
-        table.stack[index].forwarded = false;
+        // symbol_table_last_proc_index(&table, &index);
+        search_symbol_table_index(&table, ident, &index);
         stack_push(&forward_stack, index);
     }
     procedure_params 
@@ -213,10 +221,16 @@ procedure_def_continues:
     FORWARD 
     /* WAIT FOR IMPLEMENTATION */
     {
+        level--;
         int proc_index;
         stack_pop(&forward_stack, &proc_index);
         table.stack[proc_index].forwarded = true;
         stack_push(&no_implementation_stack, proc_index);
+
+        // remove_symbols_from_table_until_proc(&table, level);
+        remove_symbols_from_proc(&table, param_count, 0);
+
+        print_symbol_table(&table);
     } SEMICOLON |
 
     /*  IMPLEMENTATION */
@@ -257,7 +271,9 @@ procedure_def_continues:
 
         print_symbol_table(&table);
         // REMOVE SYMBOLS
-        remove_symbols_from_table_until_proc(&table, level);
+        // remove_symbols_from_table_until_proc(&table, level);
+        remove_symbols_from_proc(&table, param_count, to_deallocate);
+
         print_symbol_table(&table);
 
         // OUT OF PROCEDURE
@@ -275,10 +291,13 @@ procedure_params:
     {
         // symbol_table_last_proc_index(&table, &proc_index);
         stack_check(&forward_stack, &proc_index);
-        bool forwarded = table.stack[proc_index].forwarded;
+        // bool forwarded = table.stack[proc_index].forwarded;
+        bool forwarded = false;
+
 
         if (not forwarded)
         {
+            printf("update offset\n");
             update_symbol_table_offset(&table, param_count, level);
             table.stack[proc_index].param_num = param_count;
             table.stack[proc_index].offset = -(4 + param_count);
@@ -305,10 +324,13 @@ declare_param:
 
         // symbol_table_last_proc_index(&table, &proc_index);
         stack_check(&forward_stack, &proc_index);
-        bool forwarded = table.stack[proc_index].forwarded;
+        // bool forwarded = table.stack[proc_index].forwarded;
+        bool forwarded = false;
+
 
         if (not forwarded)
         {
+            printf("update param array\n");
             update_symbol_table_type(&table, list_size, list_type);
             symbol_table_update_proc_param_array(&table, proc_index, list_size, list_type, by_reference);
             print_symbol_table(&table);
@@ -324,15 +346,32 @@ by_reference_or_not:
 id_param_list:
     id_param_list COMMA IDENT
     { /* last symbol insert */
-        insert_symbol_table_param(&table, level, token, by_reference);
-        list_size++;
-        param_count++;
+        stack_check(&forward_stack, &proc_index);
+        // bool forwarded = table.stack[proc_index].forwarded;
+        bool forwarded = false;
+
+
+        if (not forwarded)
+        {
+            printf("%d insert param\n", proc_index);
+            insert_symbol_table_param(&table, level, token, by_reference);
+            list_size++;
+            param_count++;
+        }
     }
     | IDENT
     { /* first to penultimate symbol insert */
-        insert_symbol_table_param(&table, level, token, by_reference);
-        list_size++;
-        param_count++;
+        stack_check(&forward_stack, &proc_index);
+        // bool forwarded = table.stack[proc_index].forwarded;
+        bool forwarded = false;
+
+        if (not forwarded)
+        {
+            printf("%d insert param\n", proc_index);
+            insert_symbol_table_param(&table, level, token, by_reference);
+            list_size++;
+            param_count++;
+        }
     }
 ;
 

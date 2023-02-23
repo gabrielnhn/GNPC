@@ -209,7 +209,7 @@ read      { symbol = symb_read;
         return READ;
 }
 
-write      { symbol = symb_write;
+write|writeln     { symbol = symb_write;
           strncpy (token, yytext, TOKEN_SIZE);
           strncpy (yylval.text, yytext, TOKEN_SIZE);
 
