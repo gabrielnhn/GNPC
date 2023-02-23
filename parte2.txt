@@ -25,3 +25,9 @@ TAMBEM O FATO DE QUE NAO PODE DEIXAR PASSAR OS PARAMETROS PRA TABELA DE SIMBOLOS
 pois a ordem das funcoes e procedimentos fica completamente diferente
 
 Alterações majoritariamente em 'procedure_def'.
+
+
+Tambem soh nessa parte2 que adicionei a opcao de 
+fazer procedimento();, sem parametros, mas com abre e fecha parenteses.
+E tambem ProgRam case-insensitive.
+E writeln() como write()

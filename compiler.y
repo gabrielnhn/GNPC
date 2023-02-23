@@ -285,8 +285,10 @@ procedure_def_continues:
 
 
 procedure_params:
-    OPEN_PARENTHESIS
-    { param_count = 0;}
+    OPEN_PARENTHESIS { param_count = 0;} procedure_params_continues CLOSE_PARENTHESIS | %empty 
+;
+
+procedure_params_continues:
     declare_params
     {
         // symbol_table_last_proc_index(&table, &proc_index);
@@ -302,9 +304,9 @@ procedure_params:
             table.stack[proc_index].param_num = param_count;
             table.stack[proc_index].offset = -(4 + param_count);
         }
-    }
-    CLOSE_PARENTHESIS | %empty 
+    } | %empty
 ;
+
 
 declare_params: declare_params declare_param | declare_param;
 
@@ -451,9 +453,7 @@ procedure_call_continues:
     }
 ;
 
-procedure_arguments:
-    args_list 
-;
+procedure_arguments: args_list | %empty;
 
 args_list: args_list COMMA ARGUMENT | ARGUMENT;
 
