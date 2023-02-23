@@ -1,33 +1,37 @@
 (Verifique README.md para ver como compilar e usar o compilador)
 
 Ideia original para a inclusão de declarações forward:
-    função ou procedimento está marcado como forward?
-    Se não:
-        continua normalmente
-    Se sim:
-        se separa um rótulo para a função. Quando sua implementação for vista, usa-se este rótulo.
-    
+    Função ou procedimento está marcado como forward?
+        Se não: continua normalmente
+        Se sim: se separa um rótulo para a função. Quando sua implementação for vista, usa-se este rótulo.
 
     No fim do programa:
-        Se falta a implementação de alguma função:
-            erro()
+        Se falta a implementação de alguma função: erro()
 
+A ideia original falta apenas alguns detalhes: 
+    Quando o header é lido e a função é forwarded, todos os símbolos provenientes da função
+    devem ser jogados fora, como se a função realmente tivesse sido processada. As únicas 
+    informações que devem ficar na tabela são informações sobre o procedimento ou
+    função para que a função possa ser chamada mesmo sem ter processado sua implementação.
 
-A ideia original falta alguns detalhes: 
-quando a função é lida novamente, ela não deve ser readicionada a tabela de símbolos
+Mais algumas alterações foram feitas, majoritariamente na regra 'procedure_def':
+    * Como agora se pode realizar a implementação de uma função que
+        não é a última função da tabela de símbolos, se utiliza uma stack para definir 
+        qual dos procedimentos que está sendo processado, ao invés de apenas passar pela 
+        tabelas de símbolos buscando pelo último procedimento.
 
-Stack de forward pra definir qual dos procedimentos que se deve fazer a implementacao
-Stack pra ver se falta alguma implementacao
-flag de "forwarded" pra descobrir se devo tirar algum item da stack de "falta implementacao"
+    * Uma outra pilha, 'no_implementation_stack', é usada para ver se existe algum procedimento 
+        forwarded que NÃO teve implementação, acusando erro no fim da compilação caso exista.
 
+Alterações desta versão do compilador em relação ao Original que não tem a ver com 
+    a implementação do comando forward mas sim sobre a formatação dos arquivos forward*.pas: 
 
-TAMBEM O FATO DE QUE NAO PODE DEIXAR PASSAR OS PARAMETROS PRA TABELA DE SIMBOLOS, 
-pois a ordem das funcoes e procedimentos fica completamente diferente
+    * A opção de chamar e declarar "procedimento()", sem parâmetros, mas com abre e fecha parenteses.
+        Anteriormente, caso a função/procedimento não tivesse parâmetros,
+        somente "PROCEDIMENTO;" sem "()" era possível.
 
-Alterações majoritariamente em 'procedure_def'.
+    * o token "Program" é agora case-insensitive.
 
+    * writeln() agora tem implementação, e é igual a write().
 
-Tambem soh nessa parte2 que adicionei a opcao de 
-fazer procedimento();, sem parametros, mas com abre e fecha parenteses.
-E tambem ProgRam case-insensitive.
-E writeln() como write()
+    
