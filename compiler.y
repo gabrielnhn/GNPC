@@ -540,6 +540,15 @@ conditional:
 if_then:
     IF boolean_expr
     {
+        int expr_type;
+        stack_pop(&e_stack, &expr_type);
+
+        if (expr_type != BOOL_TYPE)
+        {
+            print_error("If statement condition is not boolean\n");
+        }
+
+
         label_count += 1;
         stack_push(&label_stack, label_count);
         sprintf(string_buffer, "DSVF R%.2d", label_count);
@@ -589,7 +598,7 @@ assignment_operation:
         bool byref = table.stack[left_side_index].by_reference;
 
         if (left_side_type != expr_type)
-            print_error("LS Type Error");
+            print_error("Left side Type Error");
 
         if (byref)
             sprintf(string_buffer, "ARMI %d, %d", left_side_level, left_side_offset);

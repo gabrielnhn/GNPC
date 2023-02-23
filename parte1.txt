@@ -1,2 +1,6 @@
-Para o programa em Exemplo6/pgma.pas funcionar, um ";" foi adicionado na linha 4.
+(Verifique README.md)
+
+Para o programa em Exemplo6/pgma.pas funcionar, um ";" foi adicionado nas linhas 4, 19 e 27.
+    Na linha 31, "." para "end." também foi adicionado.
     O FPC também não conseguia compilar este programa sem a alteração.  
+
