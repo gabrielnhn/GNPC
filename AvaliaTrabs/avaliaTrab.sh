@@ -3,8 +3,8 @@ EXEMPLOS="Exemplo5 Exemplo7.01 Exemplo7.02 Exemplo7.03 Exemplo7.04 Exemplo7.05 E
 
 
 echo "Usage: avaliaTrab.sh <arquivo executavel compilador"
-echo "Avaliação: Para os primeiros quatro erros, meio ponto por erro."
-echo "Avaliação: Para os demais, um ponto por erro."
+echo "Avaliaï¿½ï¿½o: Para os primeiros quatro erros, meio ponto por erro."
+echo "Avaliaï¿½ï¿½o: Para os demais, um ponto por erro."
 
 for exemplo in $EXEMPLOS; do
     echo -n $exemplo "... "

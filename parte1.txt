@@ -2,9 +2,18 @@
 
 Para o programa em Exemplo6/pgma.pas funcionar, um ";" foi adicionado nas linhas 4, 19 e 27.
     Na linha 31, "." para "end." também foi adicionado.
-    O FPC também não conseguia compilar este programa sem a alteração.  
+    O FPC também não conseguia compilar este programa sem a alteração.
 
-De resto, a única alteração que tive que fazer nesta primeira parte do trabalho foi implementar o erro
-para o programa em exemploErro2/pgma.pas , mas a alteração não demorou 3min pra ser feita; bastava avaliar
-o tipo retornado pela expressão.
+O compilador também não foi capaz de compilar o programa em Exemplo8.12, pois necessitaria da 
+    implementação de goto e de labels, conteúdos que o professor mencionou em 
+    sala que não precisariamos implementar em nosso compilador.   
 
+De resto, a única alteração que tive que fazer nesta primeira parte do trabalho foi 
+    implementar o erro para o programa em exemploErro2/pgma.pas ,
+    mas a alteração não demorou para ser feita; bastava avaliar o tipo retornado pela expressão.
+
+As diferenças acusadas no script ./avaliaTrab.sh, além da falta de arquivo MEPA
+    gerado em Exemplo8.12, são apenas de ordem dos rótulos, e também dos casos onde nos arquivos MEPA
+    disponibilizados pelo professor existem instâncias de 
+    "DSVS RX \n RX: NADA" seguidos, onde não há nenhum outro desvio para RX.
+    
