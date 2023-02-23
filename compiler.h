@@ -26,7 +26,7 @@ typedef enum symbols
     symb_while, symb_do, symb_or, symb_and, symb_not,
     symb_div, symb_asterisk, symb_plus, symb_minus,
     symb_equal, symb_different, symb_less_or_equal, symb_less, symb_more, symb_more_or_equal,
-    symb_read, symb_write
+    symb_read, symb_write, symb_forward
 } symbols;
 
 /* -------------------------------------------------------------------

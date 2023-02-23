@@ -41,7 +41,7 @@ comment "(*".*"*)"
 
 {comment}
 
-program { symbol  = symb_program;
+(?i:program) { symbol  = symb_program;
           strncpy (token, yytext, TOKEN_SIZE);
           strncpy (yylval.text, yytext, TOKEN_SIZE);
 
@@ -215,6 +215,12 @@ write      { symbol = symb_write;
 
           PRINT("write  ");
           return WRITE;
+ }
+
+forward      { symbol = symb_forward;
+          strncpy (token, yytext, TOKEN_SIZE);
+          PRINT("forward  ");
+          return FORWARD;
  }
 
 \*     { symbol = symb_asterisk;

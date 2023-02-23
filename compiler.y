@@ -55,7 +55,7 @@ int parsed_params;
 %token GOTO IF THEN ELSE WHILE DO
 %token OR AND NOT DIV ASTERISK PLUS MINUS
 %token EQUAL DIFFERENT LESS_OR_EQUAL LESS MORE_OR_EQUAL MORE
-%token NUMBER READ WRITE
+%token NUMBER READ WRITE FORWARD
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -254,6 +254,26 @@ procedure_def:
     } SEMICOLON
 
 ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 procedure_params:
     OPEN_PARENTHESIS

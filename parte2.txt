@@ -1,10 +1,16 @@
 (Verifique README.md para ver como compilar e usar o compilador)
 
-Para o programa em Exemplo6/pgma.pas funcionar, um ";" foi adicionado nas linhas 4, 19 e 27.
-    Na linha 31, "." para "end." também foi adicionado.
-    O FPC também não conseguia compilar este programa sem a alteração.  
+Ideia original para a inclusão de declarações forward:
+    função ou procedimento está marcado como forward?
+    Se não:
+        continua normalmente
+    Se sim:
+        se separa um rótulo para a função. Quando sua implementação for vista, usa-se este rótulo.
+    
 
-De resto, a única alteração que tive que fazer nesta primeira parte do trabalho foi implementar o erro
-para o programa em exemploErro2/pgma.pas , mas a alteração não demorou 3min pra ser feita; bastava avaliar
-o tipo retornado pela expressão.
+    No fim do programa:
+        Se falta a implementação de alguma função:
+            erro()
+
+
 
