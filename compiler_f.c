@@ -236,7 +236,19 @@ bool stack_pop(stack_t *stack, int* x)
 	} 
 	else
 		print_error("Stack is empty!");
-;
+
+}
+
+bool stack_check(stack_t *stack, int* x)
+{
+	if (stack->top >= 0)
+	{
+		*x = stack->array[stack->top];
+		return true;
+	} 
+	else
+		print_error("Stack is empty!");
+
 }
 
 

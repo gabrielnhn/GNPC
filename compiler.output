@@ -8,11 +8,10 @@ Terminals unused in grammar
     OR
     AND
     NOT
-    FORWARD
 
 
 State 84 conflicts: 17 reduce/reduce
-State 139 conflicts: 2 reduce/reduce
+State 142 conflicts: 2 reduce/reduce
 
 
 Grammar
@@ -57,136 +56,142 @@ Grammar
 
    22 $@6: ε
 
-   23 $@7: ε
+   23 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON procedure_def_continues
 
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON block $@7 SEMICOLON
+   24 $@7: ε
 
    25 $@8: ε
 
-   26 $@9: ε
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON IDENT $@8 SEMICOLON procedure_def_continues
 
-   27 $@10: ε
+   27 $@9: ε
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   28 procedure_def_continues: FORWARD $@9 SEMICOLON
 
-   29 $@11: ε
+   29 $@10: ε
 
-   30 $@12: ε
+   30 $@11: ε
 
-   31 procedure_params: OPEN_PARENTHESIS $@11 declare_params $@12 CLOSE_PARENTHESIS
-   32                 | ε
+   31 procedure_def_continues: $@10 block $@11 SEMICOLON
 
-   33 declare_params: declare_params declare_param
-   34               | declare_param
+   32 $@12: ε
 
-   35 $@13: ε
+   33 $@13: ε
 
-   36 $@14: ε
+   34 procedure_params: OPEN_PARENTHESIS $@12 declare_params $@13 CLOSE_PARENTHESIS
+   35                 | ε
 
-   37 declare_param: by_reference_or_not $@13 id_param_list COLON type $@14 optional_semicolon
+   36 declare_params: declare_params declare_param
+   37               | declare_param
 
-   38 by_reference_or_not: VAR
-   39                    | ε
+   38 $@14: ε
 
-   40 id_param_list: id_param_list COMMA IDENT
-   41              | IDENT
+   39 $@15: ε
 
-   42 optional_semicolon: SEMICOLON
-   43                   | ε
+   40 declare_param: by_reference_or_not $@14 id_param_list COLON type $@15 optional_semicolon
 
-   44 compound_command: T_BEGIN commands optional_semicolon T_END
+   41 by_reference_or_not: VAR
+   42                    | ε
 
-   45 commands: commands SEMICOLON command
-   46         | command
+   43 id_param_list: id_param_list COMMA IDENT
+   44              | IDENT
 
-   47 $@15: ε
+   45 optional_semicolon: SEMICOLON
+   46                   | ε
 
-   48 command: IDENT $@15 starts_with_ident
-   49        | loop
-   50        | conditional
-   51        | read
-   52        | write
-   53        | compound_command
+   47 compound_command: T_BEGIN commands optional_semicolon T_END
 
-   54 starts_with_ident: procedure_call
-   55                  | assignment_operation
+   48 commands: commands SEMICOLON command
+   49         | command
 
-   56 $@16: ε
+   50 $@16: ε
 
-   57 procedure_call: $@16 procedure_call_continues
+   51 command: IDENT $@16 starts_with_ident
+   52        | loop
+   53        | conditional
+   54        | read
+   55        | write
+   56        | compound_command
 
-   58 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
-   59                         | ε
+   57 starts_with_ident: procedure_call
+   58                  | assignment_operation
 
-   60 procedure_arguments: args_list
+   59 $@17: ε
 
-   61 args_list: args_list COMMA ARGUMENT
-   62          | ARGUMENT
+   60 procedure_call: $@17 procedure_call_continues
 
-   63 ARGUMENT: IDENT
-   64         | boolean_expr
+   61 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS
+   62                         | ε
 
-   65 read: READ OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS
+   63 procedure_arguments: args_list
 
-   66 read_ident_list: read_ident_list COMMA IDENT
-   67                | IDENT
+   64 args_list: args_list COMMA ARGUMENT
+   65          | ARGUMENT
 
-   68 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS
+   66 ARGUMENT: IDENT
+   67         | boolean_expr
 
-   69 write_boolean_expr_list: write_boolean_expr_list COMMA boolean_expr
-   70                        | boolean_expr
+   68 read: READ OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS
 
-   71 $@17: ε
+   69 read_ident_list: read_ident_list COMMA IDENT
+   70                | IDENT
 
-   72 $@18: ε
+   71 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS
 
-   73 loop: WHILE $@17 boolean_expr $@18 DO command
+   72 write_boolean_expr_list: write_boolean_expr_list COMMA boolean_expr
+   73                        | boolean_expr
 
-   74 conditional: if_then cond_else
+   74 $@18: ε
 
    75 $@19: ε
 
-   76 if_then: IF boolean_expr $@19 THEN command
+   76 loop: WHILE $@18 boolean_expr $@19 DO command
 
-   77 $@20: ε
+   77 conditional: if_then cond_else
 
-   78 cond_else: ELSE $@20 command
-   79          | ε
+   78 $@20: ε
+
+   79 if_then: IF boolean_expr $@20 THEN command
 
    80 $@21: ε
 
-   81 assignment_operation: $@21 ASSIGNMENT boolean_expr
+   81 cond_else: ELSE $@21 command
+   82          | ε
 
-   82 boolean_expr: arithmetic_expr
-   83             | boolean_expr EQUAL arithmetic_expr
-   84             | boolean_expr DIFFERENT arithmetic_expr
-   85             | boolean_expr LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr LESS arithmetic_expr
-   87             | boolean_expr MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr MORE arithmetic_expr
+   83 $@22: ε
 
-   89 arithmetic_expr: E
+   84 assignment_operation: $@22 ASSIGNMENT boolean_expr
 
-   90 E: E PLUS T
-   91  | E MINUS T
-   92  | T
+   85 boolean_expr: arithmetic_expr
+   86             | boolean_expr EQUAL arithmetic_expr
+   87             | boolean_expr DIFFERENT arithmetic_expr
+   88             | boolean_expr LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr LESS arithmetic_expr
+   90             | boolean_expr MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr MORE arithmetic_expr
 
-   93 T: T ASTERISK F
-   94  | T DIV F
-   95  | F
+   92 arithmetic_expr: E
 
-   96 F: NUMBER
+   93 E: E PLUS T
+   94  | E MINUS T
+   95  | T
 
-   97 $@22: ε
+   96 T: T ASTERISK F
+   97  | T DIV F
+   98  | F
 
-   98 F: IDENT $@22 IDENT_CONTINUES
-   99  | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
+   99 F: NUMBER
 
-  100 IDENT_CONTINUES: ε
+  100 $@23: ε
 
-  101 $@23: ε
+  101 F: IDENT $@23 IDENT_CONTINUES
+  102  | OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS
 
-  102 IDENT_CONTINUES: $@23 procedure_call
+  103 IDENT_CONTINUES: ε
+
+  104 $@24: ε
+
+  105 IDENT_CONTINUES: $@24 procedure_call
 
 
 Terminals, with rules where they appear
@@ -194,46 +199,46 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     PROGRAM (258) 2
-    OPEN_PARENTHESIS (259) 2 31 58 65 68 99
-    CLOSE_PARENTHESIS (260) 2 31 58 65 68 99
-    COMMA (261) 14 16 40 61 66 69
-    SEMICOLON (262) 2 12 24 28 42 45
-    COLON (263) 12 28 37
+    OPEN_PARENTHESIS (259) 2 34 61 68 71 102
+    CLOSE_PARENTHESIS (260) 2 34 61 68 71 102
+    COMMA (261) 14 16 43 64 69 72
+    SEMICOLON (262) 2 12 23 26 28 31 45 48
+    COLON (263) 12 26 40
     DOT (264) 2
-    T_BEGIN (265) 44
-    T_END (266) 44
-    VAR (267) 6 38
-    IDENT (268) 2 13 14 15 16 17 24 28 40 41 48 63 66 67 98
-    ASSIGNMENT (269) 81
+    T_BEGIN (265) 47
+    T_END (266) 47
+    VAR (267) 6 41
+    IDENT (268) 2 13 14 15 16 17 23 26 43 44 51 66 69 70 101
+    ASSIGNMENT (269) 84
     LABEL (270)
     TYPE (271)
     ARRAY (272)
     OF (273)
-    PROCEDURE (274) 24
-    FUNCTION (275) 28
+    PROCEDURE (274) 23
+    FUNCTION (275) 26
     GOTO (276)
-    IF (277) 76
-    THEN (278) 76
-    ELSE (279) 78
-    WHILE (280) 73
-    DO (281) 73
+    IF (277) 79
+    THEN (278) 79
+    ELSE (279) 81
+    WHILE (280) 76
+    DO (281) 76
     OR (282)
     AND (283)
     NOT (284)
-    DIV (285) 94
-    ASTERISK (286) 93
-    PLUS (287) 90
-    MINUS (288) 91
-    EQUAL (289) 83
-    DIFFERENT (290) 84
-    LESS_OR_EQUAL (291) 85
-    LESS (292) 86
-    MORE_OR_EQUAL (293) 87
-    MORE (294) 88
-    NUMBER (295) 96
-    READ (296) 65
-    WRITE (297) 68
-    FORWARD (298)
+    DIV (285) 97
+    ASTERISK (286) 96
+    PLUS (287) 93
+    MINUS (288) 94
+    EQUAL (289) 86
+    DIFFERENT (290) 87
+    LESS_OR_EQUAL (291) 88
+    LESS (292) 89
+    MORE_OR_EQUAL (293) 90
+    MORE (294) 91
+    NUMBER (295) 99
+    READ (296) 68
+    WRITE (297) 71
+    FORWARD (298) 28
     LOWER_THAN_ELSE (299)
 
 
@@ -249,7 +254,7 @@ Nonterminals, with rules where they appear
         on right: 2
     block (48)
         on left: 4
-        on right: 2 24 28
+        on right: 2 31
     $@2 (49)
         on left: 3
         on right: 4
@@ -273,7 +278,7 @@ Nonterminals, with rules where they appear
         on right: 12
     type (56)
         on left: 13
-        on right: 12 37
+        on right: 12 40
     id_simple_var_list (57)
         on left: 14 15
         on right: 12 14
@@ -287,152 +292,158 @@ Nonterminals, with rules where they appear
         on left: 20 21
         on right: 18 20
     procedure_def (61)
-        on left: 24 28
+        on left: 23 26
         on right: 20 21
     $@6 (62)
         on left: 22
-        on right: 24
+        on right: 23
     $@7 (63)
-        on left: 23
-        on right: 24
+        on left: 24
+        on right: 26
     $@8 (64)
         on left: 25
-        on right: 28
-    $@9 (65)
-        on left: 26
-        on right: 28
-    $@10 (66)
+        on right: 26
+    procedure_def_continues (65)
+        on left: 28 31
+        on right: 23 26
+    $@9 (66)
         on left: 27
         on right: 28
-    procedure_params (67)
-        on left: 31 32
-        on right: 24 28
-    $@11 (68)
+    $@10 (67)
         on left: 29
         on right: 31
-    $@12 (69)
+    $@11 (68)
         on left: 30
         on right: 31
-    declare_params (70)
-        on left: 33 34
-        on right: 31 33
-    declare_param (71)
-        on left: 37
-        on right: 33 34
-    $@13 (72)
-        on left: 35
-        on right: 37
-    $@14 (73)
-        on left: 36
-        on right: 37
-    by_reference_or_not (74)
-        on left: 38 39
-        on right: 37
-    id_param_list (75)
-        on left: 40 41
-        on right: 37 40
-    optional_semicolon (76)
-        on left: 42 43
-        on right: 37 44
-    compound_command (77)
-        on left: 44
-        on right: 4 53
-    commands (78)
+    procedure_params (69)
+        on left: 34 35
+        on right: 23 26
+    $@12 (70)
+        on left: 32
+        on right: 34
+    $@13 (71)
+        on left: 33
+        on right: 34
+    declare_params (72)
+        on left: 36 37
+        on right: 34 36
+    declare_param (73)
+        on left: 40
+        on right: 36 37
+    $@14 (74)
+        on left: 38
+        on right: 40
+    $@15 (75)
+        on left: 39
+        on right: 40
+    by_reference_or_not (76)
+        on left: 41 42
+        on right: 40
+    id_param_list (77)
+        on left: 43 44
+        on right: 40 43
+    optional_semicolon (78)
         on left: 45 46
-        on right: 44 45
-    command (79)
-        on left: 48 49 50 51 52 53
-        on right: 45 46 73 76 78
-    $@15 (80)
+        on right: 40 47
+    compound_command (79)
         on left: 47
-        on right: 48
-    starts_with_ident (81)
-        on left: 54 55
-        on right: 48
-    procedure_call (82)
-        on left: 57
-        on right: 54 102
-    $@16 (83)
-        on left: 56
-        on right: 57
-    procedure_call_continues (84)
-        on left: 58 59
-        on right: 57
-    procedure_arguments (85)
-        on left: 60
-        on right: 58
-    args_list (86)
-        on left: 61 62
-        on right: 60 61
-    ARGUMENT (87)
-        on left: 63 64
-        on right: 61 62
-    read (88)
-        on left: 65
+        on right: 4 56
+    commands (80)
+        on left: 48 49
+        on right: 47 48
+    command (81)
+        on left: 51 52 53 54 55 56
+        on right: 48 49 76 79 81
+    $@16 (82)
+        on left: 50
         on right: 51
-    read_ident_list (89)
+    starts_with_ident (83)
+        on left: 57 58
+        on right: 51
+    procedure_call (84)
+        on left: 60
+        on right: 57 105
+    $@17 (85)
+        on left: 59
+        on right: 60
+    procedure_call_continues (86)
+        on left: 61 62
+        on right: 60
+    procedure_arguments (87)
+        on left: 63
+        on right: 61
+    args_list (88)
+        on left: 64 65
+        on right: 63 64
+    ARGUMENT (89)
         on left: 66 67
-        on right: 65 66
-    write (90)
+        on right: 64 65
+    read (90)
         on left: 68
-        on right: 52
-    write_boolean_expr_list (91)
+        on right: 54
+    read_ident_list (91)
         on left: 69 70
         on right: 68 69
-    loop (92)
-        on left: 73
-        on right: 49
-    $@17 (93)
+    write (92)
         on left: 71
-        on right: 73
-    $@18 (94)
-        on left: 72
-        on right: 73
-    conditional (95)
-        on left: 74
-        on right: 50
-    if_then (96)
+        on right: 55
+    write_boolean_expr_list (93)
+        on left: 72 73
+        on right: 71 72
+    loop (94)
         on left: 76
-        on right: 74
-    $@19 (97)
+        on right: 52
+    $@18 (95)
+        on left: 74
+        on right: 76
+    $@19 (96)
         on left: 75
         on right: 76
-    cond_else (98)
-        on left: 78 79
-        on right: 74
-    $@20 (99)
+    conditional (97)
         on left: 77
-        on right: 78
-    assignment_operation (100)
-        on left: 81
-        on right: 55
+        on right: 53
+    if_then (98)
+        on left: 79
+        on right: 77
+    $@20 (99)
+        on left: 78
+        on right: 79
+    cond_else (100)
+        on left: 81 82
+        on right: 77
     $@21 (101)
         on left: 80
         on right: 81
-    boolean_expr (102)
-        on left: 82 83 84 85 86 87 88
-        on right: 64 69 70 73 76 81 83 84 85 86 87 88 99
-    arithmetic_expr (103)
-        on left: 89
-        on right: 82 83 84 85 86 87 88
-    E (104)
-        on left: 90 91 92
-        on right: 89 90 91
-    T (105)
+    assignment_operation (102)
+        on left: 84
+        on right: 58
+    $@22 (103)
+        on left: 83
+        on right: 84
+    boolean_expr (104)
+        on left: 85 86 87 88 89 90 91
+        on right: 67 72 73 76 79 84 86 87 88 89 90 91 102
+    arithmetic_expr (105)
+        on left: 92
+        on right: 85 86 87 88 89 90 91
+    E (106)
         on left: 93 94 95
-        on right: 90 91 92 93 94
-    F (106)
-        on left: 96 98 99
-        on right: 93 94 95
-    $@22 (107)
-        on left: 97
-        on right: 98
-    IDENT_CONTINUES (108)
-        on left: 100 102
-        on right: 98
+        on right: 92 93 94
+    T (107)
+        on left: 96 97 98
+        on right: 93 94 95 96 97
+    F (108)
+        on left: 99 101 102
+        on right: 96 97 98
     $@23 (109)
-        on left: 101
-        on right: 102
+        on left: 100
+        on right: 101
+    IDENT_CONTINUES (110)
+        on left: 103 105
+        on right: 101
+    $@24 (111)
+        on left: 104
+        on right: 105
 
 
 State 0
@@ -629,14 +640,14 @@ State 21
 
 State 22
 
-   24 procedure_def: PROCEDURE • IDENT $@6 procedure_params SEMICOLON block $@7 SEMICOLON
+   23 procedure_def: PROCEDURE • IDENT $@6 procedure_params SEMICOLON procedure_def_continues
 
     IDENT  shift, and go to state 30
 
 
 State 23
 
-   28 procedure_def: FUNCTION • IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   26 procedure_def: FUNCTION • IDENT $@7 procedure_params COLON IDENT $@8 SEMICOLON procedure_def_continues
 
     IDENT  shift, and go to state 31
 
@@ -695,7 +706,7 @@ State 29
 
 State 30
 
-   24 procedure_def: PROCEDURE IDENT • $@6 procedure_params SEMICOLON block $@7 SEMICOLON
+   23 procedure_def: PROCEDURE IDENT • $@6 procedure_params SEMICOLON procedure_def_continues
 
     $default  reduce using rule 22 ($@6)
 
@@ -704,16 +715,16 @@ State 30
 
 State 31
 
-   28 procedure_def: FUNCTION IDENT • $@8 procedure_params COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   26 procedure_def: FUNCTION IDENT • $@7 procedure_params COLON IDENT $@8 SEMICOLON procedure_def_continues
 
-    $default  reduce using rule 25 ($@8)
+    $default  reduce using rule 24 ($@7)
 
-    $@8  go to state 38
+    $@7  go to state 38
 
 
 State 32
 
-   44 compound_command: T_BEGIN • commands optional_semicolon T_END
+   47 compound_command: T_BEGIN • commands optional_semicolon T_END
 
     T_BEGIN  shift, and go to state 32
     IDENT    shift, and go to state 39
@@ -764,38 +775,38 @@ State 36
 
 State 37
 
-   24 procedure_def: PROCEDURE IDENT $@6 • procedure_params SEMICOLON block $@7 SEMICOLON
+   23 procedure_def: PROCEDURE IDENT $@6 • procedure_params SEMICOLON procedure_def_continues
 
     OPEN_PARENTHESIS  shift, and go to state 55
 
-    SEMICOLON  reduce using rule 32 (procedure_params)
+    SEMICOLON  reduce using rule 35 (procedure_params)
 
     procedure_params  go to state 56
 
 
 State 38
 
-   28 procedure_def: FUNCTION IDENT $@8 • procedure_params COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   26 procedure_def: FUNCTION IDENT $@7 • procedure_params COLON IDENT $@8 SEMICOLON procedure_def_continues
 
     OPEN_PARENTHESIS  shift, and go to state 55
 
-    COLON  reduce using rule 32 (procedure_params)
+    COLON  reduce using rule 35 (procedure_params)
 
     procedure_params  go to state 57
 
 
 State 39
 
-   48 command: IDENT • $@15 starts_with_ident
+   51 command: IDENT • $@16 starts_with_ident
 
-    $default  reduce using rule 47 ($@15)
+    $default  reduce using rule 50 ($@16)
 
-    $@15  go to state 58
+    $@16  go to state 58
 
 
 State 40
 
-   76 if_then: IF • boolean_expr $@19 THEN command
+   79 if_then: IF • boolean_expr $@20 THEN command
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -810,89 +821,89 @@ State 40
 
 State 41
 
-   73 loop: WHILE • $@17 boolean_expr $@18 DO command
+   76 loop: WHILE • $@18 boolean_expr $@19 DO command
 
-    $default  reduce using rule 71 ($@17)
+    $default  reduce using rule 74 ($@18)
 
-    $@17  go to state 67
+    $@18  go to state 67
 
 
 State 42
 
-   65 read: READ • OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS
+   68 read: READ • OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  shift, and go to state 68
 
 
 State 43
 
-   68 write: WRITE • OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS
+   71 write: WRITE • OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  shift, and go to state 69
 
 
 State 44
 
-   53 command: compound_command •
+   56 command: compound_command •
 
-    $default  reduce using rule 53 (command)
+    $default  reduce using rule 56 (command)
 
 
 State 45
 
-   44 compound_command: T_BEGIN commands • optional_semicolon T_END
-   45 commands: commands • SEMICOLON command
+   47 compound_command: T_BEGIN commands • optional_semicolon T_END
+   48 commands: commands • SEMICOLON command
 
     SEMICOLON  shift, and go to state 70
 
-    T_END  reduce using rule 43 (optional_semicolon)
+    T_END  reduce using rule 46 (optional_semicolon)
 
     optional_semicolon  go to state 71
 
 
 State 46
 
-   46 commands: command •
+   49 commands: command •
 
-    $default  reduce using rule 46 (commands)
+    $default  reduce using rule 49 (commands)
 
 
 State 47
 
-   51 command: read •
+   54 command: read •
 
-    $default  reduce using rule 51 (command)
+    $default  reduce using rule 54 (command)
 
 
 State 48
 
-   52 command: write •
+   55 command: write •
 
-    $default  reduce using rule 52 (command)
+    $default  reduce using rule 55 (command)
 
 
 State 49
 
-   49 command: loop •
+   52 command: loop •
 
-    $default  reduce using rule 49 (command)
+    $default  reduce using rule 52 (command)
 
 
 State 50
 
-   50 command: conditional •
+   53 command: conditional •
 
-    $default  reduce using rule 50 (command)
+    $default  reduce using rule 53 (command)
 
 
 State 51
 
-   74 conditional: if_then • cond_else
+   77 conditional: if_then • cond_else
 
     ELSE  shift, and go to state 72
 
-    SEMICOLON  reduce using rule 79 (cond_else)
-    T_END      reduce using rule 79 (cond_else)
+    SEMICOLON  reduce using rule 82 (cond_else)
+    T_END      reduce using rule 82 (cond_else)
 
     cond_else  go to state 73
 
@@ -922,47 +933,47 @@ State 54
 
 State 55
 
-   31 procedure_params: OPEN_PARENTHESIS • $@11 declare_params $@12 CLOSE_PARENTHESIS
+   34 procedure_params: OPEN_PARENTHESIS • $@12 declare_params $@13 CLOSE_PARENTHESIS
 
-    $default  reduce using rule 29 ($@11)
+    $default  reduce using rule 32 ($@12)
 
-    $@11  go to state 75
+    $@12  go to state 75
 
 
 State 56
 
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params • SEMICOLON block $@7 SEMICOLON
+   23 procedure_def: PROCEDURE IDENT $@6 procedure_params • SEMICOLON procedure_def_continues
 
     SEMICOLON  shift, and go to state 76
 
 
 State 57
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params • COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params • COLON IDENT $@8 SEMICOLON procedure_def_continues
 
     COLON  shift, and go to state 77
 
 
 State 58
 
-   48 command: IDENT $@15 • starts_with_ident
+   51 command: IDENT $@16 • starts_with_ident
 
-    OPEN_PARENTHESIS  reduce using rule 56 ($@16)
-    SEMICOLON         reduce using rule 56 ($@16)
-    T_END             reduce using rule 56 ($@16)
-    ASSIGNMENT        reduce using rule 80 ($@21)
-    ELSE              reduce using rule 56 ($@16)
+    OPEN_PARENTHESIS  reduce using rule 59 ($@17)
+    SEMICOLON         reduce using rule 59 ($@17)
+    T_END             reduce using rule 59 ($@17)
+    ASSIGNMENT        reduce using rule 83 ($@22)
+    ELSE              reduce using rule 59 ($@17)
 
     starts_with_ident     go to state 78
     procedure_call        go to state 79
-    $@16                  go to state 80
+    $@17                  go to state 80
     assignment_operation  go to state 81
-    $@21                  go to state 82
+    $@22                  go to state 82
 
 
 State 59
 
-   99 F: OPEN_PARENTHESIS • boolean_expr CLOSE_PARENTHESIS
+  102 F: OPEN_PARENTHESIS • boolean_expr CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -977,29 +988,29 @@ State 59
 
 State 60
 
-   98 F: IDENT • $@22 IDENT_CONTINUES
+  101 F: IDENT • $@23 IDENT_CONTINUES
 
-    $default  reduce using rule 97 ($@22)
+    $default  reduce using rule 100 ($@23)
 
-    $@22  go to state 84
+    $@23  go to state 84
 
 
 State 61
 
-   96 F: NUMBER •
+   99 F: NUMBER •
 
-    $default  reduce using rule 96 (F)
+    $default  reduce using rule 99 (F)
 
 
 State 62
 
-   76 if_then: IF boolean_expr • $@19 THEN command
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
+   79 if_then: IF boolean_expr • $@20 THEN command
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
 
     EQUAL          shift, and go to state 85
     DIFFERENT      shift, and go to state 86
@@ -1008,78 +1019,78 @@ State 62
     MORE_OR_EQUAL  shift, and go to state 89
     MORE           shift, and go to state 90
 
-    THEN  reduce using rule 75 ($@19)
+    THEN  reduce using rule 78 ($@20)
 
-    $@19  go to state 91
+    $@20  go to state 91
 
 
 State 63
 
-   82 boolean_expr: arithmetic_expr •
+   85 boolean_expr: arithmetic_expr •
 
-    $default  reduce using rule 82 (boolean_expr)
+    $default  reduce using rule 85 (boolean_expr)
 
 
 State 64
 
-   89 arithmetic_expr: E •
-   90 E: E • PLUS T
-   91  | E • MINUS T
+   92 arithmetic_expr: E •
+   93 E: E • PLUS T
+   94  | E • MINUS T
 
     PLUS   shift, and go to state 92
     MINUS  shift, and go to state 93
 
-    CLOSE_PARENTHESIS  reduce using rule 89 (arithmetic_expr)
-    COMMA              reduce using rule 89 (arithmetic_expr)
-    SEMICOLON          reduce using rule 89 (arithmetic_expr)
-    T_END              reduce using rule 89 (arithmetic_expr)
-    THEN               reduce using rule 89 (arithmetic_expr)
-    ELSE               reduce using rule 89 (arithmetic_expr)
-    DO                 reduce using rule 89 (arithmetic_expr)
-    EQUAL              reduce using rule 89 (arithmetic_expr)
-    DIFFERENT          reduce using rule 89 (arithmetic_expr)
-    LESS_OR_EQUAL      reduce using rule 89 (arithmetic_expr)
-    LESS               reduce using rule 89 (arithmetic_expr)
-    MORE_OR_EQUAL      reduce using rule 89 (arithmetic_expr)
-    MORE               reduce using rule 89 (arithmetic_expr)
+    CLOSE_PARENTHESIS  reduce using rule 92 (arithmetic_expr)
+    COMMA              reduce using rule 92 (arithmetic_expr)
+    SEMICOLON          reduce using rule 92 (arithmetic_expr)
+    T_END              reduce using rule 92 (arithmetic_expr)
+    THEN               reduce using rule 92 (arithmetic_expr)
+    ELSE               reduce using rule 92 (arithmetic_expr)
+    DO                 reduce using rule 92 (arithmetic_expr)
+    EQUAL              reduce using rule 92 (arithmetic_expr)
+    DIFFERENT          reduce using rule 92 (arithmetic_expr)
+    LESS_OR_EQUAL      reduce using rule 92 (arithmetic_expr)
+    LESS               reduce using rule 92 (arithmetic_expr)
+    MORE_OR_EQUAL      reduce using rule 92 (arithmetic_expr)
+    MORE               reduce using rule 92 (arithmetic_expr)
 
 
 State 65
 
-   92 E: T •
-   93 T: T • ASTERISK F
-   94  | T • DIV F
+   95 E: T •
+   96 T: T • ASTERISK F
+   97  | T • DIV F
 
     DIV       shift, and go to state 94
     ASTERISK  shift, and go to state 95
 
-    CLOSE_PARENTHESIS  reduce using rule 92 (E)
-    COMMA              reduce using rule 92 (E)
-    SEMICOLON          reduce using rule 92 (E)
-    T_END              reduce using rule 92 (E)
-    THEN               reduce using rule 92 (E)
-    ELSE               reduce using rule 92 (E)
-    DO                 reduce using rule 92 (E)
-    PLUS               reduce using rule 92 (E)
-    MINUS              reduce using rule 92 (E)
-    EQUAL              reduce using rule 92 (E)
-    DIFFERENT          reduce using rule 92 (E)
-    LESS_OR_EQUAL      reduce using rule 92 (E)
-    LESS               reduce using rule 92 (E)
-    MORE_OR_EQUAL      reduce using rule 92 (E)
-    MORE               reduce using rule 92 (E)
+    CLOSE_PARENTHESIS  reduce using rule 95 (E)
+    COMMA              reduce using rule 95 (E)
+    SEMICOLON          reduce using rule 95 (E)
+    T_END              reduce using rule 95 (E)
+    THEN               reduce using rule 95 (E)
+    ELSE               reduce using rule 95 (E)
+    DO                 reduce using rule 95 (E)
+    PLUS               reduce using rule 95 (E)
+    MINUS              reduce using rule 95 (E)
+    EQUAL              reduce using rule 95 (E)
+    DIFFERENT          reduce using rule 95 (E)
+    LESS_OR_EQUAL      reduce using rule 95 (E)
+    LESS               reduce using rule 95 (E)
+    MORE_OR_EQUAL      reduce using rule 95 (E)
+    MORE               reduce using rule 95 (E)
 
 
 State 66
 
-   95 T: F •
+   98 T: F •
 
-    $default  reduce using rule 95 (T)
+    $default  reduce using rule 98 (T)
 
 
 State 67
 
-   73 loop: WHILE $@17 • boolean_expr $@18 DO command
+   76 loop: WHILE $@18 • boolean_expr $@19 DO command
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1094,7 +1105,7 @@ State 67
 
 State 68
 
-   65 read: READ OPEN_PARENTHESIS • read_ident_list CLOSE_PARENTHESIS
+   68 read: READ OPEN_PARENTHESIS • read_ident_list CLOSE_PARENTHESIS
 
     IDENT  shift, and go to state 97
 
@@ -1103,7 +1114,7 @@ State 68
 
 State 69
 
-   68 write: WRITE OPEN_PARENTHESIS • write_boolean_expr_list CLOSE_PARENTHESIS
+   71 write: WRITE OPEN_PARENTHESIS • write_boolean_expr_list CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1119,8 +1130,8 @@ State 69
 
 State 70
 
-   42 optional_semicolon: SEMICOLON •
-   45 commands: commands SEMICOLON • command
+   45 optional_semicolon: SEMICOLON •
+   48 commands: commands SEMICOLON • command
 
     T_BEGIN  shift, and go to state 32
     IDENT    shift, and go to state 39
@@ -1129,7 +1140,7 @@ State 70
     READ     shift, and go to state 42
     WRITE    shift, and go to state 43
 
-    T_END  reduce using rule 42 (optional_semicolon)
+    T_END  reduce using rule 45 (optional_semicolon)
 
     compound_command  go to state 44
     command           go to state 101
@@ -1142,25 +1153,25 @@ State 70
 
 State 71
 
-   44 compound_command: T_BEGIN commands optional_semicolon • T_END
+   47 compound_command: T_BEGIN commands optional_semicolon • T_END
 
     T_END  shift, and go to state 102
 
 
 State 72
 
-   78 cond_else: ELSE • $@20 command
+   81 cond_else: ELSE • $@21 command
 
-    $default  reduce using rule 77 ($@20)
+    $default  reduce using rule 80 ($@21)
 
-    $@20  go to state 103
+    $@21  go to state 103
 
 
 State 73
 
-   74 conditional: if_then cond_else •
+   77 conditional: if_then cond_else •
 
-    $default  reduce using rule 74 (conditional)
+    $default  reduce using rule 77 (conditional)
 
 
 State 74
@@ -1172,11 +1183,11 @@ State 74
 
 State 75
 
-   31 procedure_params: OPEN_PARENTHESIS $@11 • declare_params $@12 CLOSE_PARENTHESIS
+   34 procedure_params: OPEN_PARENTHESIS $@12 • declare_params $@13 CLOSE_PARENTHESIS
 
     VAR  shift, and go to state 105
 
-    IDENT  reduce using rule 39 (by_reference_or_not)
+    IDENT  reduce using rule 42 (by_reference_or_not)
 
     declare_params       go to state 106
     declare_param        go to state 107
@@ -1185,91 +1196,92 @@ State 75
 
 State 76
 
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON • block $@7 SEMICOLON
+   23 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON • procedure_def_continues
 
-    VAR  shift, and go to state 13
+    FORWARD  shift, and go to state 109
 
-    T_BEGIN    reduce using rule 7 (declaring_vars_block)
-    PROCEDURE  reduce using rule 7 (declaring_vars_block)
-    FUNCTION   reduce using rule 7 (declaring_vars_block)
+    T_BEGIN    reduce using rule 29 ($@10)
+    VAR        reduce using rule 29 ($@10)
+    PROCEDURE  reduce using rule 29 ($@10)
+    FUNCTION   reduce using rule 29 ($@10)
 
-    block                 go to state 109
-    declaring_vars_block  go to state 15
+    procedure_def_continues  go to state 110
+    $@10                     go to state 111
 
 
 State 77
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON • IDENT $@9 SEMICOLON block $@10 SEMICOLON
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON • IDENT $@8 SEMICOLON procedure_def_continues
 
-    IDENT  shift, and go to state 110
+    IDENT  shift, and go to state 112
 
 
 State 78
 
-   48 command: IDENT $@15 starts_with_ident •
+   51 command: IDENT $@16 starts_with_ident •
 
-    $default  reduce using rule 48 (command)
+    $default  reduce using rule 51 (command)
 
 
 State 79
 
-   54 starts_with_ident: procedure_call •
+   57 starts_with_ident: procedure_call •
 
-    $default  reduce using rule 54 (starts_with_ident)
+    $default  reduce using rule 57 (starts_with_ident)
 
 
 State 80
 
-   57 procedure_call: $@16 • procedure_call_continues
+   60 procedure_call: $@17 • procedure_call_continues
 
-    OPEN_PARENTHESIS  shift, and go to state 111
+    OPEN_PARENTHESIS  shift, and go to state 113
 
-    CLOSE_PARENTHESIS  reduce using rule 59 (procedure_call_continues)
-    COMMA              reduce using rule 59 (procedure_call_continues)
-    SEMICOLON          reduce using rule 59 (procedure_call_continues)
-    T_END              reduce using rule 59 (procedure_call_continues)
-    THEN               reduce using rule 59 (procedure_call_continues)
-    ELSE               reduce using rule 59 (procedure_call_continues)
-    DO                 reduce using rule 59 (procedure_call_continues)
-    DIV                reduce using rule 59 (procedure_call_continues)
-    ASTERISK           reduce using rule 59 (procedure_call_continues)
-    PLUS               reduce using rule 59 (procedure_call_continues)
-    MINUS              reduce using rule 59 (procedure_call_continues)
-    EQUAL              reduce using rule 59 (procedure_call_continues)
-    DIFFERENT          reduce using rule 59 (procedure_call_continues)
-    LESS_OR_EQUAL      reduce using rule 59 (procedure_call_continues)
-    LESS               reduce using rule 59 (procedure_call_continues)
-    MORE_OR_EQUAL      reduce using rule 59 (procedure_call_continues)
-    MORE               reduce using rule 59 (procedure_call_continues)
+    CLOSE_PARENTHESIS  reduce using rule 62 (procedure_call_continues)
+    COMMA              reduce using rule 62 (procedure_call_continues)
+    SEMICOLON          reduce using rule 62 (procedure_call_continues)
+    T_END              reduce using rule 62 (procedure_call_continues)
+    THEN               reduce using rule 62 (procedure_call_continues)
+    ELSE               reduce using rule 62 (procedure_call_continues)
+    DO                 reduce using rule 62 (procedure_call_continues)
+    DIV                reduce using rule 62 (procedure_call_continues)
+    ASTERISK           reduce using rule 62 (procedure_call_continues)
+    PLUS               reduce using rule 62 (procedure_call_continues)
+    MINUS              reduce using rule 62 (procedure_call_continues)
+    EQUAL              reduce using rule 62 (procedure_call_continues)
+    DIFFERENT          reduce using rule 62 (procedure_call_continues)
+    LESS_OR_EQUAL      reduce using rule 62 (procedure_call_continues)
+    LESS               reduce using rule 62 (procedure_call_continues)
+    MORE_OR_EQUAL      reduce using rule 62 (procedure_call_continues)
+    MORE               reduce using rule 62 (procedure_call_continues)
 
-    procedure_call_continues  go to state 112
+    procedure_call_continues  go to state 114
 
 
 State 81
 
-   55 starts_with_ident: assignment_operation •
+   58 starts_with_ident: assignment_operation •
 
-    $default  reduce using rule 55 (starts_with_ident)
+    $default  reduce using rule 58 (starts_with_ident)
 
 
 State 82
 
-   81 assignment_operation: $@21 • ASSIGNMENT boolean_expr
+   84 assignment_operation: $@22 • ASSIGNMENT boolean_expr
 
-    ASSIGNMENT  shift, and go to state 113
+    ASSIGNMENT  shift, and go to state 115
 
 
 State 83
 
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
-   99 F: OPEN_PARENTHESIS boolean_expr • CLOSE_PARENTHESIS
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
+  102 F: OPEN_PARENTHESIS boolean_expr • CLOSE_PARENTHESIS
 
-    CLOSE_PARENTHESIS  shift, and go to state 114
+    CLOSE_PARENTHESIS  shift, and go to state 116
     EQUAL              shift, and go to state 85
     DIFFERENT          shift, and go to state 86
     LESS_OR_EQUAL      shift, and go to state 87
@@ -1280,91 +1292,63 @@ State 83
 
 State 84
 
-   98 F: IDENT $@22 • IDENT_CONTINUES
+  101 F: IDENT $@23 • IDENT_CONTINUES
 
-    OPEN_PARENTHESIS   reduce using rule 101 ($@23)
-    CLOSE_PARENTHESIS  reduce using rule 100 (IDENT_CONTINUES)
-    CLOSE_PARENTHESIS  [reduce using rule 101 ($@23)]
-    COMMA              reduce using rule 100 (IDENT_CONTINUES)
-    COMMA              [reduce using rule 101 ($@23)]
-    SEMICOLON          reduce using rule 100 (IDENT_CONTINUES)
-    SEMICOLON          [reduce using rule 101 ($@23)]
-    T_END              reduce using rule 100 (IDENT_CONTINUES)
-    T_END              [reduce using rule 101 ($@23)]
-    THEN               reduce using rule 100 (IDENT_CONTINUES)
-    THEN               [reduce using rule 101 ($@23)]
-    ELSE               reduce using rule 100 (IDENT_CONTINUES)
-    ELSE               [reduce using rule 101 ($@23)]
-    DO                 reduce using rule 100 (IDENT_CONTINUES)
-    DO                 [reduce using rule 101 ($@23)]
-    DIV                reduce using rule 100 (IDENT_CONTINUES)
-    DIV                [reduce using rule 101 ($@23)]
-    ASTERISK           reduce using rule 100 (IDENT_CONTINUES)
-    ASTERISK           [reduce using rule 101 ($@23)]
-    PLUS               reduce using rule 100 (IDENT_CONTINUES)
-    PLUS               [reduce using rule 101 ($@23)]
-    MINUS              reduce using rule 100 (IDENT_CONTINUES)
-    MINUS              [reduce using rule 101 ($@23)]
-    EQUAL              reduce using rule 100 (IDENT_CONTINUES)
-    EQUAL              [reduce using rule 101 ($@23)]
-    DIFFERENT          reduce using rule 100 (IDENT_CONTINUES)
-    DIFFERENT          [reduce using rule 101 ($@23)]
-    LESS_OR_EQUAL      reduce using rule 100 (IDENT_CONTINUES)
-    LESS_OR_EQUAL      [reduce using rule 101 ($@23)]
-    LESS               reduce using rule 100 (IDENT_CONTINUES)
-    LESS               [reduce using rule 101 ($@23)]
-    MORE_OR_EQUAL      reduce using rule 100 (IDENT_CONTINUES)
-    MORE_OR_EQUAL      [reduce using rule 101 ($@23)]
-    MORE               reduce using rule 100 (IDENT_CONTINUES)
-    MORE               [reduce using rule 101 ($@23)]
+    OPEN_PARENTHESIS   reduce using rule 104 ($@24)
+    CLOSE_PARENTHESIS  reduce using rule 103 (IDENT_CONTINUES)
+    CLOSE_PARENTHESIS  [reduce using rule 104 ($@24)]
+    COMMA              reduce using rule 103 (IDENT_CONTINUES)
+    COMMA              [reduce using rule 104 ($@24)]
+    SEMICOLON          reduce using rule 103 (IDENT_CONTINUES)
+    SEMICOLON          [reduce using rule 104 ($@24)]
+    T_END              reduce using rule 103 (IDENT_CONTINUES)
+    T_END              [reduce using rule 104 ($@24)]
+    THEN               reduce using rule 103 (IDENT_CONTINUES)
+    THEN               [reduce using rule 104 ($@24)]
+    ELSE               reduce using rule 103 (IDENT_CONTINUES)
+    ELSE               [reduce using rule 104 ($@24)]
+    DO                 reduce using rule 103 (IDENT_CONTINUES)
+    DO                 [reduce using rule 104 ($@24)]
+    DIV                reduce using rule 103 (IDENT_CONTINUES)
+    DIV                [reduce using rule 104 ($@24)]
+    ASTERISK           reduce using rule 103 (IDENT_CONTINUES)
+    ASTERISK           [reduce using rule 104 ($@24)]
+    PLUS               reduce using rule 103 (IDENT_CONTINUES)
+    PLUS               [reduce using rule 104 ($@24)]
+    MINUS              reduce using rule 103 (IDENT_CONTINUES)
+    MINUS              [reduce using rule 104 ($@24)]
+    EQUAL              reduce using rule 103 (IDENT_CONTINUES)
+    EQUAL              [reduce using rule 104 ($@24)]
+    DIFFERENT          reduce using rule 103 (IDENT_CONTINUES)
+    DIFFERENT          [reduce using rule 104 ($@24)]
+    LESS_OR_EQUAL      reduce using rule 103 (IDENT_CONTINUES)
+    LESS_OR_EQUAL      [reduce using rule 104 ($@24)]
+    LESS               reduce using rule 103 (IDENT_CONTINUES)
+    LESS               [reduce using rule 104 ($@24)]
+    MORE_OR_EQUAL      reduce using rule 103 (IDENT_CONTINUES)
+    MORE_OR_EQUAL      [reduce using rule 104 ($@24)]
+    MORE               reduce using rule 103 (IDENT_CONTINUES)
+    MORE               [reduce using rule 104 ($@24)]
 
-    IDENT_CONTINUES  go to state 115
-    $@23             go to state 116
+    IDENT_CONTINUES  go to state 117
+    $@24             go to state 118
 
     reduce/reduce conflict on tokens CLOSE_PARENTHESIS, COMMA, SEMICOLON, T_END, THEN, ELSE, DO, DIV, ASTERISK, PLUS, MINUS, EQUAL, DIFFERENT, LESS_OR_EQUAL, LESS, MORE_OR_EQUAL, MORE:
-      100 IDENT_CONTINUES: ε •
-      101 $@23: ε •
+      103 IDENT_CONTINUES: ε •
+      104 $@24: ε •
       Example: •
       First reduce derivation
         IDENT_CONTINUES
-        ↳ 100: ε •
+        ↳ 103: ε •
       Second reduce derivation
-        $@23
-        ↳ 101: ε •
+        $@24
+        ↳ 104: ε •
 
 
 
 State 85
 
-   83 boolean_expr: boolean_expr EQUAL • arithmetic_expr
-
-    OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 60
-    NUMBER            shift, and go to state 61
-
-    arithmetic_expr  go to state 117
-    E                go to state 64
-    T                go to state 65
-    F                go to state 66
-
-
-State 86
-
-   84 boolean_expr: boolean_expr DIFFERENT • arithmetic_expr
-
-    OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 60
-    NUMBER            shift, and go to state 61
-
-    arithmetic_expr  go to state 118
-    E                go to state 64
-    T                go to state 65
-    F                go to state 66
-
-
-State 87
-
-   85 boolean_expr: boolean_expr LESS_OR_EQUAL • arithmetic_expr
+   86 boolean_expr: boolean_expr EQUAL • arithmetic_expr
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1376,9 +1360,9 @@ State 87
     F                go to state 66
 
 
-State 88
+State 86
 
-   86 boolean_expr: boolean_expr LESS • arithmetic_expr
+   87 boolean_expr: boolean_expr DIFFERENT • arithmetic_expr
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1390,9 +1374,9 @@ State 88
     F                go to state 66
 
 
-State 89
+State 87
 
-   87 boolean_expr: boolean_expr MORE_OR_EQUAL • arithmetic_expr
+   88 boolean_expr: boolean_expr LESS_OR_EQUAL • arithmetic_expr
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1404,9 +1388,9 @@ State 89
     F                go to state 66
 
 
-State 90
+State 88
 
-   88 boolean_expr: boolean_expr MORE • arithmetic_expr
+   89 boolean_expr: boolean_expr LESS • arithmetic_expr
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
@@ -1418,68 +1402,96 @@ State 90
     F                go to state 66
 
 
-State 91
+State 89
 
-   76 if_then: IF boolean_expr $@19 • THEN command
-
-    THEN  shift, and go to state 123
-
-
-State 92
-
-   90 E: E PLUS • T
+   90 boolean_expr: boolean_expr MORE_OR_EQUAL • arithmetic_expr
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
     NUMBER            shift, and go to state 61
 
-    T  go to state 124
+    arithmetic_expr  go to state 123
+    E                go to state 64
+    T                go to state 65
+    F                go to state 66
+
+
+State 90
+
+   91 boolean_expr: boolean_expr MORE • arithmetic_expr
+
+    OPEN_PARENTHESIS  shift, and go to state 59
+    IDENT             shift, and go to state 60
+    NUMBER            shift, and go to state 61
+
+    arithmetic_expr  go to state 124
+    E                go to state 64
+    T                go to state 65
+    F                go to state 66
+
+
+State 91
+
+   79 if_then: IF boolean_expr $@20 • THEN command
+
+    THEN  shift, and go to state 125
+
+
+State 92
+
+   93 E: E PLUS • T
+
+    OPEN_PARENTHESIS  shift, and go to state 59
+    IDENT             shift, and go to state 60
+    NUMBER            shift, and go to state 61
+
+    T  go to state 126
     F  go to state 66
 
 
 State 93
 
-   91 E: E MINUS • T
+   94 E: E MINUS • T
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
     NUMBER            shift, and go to state 61
 
-    T  go to state 125
+    T  go to state 127
     F  go to state 66
 
 
 State 94
 
-   94 T: T DIV • F
+   97 T: T DIV • F
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
     NUMBER            shift, and go to state 61
 
-    F  go to state 126
+    F  go to state 128
 
 
 State 95
 
-   93 T: T ASTERISK • F
+   96 T: T ASTERISK • F
 
     OPEN_PARENTHESIS  shift, and go to state 59
     IDENT             shift, and go to state 60
     NUMBER            shift, and go to state 61
 
-    F  go to state 127
+    F  go to state 129
 
 
 State 96
 
-   73 loop: WHILE $@17 boolean_expr • $@18 DO command
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
+   76 loop: WHILE $@18 boolean_expr • $@19 DO command
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
 
     EQUAL          shift, and go to state 85
     DIFFERENT      shift, and go to state 86
@@ -1488,45 +1500,45 @@ State 96
     MORE_OR_EQUAL  shift, and go to state 89
     MORE           shift, and go to state 90
 
-    DO  reduce using rule 72 ($@18)
+    DO  reduce using rule 75 ($@19)
 
-    $@18  go to state 128
+    $@19  go to state 130
 
 
 State 97
 
-   67 read_ident_list: IDENT •
+   70 read_ident_list: IDENT •
 
-    $default  reduce using rule 67 (read_ident_list)
+    $default  reduce using rule 70 (read_ident_list)
 
 
 State 98
 
-   65 read: READ OPEN_PARENTHESIS read_ident_list • CLOSE_PARENTHESIS
-   66 read_ident_list: read_ident_list • COMMA IDENT
-
-    CLOSE_PARENTHESIS  shift, and go to state 129
-    COMMA              shift, and go to state 130
-
-
-State 99
-
-   68 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list • CLOSE_PARENTHESIS
-   69 write_boolean_expr_list: write_boolean_expr_list • COMMA boolean_expr
+   68 read: READ OPEN_PARENTHESIS read_ident_list • CLOSE_PARENTHESIS
+   69 read_ident_list: read_ident_list • COMMA IDENT
 
     CLOSE_PARENTHESIS  shift, and go to state 131
     COMMA              shift, and go to state 132
 
 
+State 99
+
+   71 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list • CLOSE_PARENTHESIS
+   72 write_boolean_expr_list: write_boolean_expr_list • COMMA boolean_expr
+
+    CLOSE_PARENTHESIS  shift, and go to state 133
+    COMMA              shift, and go to state 134
+
+
 State 100
 
-   70 write_boolean_expr_list: boolean_expr •
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
+   73 write_boolean_expr_list: boolean_expr •
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
 
     EQUAL          shift, and go to state 85
     DIFFERENT      shift, and go to state 86
@@ -1535,27 +1547,27 @@ State 100
     MORE_OR_EQUAL  shift, and go to state 89
     MORE           shift, and go to state 90
 
-    CLOSE_PARENTHESIS  reduce using rule 70 (write_boolean_expr_list)
-    COMMA              reduce using rule 70 (write_boolean_expr_list)
+    CLOSE_PARENTHESIS  reduce using rule 73 (write_boolean_expr_list)
+    COMMA              reduce using rule 73 (write_boolean_expr_list)
 
 
 State 101
 
-   45 commands: commands SEMICOLON command •
+   48 commands: commands SEMICOLON command •
 
-    $default  reduce using rule 45 (commands)
+    $default  reduce using rule 48 (commands)
 
 
 State 102
 
-   44 compound_command: T_BEGIN commands optional_semicolon T_END •
+   47 compound_command: T_BEGIN commands optional_semicolon T_END •
 
-    $default  reduce using rule 44 (compound_command)
+    $default  reduce using rule 47 (compound_command)
 
 
 State 103
 
-   78 cond_else: ELSE $@20 • command
+   81 cond_else: ELSE $@21 • command
 
     T_BEGIN  shift, and go to state 32
     IDENT    shift, and go to state 39
@@ -1565,7 +1577,7 @@ State 103
     WRITE    shift, and go to state 43
 
     compound_command  go to state 44
-    command           go to state 133
+    command           go to state 135
     read              go to state 47
     write             go to state 48
     loop              go to state 49
@@ -1582,543 +1594,61 @@ State 104
 
 State 105
 
-   38 by_reference_or_not: VAR •
+   41 by_reference_or_not: VAR •
 
-    $default  reduce using rule 38 (by_reference_or_not)
+    $default  reduce using rule 41 (by_reference_or_not)
 
 
 State 106
 
-   31 procedure_params: OPEN_PARENTHESIS $@11 declare_params • $@12 CLOSE_PARENTHESIS
-   33 declare_params: declare_params • declare_param
+   34 procedure_params: OPEN_PARENTHESIS $@12 declare_params • $@13 CLOSE_PARENTHESIS
+   36 declare_params: declare_params • declare_param
 
     VAR  shift, and go to state 105
 
-    CLOSE_PARENTHESIS  reduce using rule 30 ($@12)
-    IDENT              reduce using rule 39 (by_reference_or_not)
+    CLOSE_PARENTHESIS  reduce using rule 33 ($@13)
+    IDENT              reduce using rule 42 (by_reference_or_not)
 
-    $@12                 go to state 134
-    declare_param        go to state 135
+    $@13                 go to state 136
+    declare_param        go to state 137
     by_reference_or_not  go to state 108
 
 
 State 107
 
-   34 declare_params: declare_param •
+   37 declare_params: declare_param •
 
-    $default  reduce using rule 34 (declare_params)
+    $default  reduce using rule 37 (declare_params)
 
 
 State 108
 
-   37 declare_param: by_reference_or_not • $@13 id_param_list COLON type $@14 optional_semicolon
+   40 declare_param: by_reference_or_not • $@14 id_param_list COLON type $@15 optional_semicolon
 
-    $default  reduce using rule 35 ($@13)
+    $default  reduce using rule 38 ($@14)
 
-    $@13  go to state 136
+    $@14  go to state 138
 
 
 State 109
 
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON block • $@7 SEMICOLON
+   28 procedure_def_continues: FORWARD • $@9 SEMICOLON
 
-    $default  reduce using rule 23 ($@7)
+    $default  reduce using rule 27 ($@9)
 
-    $@7  go to state 137
+    $@9  go to state 139
 
 
 State 110
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT • $@9 SEMICOLON block $@10 SEMICOLON
+   23 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON procedure_def_continues •
 
-    $default  reduce using rule 26 ($@9)
-
-    $@9  go to state 138
+    $default  reduce using rule 23 (procedure_def)
 
 
 State 111
 
-   58 procedure_call_continues: OPEN_PARENTHESIS • procedure_arguments CLOSE_PARENTHESIS
-
-    OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 139
-    NUMBER            shift, and go to state 61
-
-    procedure_arguments  go to state 140
-    args_list            go to state 141
-    ARGUMENT             go to state 142
-    boolean_expr         go to state 143
-    arithmetic_expr      go to state 63
-    E                    go to state 64
-    T                    go to state 65
-    F                    go to state 66
-
-
-State 112
-
-   57 procedure_call: $@16 procedure_call_continues •
-
-    $default  reduce using rule 57 (procedure_call)
-
-
-State 113
-
-   81 assignment_operation: $@21 ASSIGNMENT • boolean_expr
-
-    OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 60
-    NUMBER            shift, and go to state 61
-
-    boolean_expr     go to state 144
-    arithmetic_expr  go to state 63
-    E                go to state 64
-    T                go to state 65
-    F                go to state 66
-
-
-State 114
-
-   99 F: OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS •
-
-    $default  reduce using rule 99 (F)
-
-
-State 115
-
-   98 F: IDENT $@22 IDENT_CONTINUES •
-
-    $default  reduce using rule 98 (F)
-
-
-State 116
-
-  102 IDENT_CONTINUES: $@23 • procedure_call
-
-    $default  reduce using rule 56 ($@16)
-
-    procedure_call  go to state 145
-    $@16            go to state 80
-
-
-State 117
-
-   83 boolean_expr: boolean_expr EQUAL arithmetic_expr •
-
-    $default  reduce using rule 83 (boolean_expr)
-
-
-State 118
-
-   84 boolean_expr: boolean_expr DIFFERENT arithmetic_expr •
-
-    $default  reduce using rule 84 (boolean_expr)
-
-
-State 119
-
-   85 boolean_expr: boolean_expr LESS_OR_EQUAL arithmetic_expr •
-
-    $default  reduce using rule 85 (boolean_expr)
-
-
-State 120
-
-   86 boolean_expr: boolean_expr LESS arithmetic_expr •
-
-    $default  reduce using rule 86 (boolean_expr)
-
-
-State 121
-
-   87 boolean_expr: boolean_expr MORE_OR_EQUAL arithmetic_expr •
-
-    $default  reduce using rule 87 (boolean_expr)
-
-
-State 122
-
-   88 boolean_expr: boolean_expr MORE arithmetic_expr •
-
-    $default  reduce using rule 88 (boolean_expr)
-
-
-State 123
-
-   76 if_then: IF boolean_expr $@19 THEN • command
-
-    T_BEGIN  shift, and go to state 32
-    IDENT    shift, and go to state 39
-    IF       shift, and go to state 40
-    WHILE    shift, and go to state 41
-    READ     shift, and go to state 42
-    WRITE    shift, and go to state 43
-
-    compound_command  go to state 44
-    command           go to state 146
-    read              go to state 47
-    write             go to state 48
-    loop              go to state 49
-    conditional       go to state 50
-    if_then           go to state 51
-
-
-State 124
-
-   90 E: E PLUS T •
-   93 T: T • ASTERISK F
-   94  | T • DIV F
-
-    DIV       shift, and go to state 94
-    ASTERISK  shift, and go to state 95
-
-    CLOSE_PARENTHESIS  reduce using rule 90 (E)
-    COMMA              reduce using rule 90 (E)
-    SEMICOLON          reduce using rule 90 (E)
-    T_END              reduce using rule 90 (E)
-    THEN               reduce using rule 90 (E)
-    ELSE               reduce using rule 90 (E)
-    DO                 reduce using rule 90 (E)
-    PLUS               reduce using rule 90 (E)
-    MINUS              reduce using rule 90 (E)
-    EQUAL              reduce using rule 90 (E)
-    DIFFERENT          reduce using rule 90 (E)
-    LESS_OR_EQUAL      reduce using rule 90 (E)
-    LESS               reduce using rule 90 (E)
-    MORE_OR_EQUAL      reduce using rule 90 (E)
-    MORE               reduce using rule 90 (E)
-
-
-State 125
-
-   91 E: E MINUS T •
-   93 T: T • ASTERISK F
-   94  | T • DIV F
-
-    DIV       shift, and go to state 94
-    ASTERISK  shift, and go to state 95
-
-    CLOSE_PARENTHESIS  reduce using rule 91 (E)
-    COMMA              reduce using rule 91 (E)
-    SEMICOLON          reduce using rule 91 (E)
-    T_END              reduce using rule 91 (E)
-    THEN               reduce using rule 91 (E)
-    ELSE               reduce using rule 91 (E)
-    DO                 reduce using rule 91 (E)
-    PLUS               reduce using rule 91 (E)
-    MINUS              reduce using rule 91 (E)
-    EQUAL              reduce using rule 91 (E)
-    DIFFERENT          reduce using rule 91 (E)
-    LESS_OR_EQUAL      reduce using rule 91 (E)
-    LESS               reduce using rule 91 (E)
-    MORE_OR_EQUAL      reduce using rule 91 (E)
-    MORE               reduce using rule 91 (E)
-
-
-State 126
-
-   94 T: T DIV F •
-
-    $default  reduce using rule 94 (T)
-
-
-State 127
-
-   93 T: T ASTERISK F •
-
-    $default  reduce using rule 93 (T)
-
-
-State 128
-
-   73 loop: WHILE $@17 boolean_expr $@18 • DO command
-
-    DO  shift, and go to state 147
-
-
-State 129
-
-   65 read: READ OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS •
-
-    $default  reduce using rule 65 (read)
-
-
-State 130
-
-   66 read_ident_list: read_ident_list COMMA • IDENT
-
-    IDENT  shift, and go to state 148
-
-
-State 131
-
-   68 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS •
-
-    $default  reduce using rule 68 (write)
-
-
-State 132
-
-   69 write_boolean_expr_list: write_boolean_expr_list COMMA • boolean_expr
-
-    OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 60
-    NUMBER            shift, and go to state 61
-
-    boolean_expr     go to state 149
-    arithmetic_expr  go to state 63
-    E                go to state 64
-    T                go to state 65
-    F                go to state 66
-
-
-State 133
-
-   78 cond_else: ELSE $@20 command •
-
-    $default  reduce using rule 78 (cond_else)
-
-
-State 134
-
-   31 procedure_params: OPEN_PARENTHESIS $@11 declare_params $@12 • CLOSE_PARENTHESIS
-
-    CLOSE_PARENTHESIS  shift, and go to state 150
-
-
-State 135
-
-   33 declare_params: declare_params declare_param •
-
-    $default  reduce using rule 33 (declare_params)
-
-
-State 136
-
-   37 declare_param: by_reference_or_not $@13 • id_param_list COLON type $@14 optional_semicolon
-
-    IDENT  shift, and go to state 151
-
-    id_param_list  go to state 152
-
-
-State 137
-
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON block $@7 • SEMICOLON
-
-    SEMICOLON  shift, and go to state 153
-
-
-State 138
-
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 • SEMICOLON block $@10 SEMICOLON
-
-    SEMICOLON  shift, and go to state 154
-
-
-State 139
-
-   63 ARGUMENT: IDENT •
-   98 F: IDENT • $@22 IDENT_CONTINUES
-
-    OPEN_PARENTHESIS   reduce using rule 97 ($@22)
-    CLOSE_PARENTHESIS  reduce using rule 63 (ARGUMENT)
-    CLOSE_PARENTHESIS  [reduce using rule 97 ($@22)]
-    COMMA              reduce using rule 63 (ARGUMENT)
-    COMMA              [reduce using rule 97 ($@22)]
-    DIV                reduce using rule 97 ($@22)
-    ASTERISK           reduce using rule 97 ($@22)
-    PLUS               reduce using rule 97 ($@22)
-    MINUS              reduce using rule 97 ($@22)
-    EQUAL              reduce using rule 97 ($@22)
-    DIFFERENT          reduce using rule 97 ($@22)
-    LESS_OR_EQUAL      reduce using rule 97 ($@22)
-    LESS               reduce using rule 97 ($@22)
-    MORE_OR_EQUAL      reduce using rule 97 ($@22)
-    MORE               reduce using rule 97 ($@22)
-
-    $@22  go to state 84
-
-    reduce/reduce conflict on tokens CLOSE_PARENTHESIS, COMMA:
-       63 ARGUMENT: IDENT •
-       97 $@22: ε •
-      Example: IDENT •
-      First reduce derivation
-        ARGUMENT
-        ↳ 63: IDENT •
-      Second reduce derivation
-        ARGUMENT
-        ↳ 64: boolean_expr
-              ↳ 82: arithmetic_expr
-                    ↳ 89: E
-                          ↳ 92: T
-                                ↳ 95: F
-                                      ↳ 98: IDENT $@22      IDENT_CONTINUES
-                                                  ↳ 97: ε • ↳ 98: ε
-
-
-
-State 140
-
-   58 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments • CLOSE_PARENTHESIS
-
-    CLOSE_PARENTHESIS  shift, and go to state 155
-
-
-State 141
-
-   60 procedure_arguments: args_list •
-   61 args_list: args_list • COMMA ARGUMENT
-
-    COMMA  shift, and go to state 156
-
-    CLOSE_PARENTHESIS  reduce using rule 60 (procedure_arguments)
-
-
-State 142
-
-   62 args_list: ARGUMENT •
-
-    $default  reduce using rule 62 (args_list)
-
-
-State 143
-
-   64 ARGUMENT: boolean_expr •
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
-
-    EQUAL          shift, and go to state 85
-    DIFFERENT      shift, and go to state 86
-    LESS_OR_EQUAL  shift, and go to state 87
-    LESS           shift, and go to state 88
-    MORE_OR_EQUAL  shift, and go to state 89
-    MORE           shift, and go to state 90
-
-    CLOSE_PARENTHESIS  reduce using rule 64 (ARGUMENT)
-    COMMA              reduce using rule 64 (ARGUMENT)
-
-
-State 144
-
-   81 assignment_operation: $@21 ASSIGNMENT boolean_expr •
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
-
-    EQUAL          shift, and go to state 85
-    DIFFERENT      shift, and go to state 86
-    LESS_OR_EQUAL  shift, and go to state 87
-    LESS           shift, and go to state 88
-    MORE_OR_EQUAL  shift, and go to state 89
-    MORE           shift, and go to state 90
-
-    SEMICOLON  reduce using rule 81 (assignment_operation)
-    T_END      reduce using rule 81 (assignment_operation)
-    ELSE       reduce using rule 81 (assignment_operation)
-
-
-State 145
-
-  102 IDENT_CONTINUES: $@23 procedure_call •
-
-    $default  reduce using rule 102 (IDENT_CONTINUES)
-
-
-State 146
-
-   76 if_then: IF boolean_expr $@19 THEN command •
-
-    $default  reduce using rule 76 (if_then)
-
-
-State 147
-
-   73 loop: WHILE $@17 boolean_expr $@18 DO • command
-
-    T_BEGIN  shift, and go to state 32
-    IDENT    shift, and go to state 39
-    IF       shift, and go to state 40
-    WHILE    shift, and go to state 41
-    READ     shift, and go to state 42
-    WRITE    shift, and go to state 43
-
-    compound_command  go to state 44
-    command           go to state 157
-    read              go to state 47
-    write             go to state 48
-    loop              go to state 49
-    conditional       go to state 50
-    if_then           go to state 51
-
-
-State 148
-
-   66 read_ident_list: read_ident_list COMMA IDENT •
-
-    $default  reduce using rule 66 (read_ident_list)
-
-
-State 149
-
-   69 write_boolean_expr_list: write_boolean_expr_list COMMA boolean_expr •
-   83 boolean_expr: boolean_expr • EQUAL arithmetic_expr
-   84             | boolean_expr • DIFFERENT arithmetic_expr
-   85             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
-   86             | boolean_expr • LESS arithmetic_expr
-   87             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
-   88             | boolean_expr • MORE arithmetic_expr
-
-    EQUAL          shift, and go to state 85
-    DIFFERENT      shift, and go to state 86
-    LESS_OR_EQUAL  shift, and go to state 87
-    LESS           shift, and go to state 88
-    MORE_OR_EQUAL  shift, and go to state 89
-    MORE           shift, and go to state 90
-
-    CLOSE_PARENTHESIS  reduce using rule 69 (write_boolean_expr_list)
-    COMMA              reduce using rule 69 (write_boolean_expr_list)
-
-
-State 150
-
-   31 procedure_params: OPEN_PARENTHESIS $@11 declare_params $@12 CLOSE_PARENTHESIS •
-
-    $default  reduce using rule 31 (procedure_params)
-
-
-State 151
-
-   41 id_param_list: IDENT •
-
-    $default  reduce using rule 41 (id_param_list)
-
-
-State 152
-
-   37 declare_param: by_reference_or_not $@13 id_param_list • COLON type $@14 optional_semicolon
-   40 id_param_list: id_param_list • COMMA IDENT
-
-    COMMA  shift, and go to state 158
-    COLON  shift, and go to state 159
-
-
-State 153
-
-   24 procedure_def: PROCEDURE IDENT $@6 procedure_params SEMICOLON block $@7 SEMICOLON •
-
-    $default  reduce using rule 24 (procedure_def)
-
-
-State 154
-
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON • block $@10 SEMICOLON
+   31 procedure_def_continues: $@10 • block $@11 SEMICOLON
 
     VAR  shift, and go to state 13
 
@@ -2126,124 +1656,635 @@ State 154
     PROCEDURE  reduce using rule 7 (declaring_vars_block)
     FUNCTION   reduce using rule 7 (declaring_vars_block)
 
-    block                 go to state 160
+    block                 go to state 140
     declaring_vars_block  go to state 15
 
 
-State 155
+State 112
 
-   58 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS •
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON IDENT • $@8 SEMICOLON procedure_def_continues
 
-    $default  reduce using rule 58 (procedure_call_continues)
+    $default  reduce using rule 25 ($@8)
+
+    $@8  go to state 141
 
 
-State 156
+State 113
 
-   61 args_list: args_list COMMA • ARGUMENT
+   61 procedure_call_continues: OPEN_PARENTHESIS • procedure_arguments CLOSE_PARENTHESIS
 
     OPEN_PARENTHESIS  shift, and go to state 59
-    IDENT             shift, and go to state 139
+    IDENT             shift, and go to state 142
     NUMBER            shift, and go to state 61
 
-    ARGUMENT         go to state 161
-    boolean_expr     go to state 143
+    procedure_arguments  go to state 143
+    args_list            go to state 144
+    ARGUMENT             go to state 145
+    boolean_expr         go to state 146
+    arithmetic_expr      go to state 63
+    E                    go to state 64
+    T                    go to state 65
+    F                    go to state 66
+
+
+State 114
+
+   60 procedure_call: $@17 procedure_call_continues •
+
+    $default  reduce using rule 60 (procedure_call)
+
+
+State 115
+
+   84 assignment_operation: $@22 ASSIGNMENT • boolean_expr
+
+    OPEN_PARENTHESIS  shift, and go to state 59
+    IDENT             shift, and go to state 60
+    NUMBER            shift, and go to state 61
+
+    boolean_expr     go to state 147
     arithmetic_expr  go to state 63
     E                go to state 64
     T                go to state 65
     F                go to state 66
 
 
+State 116
+
+  102 F: OPEN_PARENTHESIS boolean_expr CLOSE_PARENTHESIS •
+
+    $default  reduce using rule 102 (F)
+
+
+State 117
+
+  101 F: IDENT $@23 IDENT_CONTINUES •
+
+    $default  reduce using rule 101 (F)
+
+
+State 118
+
+  105 IDENT_CONTINUES: $@24 • procedure_call
+
+    $default  reduce using rule 59 ($@17)
+
+    procedure_call  go to state 148
+    $@17            go to state 80
+
+
+State 119
+
+   86 boolean_expr: boolean_expr EQUAL arithmetic_expr •
+
+    $default  reduce using rule 86 (boolean_expr)
+
+
+State 120
+
+   87 boolean_expr: boolean_expr DIFFERENT arithmetic_expr •
+
+    $default  reduce using rule 87 (boolean_expr)
+
+
+State 121
+
+   88 boolean_expr: boolean_expr LESS_OR_EQUAL arithmetic_expr •
+
+    $default  reduce using rule 88 (boolean_expr)
+
+
+State 122
+
+   89 boolean_expr: boolean_expr LESS arithmetic_expr •
+
+    $default  reduce using rule 89 (boolean_expr)
+
+
+State 123
+
+   90 boolean_expr: boolean_expr MORE_OR_EQUAL arithmetic_expr •
+
+    $default  reduce using rule 90 (boolean_expr)
+
+
+State 124
+
+   91 boolean_expr: boolean_expr MORE arithmetic_expr •
+
+    $default  reduce using rule 91 (boolean_expr)
+
+
+State 125
+
+   79 if_then: IF boolean_expr $@20 THEN • command
+
+    T_BEGIN  shift, and go to state 32
+    IDENT    shift, and go to state 39
+    IF       shift, and go to state 40
+    WHILE    shift, and go to state 41
+    READ     shift, and go to state 42
+    WRITE    shift, and go to state 43
+
+    compound_command  go to state 44
+    command           go to state 149
+    read              go to state 47
+    write             go to state 48
+    loop              go to state 49
+    conditional       go to state 50
+    if_then           go to state 51
+
+
+State 126
+
+   93 E: E PLUS T •
+   96 T: T • ASTERISK F
+   97  | T • DIV F
+
+    DIV       shift, and go to state 94
+    ASTERISK  shift, and go to state 95
+
+    CLOSE_PARENTHESIS  reduce using rule 93 (E)
+    COMMA              reduce using rule 93 (E)
+    SEMICOLON          reduce using rule 93 (E)
+    T_END              reduce using rule 93 (E)
+    THEN               reduce using rule 93 (E)
+    ELSE               reduce using rule 93 (E)
+    DO                 reduce using rule 93 (E)
+    PLUS               reduce using rule 93 (E)
+    MINUS              reduce using rule 93 (E)
+    EQUAL              reduce using rule 93 (E)
+    DIFFERENT          reduce using rule 93 (E)
+    LESS_OR_EQUAL      reduce using rule 93 (E)
+    LESS               reduce using rule 93 (E)
+    MORE_OR_EQUAL      reduce using rule 93 (E)
+    MORE               reduce using rule 93 (E)
+
+
+State 127
+
+   94 E: E MINUS T •
+   96 T: T • ASTERISK F
+   97  | T • DIV F
+
+    DIV       shift, and go to state 94
+    ASTERISK  shift, and go to state 95
+
+    CLOSE_PARENTHESIS  reduce using rule 94 (E)
+    COMMA              reduce using rule 94 (E)
+    SEMICOLON          reduce using rule 94 (E)
+    T_END              reduce using rule 94 (E)
+    THEN               reduce using rule 94 (E)
+    ELSE               reduce using rule 94 (E)
+    DO                 reduce using rule 94 (E)
+    PLUS               reduce using rule 94 (E)
+    MINUS              reduce using rule 94 (E)
+    EQUAL              reduce using rule 94 (E)
+    DIFFERENT          reduce using rule 94 (E)
+    LESS_OR_EQUAL      reduce using rule 94 (E)
+    LESS               reduce using rule 94 (E)
+    MORE_OR_EQUAL      reduce using rule 94 (E)
+    MORE               reduce using rule 94 (E)
+
+
+State 128
+
+   97 T: T DIV F •
+
+    $default  reduce using rule 97 (T)
+
+
+State 129
+
+   96 T: T ASTERISK F •
+
+    $default  reduce using rule 96 (T)
+
+
+State 130
+
+   76 loop: WHILE $@18 boolean_expr $@19 • DO command
+
+    DO  shift, and go to state 150
+
+
+State 131
+
+   68 read: READ OPEN_PARENTHESIS read_ident_list CLOSE_PARENTHESIS •
+
+    $default  reduce using rule 68 (read)
+
+
+State 132
+
+   69 read_ident_list: read_ident_list COMMA • IDENT
+
+    IDENT  shift, and go to state 151
+
+
+State 133
+
+   71 write: WRITE OPEN_PARENTHESIS write_boolean_expr_list CLOSE_PARENTHESIS •
+
+    $default  reduce using rule 71 (write)
+
+
+State 134
+
+   72 write_boolean_expr_list: write_boolean_expr_list COMMA • boolean_expr
+
+    OPEN_PARENTHESIS  shift, and go to state 59
+    IDENT             shift, and go to state 60
+    NUMBER            shift, and go to state 61
+
+    boolean_expr     go to state 152
+    arithmetic_expr  go to state 63
+    E                go to state 64
+    T                go to state 65
+    F                go to state 66
+
+
+State 135
+
+   81 cond_else: ELSE $@21 command •
+
+    $default  reduce using rule 81 (cond_else)
+
+
+State 136
+
+   34 procedure_params: OPEN_PARENTHESIS $@12 declare_params $@13 • CLOSE_PARENTHESIS
+
+    CLOSE_PARENTHESIS  shift, and go to state 153
+
+
+State 137
+
+   36 declare_params: declare_params declare_param •
+
+    $default  reduce using rule 36 (declare_params)
+
+
+State 138
+
+   40 declare_param: by_reference_or_not $@14 • id_param_list COLON type $@15 optional_semicolon
+
+    IDENT  shift, and go to state 154
+
+    id_param_list  go to state 155
+
+
+State 139
+
+   28 procedure_def_continues: FORWARD $@9 • SEMICOLON
+
+    SEMICOLON  shift, and go to state 156
+
+
+State 140
+
+   31 procedure_def_continues: $@10 block • $@11 SEMICOLON
+
+    $default  reduce using rule 30 ($@11)
+
+    $@11  go to state 157
+
+
+State 141
+
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON IDENT $@8 • SEMICOLON procedure_def_continues
+
+    SEMICOLON  shift, and go to state 158
+
+
+State 142
+
+   66 ARGUMENT: IDENT •
+  101 F: IDENT • $@23 IDENT_CONTINUES
+
+    OPEN_PARENTHESIS   reduce using rule 100 ($@23)
+    CLOSE_PARENTHESIS  reduce using rule 66 (ARGUMENT)
+    CLOSE_PARENTHESIS  [reduce using rule 100 ($@23)]
+    COMMA              reduce using rule 66 (ARGUMENT)
+    COMMA              [reduce using rule 100 ($@23)]
+    DIV                reduce using rule 100 ($@23)
+    ASTERISK           reduce using rule 100 ($@23)
+    PLUS               reduce using rule 100 ($@23)
+    MINUS              reduce using rule 100 ($@23)
+    EQUAL              reduce using rule 100 ($@23)
+    DIFFERENT          reduce using rule 100 ($@23)
+    LESS_OR_EQUAL      reduce using rule 100 ($@23)
+    LESS               reduce using rule 100 ($@23)
+    MORE_OR_EQUAL      reduce using rule 100 ($@23)
+    MORE               reduce using rule 100 ($@23)
+
+    $@23  go to state 84
+
+    reduce/reduce conflict on tokens CLOSE_PARENTHESIS, COMMA:
+       66 ARGUMENT: IDENT •
+      100 $@23: ε •
+      Example: IDENT •
+      First reduce derivation
+        ARGUMENT
+        ↳ 66: IDENT •
+      Second reduce derivation
+        ARGUMENT
+        ↳ 67: boolean_expr
+              ↳ 85: arithmetic_expr
+                    ↳ 92: E
+                          ↳ 95: T
+                                ↳ 98: F
+                                      ↳ 101: IDENT $@23       IDENT_CONTINUES
+                                                   ↳ 100: ε • ↳ 101: ε
+
+
+
+State 143
+
+   61 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments • CLOSE_PARENTHESIS
+
+    CLOSE_PARENTHESIS  shift, and go to state 159
+
+
+State 144
+
+   63 procedure_arguments: args_list •
+   64 args_list: args_list • COMMA ARGUMENT
+
+    COMMA  shift, and go to state 160
+
+    CLOSE_PARENTHESIS  reduce using rule 63 (procedure_arguments)
+
+
+State 145
+
+   65 args_list: ARGUMENT •
+
+    $default  reduce using rule 65 (args_list)
+
+
+State 146
+
+   67 ARGUMENT: boolean_expr •
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
+
+    EQUAL          shift, and go to state 85
+    DIFFERENT      shift, and go to state 86
+    LESS_OR_EQUAL  shift, and go to state 87
+    LESS           shift, and go to state 88
+    MORE_OR_EQUAL  shift, and go to state 89
+    MORE           shift, and go to state 90
+
+    CLOSE_PARENTHESIS  reduce using rule 67 (ARGUMENT)
+    COMMA              reduce using rule 67 (ARGUMENT)
+
+
+State 147
+
+   84 assignment_operation: $@22 ASSIGNMENT boolean_expr •
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
+
+    EQUAL          shift, and go to state 85
+    DIFFERENT      shift, and go to state 86
+    LESS_OR_EQUAL  shift, and go to state 87
+    LESS           shift, and go to state 88
+    MORE_OR_EQUAL  shift, and go to state 89
+    MORE           shift, and go to state 90
+
+    SEMICOLON  reduce using rule 84 (assignment_operation)
+    T_END      reduce using rule 84 (assignment_operation)
+    ELSE       reduce using rule 84 (assignment_operation)
+
+
+State 148
+
+  105 IDENT_CONTINUES: $@24 procedure_call •
+
+    $default  reduce using rule 105 (IDENT_CONTINUES)
+
+
+State 149
+
+   79 if_then: IF boolean_expr $@20 THEN command •
+
+    $default  reduce using rule 79 (if_then)
+
+
+State 150
+
+   76 loop: WHILE $@18 boolean_expr $@19 DO • command
+
+    T_BEGIN  shift, and go to state 32
+    IDENT    shift, and go to state 39
+    IF       shift, and go to state 40
+    WHILE    shift, and go to state 41
+    READ     shift, and go to state 42
+    WRITE    shift, and go to state 43
+
+    compound_command  go to state 44
+    command           go to state 161
+    read              go to state 47
+    write             go to state 48
+    loop              go to state 49
+    conditional       go to state 50
+    if_then           go to state 51
+
+
+State 151
+
+   69 read_ident_list: read_ident_list COMMA IDENT •
+
+    $default  reduce using rule 69 (read_ident_list)
+
+
+State 152
+
+   72 write_boolean_expr_list: write_boolean_expr_list COMMA boolean_expr •
+   86 boolean_expr: boolean_expr • EQUAL arithmetic_expr
+   87             | boolean_expr • DIFFERENT arithmetic_expr
+   88             | boolean_expr • LESS_OR_EQUAL arithmetic_expr
+   89             | boolean_expr • LESS arithmetic_expr
+   90             | boolean_expr • MORE_OR_EQUAL arithmetic_expr
+   91             | boolean_expr • MORE arithmetic_expr
+
+    EQUAL          shift, and go to state 85
+    DIFFERENT      shift, and go to state 86
+    LESS_OR_EQUAL  shift, and go to state 87
+    LESS           shift, and go to state 88
+    MORE_OR_EQUAL  shift, and go to state 89
+    MORE           shift, and go to state 90
+
+    CLOSE_PARENTHESIS  reduce using rule 72 (write_boolean_expr_list)
+    COMMA              reduce using rule 72 (write_boolean_expr_list)
+
+
+State 153
+
+   34 procedure_params: OPEN_PARENTHESIS $@12 declare_params $@13 CLOSE_PARENTHESIS •
+
+    $default  reduce using rule 34 (procedure_params)
+
+
+State 154
+
+   44 id_param_list: IDENT •
+
+    $default  reduce using rule 44 (id_param_list)
+
+
+State 155
+
+   40 declare_param: by_reference_or_not $@14 id_param_list • COLON type $@15 optional_semicolon
+   43 id_param_list: id_param_list • COMMA IDENT
+
+    COMMA  shift, and go to state 162
+    COLON  shift, and go to state 163
+
+
+State 156
+
+   28 procedure_def_continues: FORWARD $@9 SEMICOLON •
+
+    $default  reduce using rule 28 (procedure_def_continues)
+
+
 State 157
 
-   73 loop: WHILE $@17 boolean_expr $@18 DO command •
+   31 procedure_def_continues: $@10 block $@11 • SEMICOLON
 
-    $default  reduce using rule 73 (loop)
+    SEMICOLON  shift, and go to state 164
 
 
 State 158
 
-   40 id_param_list: id_param_list COMMA • IDENT
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON IDENT $@8 SEMICOLON • procedure_def_continues
 
-    IDENT  shift, and go to state 162
+    FORWARD  shift, and go to state 109
+
+    T_BEGIN    reduce using rule 29 ($@10)
+    VAR        reduce using rule 29 ($@10)
+    PROCEDURE  reduce using rule 29 ($@10)
+    FUNCTION   reduce using rule 29 ($@10)
+
+    procedure_def_continues  go to state 165
+    $@10                     go to state 111
 
 
 State 159
 
-   37 declare_param: by_reference_or_not $@13 id_param_list COLON • type $@14 optional_semicolon
+   61 procedure_call_continues: OPEN_PARENTHESIS procedure_arguments CLOSE_PARENTHESIS •
 
-    IDENT  shift, and go to state 53
-
-    type  go to state 163
+    $default  reduce using rule 61 (procedure_call_continues)
 
 
 State 160
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON block • $@10 SEMICOLON
+   64 args_list: args_list COMMA • ARGUMENT
 
-    $default  reduce using rule 27 ($@10)
+    OPEN_PARENTHESIS  shift, and go to state 59
+    IDENT             shift, and go to state 142
+    NUMBER            shift, and go to state 61
 
-    $@10  go to state 164
+    ARGUMENT         go to state 166
+    boolean_expr     go to state 146
+    arithmetic_expr  go to state 63
+    E                go to state 64
+    T                go to state 65
+    F                go to state 66
 
 
 State 161
 
-   61 args_list: args_list COMMA ARGUMENT •
+   76 loop: WHILE $@18 boolean_expr $@19 DO command •
 
-    $default  reduce using rule 61 (args_list)
+    $default  reduce using rule 76 (loop)
 
 
 State 162
 
-   40 id_param_list: id_param_list COMMA IDENT •
+   43 id_param_list: id_param_list COMMA • IDENT
 
-    $default  reduce using rule 40 (id_param_list)
+    IDENT  shift, and go to state 167
 
 
 State 163
 
-   37 declare_param: by_reference_or_not $@13 id_param_list COLON type • $@14 optional_semicolon
+   40 declare_param: by_reference_or_not $@14 id_param_list COLON • type $@15 optional_semicolon
 
-    $default  reduce using rule 36 ($@14)
+    IDENT  shift, and go to state 53
 
-    $@14  go to state 165
+    type  go to state 168
 
 
 State 164
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON block $@10 • SEMICOLON
+   31 procedure_def_continues: $@10 block $@11 SEMICOLON •
 
-    SEMICOLON  shift, and go to state 166
+    $default  reduce using rule 31 (procedure_def_continues)
 
 
 State 165
 
-   37 declare_param: by_reference_or_not $@13 id_param_list COLON type $@14 • optional_semicolon
+   26 procedure_def: FUNCTION IDENT $@7 procedure_params COLON IDENT $@8 SEMICOLON procedure_def_continues •
 
-    SEMICOLON  shift, and go to state 167
-
-    CLOSE_PARENTHESIS  reduce using rule 43 (optional_semicolon)
-    VAR                reduce using rule 43 (optional_semicolon)
-    IDENT              reduce using rule 43 (optional_semicolon)
-
-    optional_semicolon  go to state 168
+    $default  reduce using rule 26 (procedure_def)
 
 
 State 166
 
-   28 procedure_def: FUNCTION IDENT $@8 procedure_params COLON IDENT $@9 SEMICOLON block $@10 SEMICOLON •
+   64 args_list: args_list COMMA ARGUMENT •
 
-    $default  reduce using rule 28 (procedure_def)
+    $default  reduce using rule 64 (args_list)
 
 
 State 167
 
-   42 optional_semicolon: SEMICOLON •
+   43 id_param_list: id_param_list COMMA IDENT •
 
-    $default  reduce using rule 42 (optional_semicolon)
+    $default  reduce using rule 43 (id_param_list)
 
 
 State 168
 
-   37 declare_param: by_reference_or_not $@13 id_param_list COLON type $@14 optional_semicolon •
+   40 declare_param: by_reference_or_not $@14 id_param_list COLON type • $@15 optional_semicolon
 
-    $default  reduce using rule 37 (declare_param)
+    $default  reduce using rule 39 ($@15)
+
+    $@15  go to state 169
+
+
+State 169
+
+   40 declare_param: by_reference_or_not $@14 id_param_list COLON type $@15 • optional_semicolon
+
+    SEMICOLON  shift, and go to state 170
+
+    CLOSE_PARENTHESIS  reduce using rule 46 (optional_semicolon)
+    VAR                reduce using rule 46 (optional_semicolon)
+    IDENT              reduce using rule 46 (optional_semicolon)
+
+    optional_semicolon  go to state 171
+
+
+State 170
+
+   45 optional_semicolon: SEMICOLON •
+
+    $default  reduce using rule 45 (optional_semicolon)
+
+
+State 171
+
+   40 declare_param: by_reference_or_not $@14 id_param_list COLON type $@15 optional_semicolon •
+
+    $default  reduce using rule 40 (declare_param)

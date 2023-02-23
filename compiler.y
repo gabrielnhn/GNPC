@@ -9,7 +9,7 @@ char string_buffer[69];
 char string_buffer2[69];
 char ident[69];
 symbol_table table;
-stack_t e_stack, f_stack, t_stack, label_stack, proc_stack, var_count_stack;
+stack_t e_stack, f_stack, t_stack, label_stack, proc_stack, var_count_stack, forward_stack, no_implementation_stack;
 
 int num_vars, comparison, symbol_index;
 
@@ -73,6 +73,9 @@ program:
     PROGRAM IDENT OPEN_PARENTHESIS idents_list CLOSE_PARENTHESIS SEMICOLON
     block DOT
     {
+        if (no_implementation_stack.top > -1)
+            print_error("Mising implementation for procedure/function.\n");
+
         int to_deallocate;
         remove_symbols_from_table(&table, table.size);
         stack_pop(&var_count_stack, &to_deallocate);
@@ -147,26 +150,100 @@ procedure_def:
     PROCEDURE
     IDENT
     {
-        level++;
-        label_count++;
-        
+        strcpy(ident, $<text>2);
+        printf("PROCEDURE_NAME: `%s`\n", ident);
+
+        int exists;
+        if (not search_symbol_table_index(&table, ident, &exists))
+        {
+            // NEW PROCEDURE
+            level++;
+            label_count++;
+            insert_symbol_table_proc(&table, level, ident, label_count);
+
+        }
+        // PUSH PROCEDURE INDEX TO THE STACK
+        int index;
+        symbol_table_last_proc_index(&table, &index);
+        table.stack[index].forwarded = false;
+        stack_push(&forward_stack, index);
+    }
+    procedure_params SEMICOLON procedure_def_continues;
+
+    // FUNCTION (WITH RETURN VALUE) */
+    |
+    FUNCTION
+    IDENT
+    {
+        strcpy(ident, $<text>2);
+        printf("FUNCTION_NAME: `%s`\n", ident);
+
+        int exists;
+        if (not search_symbol_table_index(&table, ident, &exists))
+        {
+            // NEW PROCEDURE
+            level++;
+            label_count++;
+            insert_symbol_table_function(&table, level, ident, label_count);
+
+        }
+        // PUSH PROCEDURE INDEX TO THE STACK
+        int index;
+        symbol_table_last_proc_index(&table, &index);
+        table.stack[index].forwarded = false;
+        stack_push(&forward_stack, index);
+    }
+    procedure_params 
+    COLON IDENT
+    {
+        int func_type = get_type(token);
+        if (not func_type)
+            print_error("Function with illegal type");
+
+        // symbol_table_last_proc_index(&table, &proc_index);
+        stack_check(&forward_stack, &proc_index);
+
+        table.stack[proc_index].type = func_type;
+    }
+    
+    SEMICOLON procedure_def_continues
+;
+
+procedure_def_continues: 
+    FORWARD 
+    /* WAIT FOR IMPLEMENTATION */
+    {
+        int proc_index;
+        stack_pop(&forward_stack, &proc_index);
+        table.stack[proc_index].forwarded = true;
+        stack_push(&no_implementation_stack, proc_index);
+    } SEMICOLON |
+
+    /*  IMPLEMENTATION */
+    {
+        stack_pop(&forward_stack, &proc_index);
+        int bruh;
+
+        // IF IF WAS FORWARDED, REMOVE NO_IMPLEMENTATION
+        if (table.stack[proc_index].forwarded)
+            stack_pop(&no_implementation_stack, &bruh);
+
         // JUMP OUT OF PROCEDURE
+        label_count++;
         stack_push(&label_stack, label_count);
         sprintf(string_buffer, "DSVS R%.2d", label_count);
         generate_code(NULL, string_buffer);
         
         // ENTER PROCEDURE
-        label_count++;  
-        sprintf(string_buffer, "R%.2d", label_count);
-        sprintf(string_buffer2, "ENPR %d", level);
+        int proc_label = table.stack[proc_index].label;
+        int proc_level = table.stack[proc_index].level;
+        level = proc_level; 
 
+        sprintf(string_buffer, "R%.2d", proc_label);
+        sprintf(string_buffer2, "ENPR %d", proc_level);
         generate_code(string_buffer, string_buffer2);
-
-        strcpy(ident, $<text>2);
-        printf("PROCEDURE_NAME: `%s`\n", ident);
-        insert_symbol_table_proc(&table, level, ident, label_count);
     }
-    procedure_params SEMICOLON block
+    block
     {
         // DEALLOCATE
         int to_deallocate;
@@ -183,96 +260,12 @@ procedure_def:
         remove_symbols_from_table_until_proc(&table, level);
         print_symbol_table(&table);
 
-
         // OUT OF PROCEDURE
         stack_pop(&label_stack, &return_label);
         sprintf(string_buffer, "R%.2d", return_label);
         generate_code(string_buffer, "NADA");
         level--;
     } SEMICOLON
-
-    // FUNCTION (WITH RETURN VALUE) */
-    |
-    FUNCTION
-    IDENT
-    {
-        level++;
-        label_count++;
-        
-        // JUMP OUT OF FUNCTION
-        stack_push(&label_stack, label_count);
-        sprintf(string_buffer, "DSVS R%.2d", label_count);
-        generate_code(NULL, string_buffer);
-        
-        // ENTER FUNCTION
-        label_count++;  
-        sprintf(string_buffer, "R%.2d", label_count);
-        sprintf(string_buffer2, "ENPR %d", level);
-
-        generate_code(string_buffer, string_buffer2);
-        
-        strcpy(ident, $<text>2);
-        printf("FUNCTION_NAME: `%s`\n", ident);
-
-        insert_symbol_table_function(&table, level, ident, label_count);
-    }
-    procedure_params 
-    COLON IDENT
-    {
-        int func_type = get_type(token);
-        if (not func_type)
-            print_error("Function with illegal type");
-
-        symbol_table_last_proc_index(&table, &proc_index);
-        table.stack[proc_index].type = func_type;
-
-    }
-    
-    SEMICOLON block
-    {
-        // DEALLOCATE
-        int to_deallocate;
-        stack_pop(&var_count_stack, &to_deallocate);
-        sprintf(string_buffer, "DMEM %d", to_deallocate);
-        generate_code(NULL, string_buffer);
-
-        // FUNCTION RETURN
-        sprintf(string_buffer, "RTPR %d, %d", level, param_count);
-        generate_code(NULL, string_buffer);
-
-        print_symbol_table(&table);
-        // REMOVE SYMBOLS
-        remove_symbols_from_table_until_proc(&table, level);
-        print_symbol_table(&table);
-
-
-        // OUT OF PROCEDURE
-        stack_pop(&label_stack, &return_label);
-        sprintf(string_buffer, "R%.2d", return_label);
-        generate_code(string_buffer, "NADA");
-        level--;
-    } SEMICOLON
-
-;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 procedure_params:
@@ -280,10 +273,16 @@ procedure_params:
     { param_count = 0;}
     declare_params
     {
-        update_symbol_table_offset(&table, param_count, level);
-        symbol_table_last_proc_index(&table, &proc_index);
-        table.stack[proc_index].param_num = param_count;
-        table.stack[proc_index].offset = -(4 + param_count);
+        // symbol_table_last_proc_index(&table, &proc_index);
+        stack_check(&forward_stack, &proc_index);
+        bool forwarded = table.stack[proc_index].forwarded;
+
+        if (not forwarded)
+        {
+            update_symbol_table_offset(&table, param_count, level);
+            table.stack[proc_index].param_num = param_count;
+            table.stack[proc_index].offset = -(4 + param_count);
+        }
     }
     CLOSE_PARENTHESIS | %empty 
 ;
@@ -304,10 +303,16 @@ declare_param:
             print_error(string_buffer);
         }
 
-        update_symbol_table_type(&table, list_size, list_type);
-        symbol_table_last_proc_index(&table, &proc_index);
-        symbol_table_update_proc_param_array(&table, proc_index, list_size, list_type, by_reference);
-        print_symbol_table(&table);
+        // symbol_table_last_proc_index(&table, &proc_index);
+        stack_check(&forward_stack, &proc_index);
+        bool forwarded = table.stack[proc_index].forwarded;
+
+        if (not forwarded)
+        {
+            update_symbol_table_type(&table, list_size, list_type);
+            symbol_table_update_proc_param_array(&table, proc_index, list_size, list_type, by_reference);
+            print_symbol_table(&table);
+        }
     }
     optional_semicolon
 ;
@@ -815,6 +820,8 @@ int main (int argc, char** argv) {
     init_stack(&f_stack);
     init_stack(&label_stack);
     init_stack(&proc_stack);
+    init_stack(&forward_stack);
+    init_stack(&no_implementation_stack);
     init_stack(&var_count_stack);
 
 

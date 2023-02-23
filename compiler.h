@@ -78,6 +78,7 @@ typedef struct
     char* name;
     bool by_reference;
     int label;
+    bool forwarded;
 
     int param_types[MAX_PARAMS_SIZE];
     int param_byrefs[MAX_PARAMS_SIZE];
@@ -123,6 +124,8 @@ int get_type(char* type);
 void init_stack(stack_t *stack);
 bool stack_push(stack_t *stack, int x);
 bool stack_pop(stack_t *stack, int* x);
+bool stack_check(stack_t *stack, int* x);
+
 
 void assert_symbol_exists(symbol_table *table, char *name);
 // void assert_equals(int a, int b);

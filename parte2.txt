@@ -13,4 +13,12 @@ Ideia original para a inclusão de declarações forward:
             erro()
 
 
+A ideia original falta alguns detalhes: 
+quando a função é lida novamente, ela não deve ser readicionada a tabela de símbolos
 
+Stack de forward pra definir qual dos procedimentos que se deve fazer a implementacao
+Stack pra ver se falta alguma implementacao
+flag de "forwarded" pra descobrir se devo tirar algum item da stack de "falta implementacao"
+
+
+Alterações majoritariamente em 'procedure_def'.
