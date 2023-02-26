@@ -295,7 +295,7 @@ procedure_params_continues:
         stack_check(&forward_stack, &proc_index);
         // bool forwarded = table.stack[proc_index].forwarded;
         bool forwarded = false;
-
+        level = table.stack[proc_index].level;
 
         if (not forwarded)
         {
@@ -352,7 +352,7 @@ id_param_list:
         // bool forwarded = table.stack[proc_index].forwarded;
         bool forwarded = false;
 
-
+        level = table.stack[proc_index].level;
         if (not forwarded)
         {
             printf("%d insert param\n", proc_index);
@@ -366,6 +366,8 @@ id_param_list:
         stack_check(&forward_stack, &proc_index);
         // bool forwarded = table.stack[proc_index].forwarded;
         bool forwarded = false;
+
+        level = table.stack[proc_index].level;
 
         if (not forwarded)
         {
